@@ -41,21 +41,6 @@
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Action</a></li>
-              <li><a href="#">Another action</a></li>
-              <li><a href="#">Something else here</a></li>
-              <li role="separator" class="divider"></li>
-              <li class="dropdown-header">Nav header</li>
-              <li><a href="#">Separated link</a></li>
-              <li><a href="#">One more separated link</a></li>
-            </ul>
-          </li>
           <li class=".navbar-right" role="presentation" data-toggle="modal" data-target="#loginModal"><a href="#">Log In</a></li>
           <li class=".navbar-right" role="presentation" data-toggle="modal" data-target="#registerModal"><a href="#">Register</a></li>
         </ul>
@@ -126,19 +111,30 @@
     </div><!-- /.modal -->
 
   <!-- Begin page content -->
-  <div class="container">
+  <div class="container-fluid" id="body-container">
     <div class="page-header">
-      <h1>Sticky footer with fixed navbar</h1>
+      <h1>Do we want a header? </h1>
     </div>
-    <p class="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with
-      <code>padding-top: 60px;</code> on the
-      <code>body > .container</code>.</p>
-    <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>
-  </div>
+    <div class="row">
+    	<div class="btn-group btn-group-lg" role="group">
+    	 	<button type="button" class="btn">Schedule</button>
+   		</div>
+   	</div>
+	<div class="row">
 
-  <footer class="footer">
+   		<div class="btn-group btn-group-lg" role="group">
+    	 	<button type="button" class="btn">Review</button>
+    	</div>
+    </div>
+    <div class="row">
+   		<div class="btn-group btn-group-lg" role="group">
+    	 		<button type="button" class="btn">Load</button>
+    	</div>	
+    </div>
+ </div>
+  <footer class="footer" id="alpaca">
     <div class="container">
-      <p class="text-muted">Place sticky footer content here.</p>
+       <p class ="text-muted">Alpacas are the only animals that we allow on this website. If that brings you concern please read our <a href="http://www.alpacas.com/">Terms and Conditions</a></p>
     </div>
   </footer>
 
@@ -153,5 +149,54 @@
   <script src="js/main.js"></script>
   <script src="js/login.js"></script>
 </body>
+
+<style>
+
+#body-container {
+	margin: auto;
+}
+.btn  {
+	padding: 14px 24px;
+    border: 0 none;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: none;
+    border: 2px solid #0099cc;
+    position: relative;
+    text-align: center;
+    display:block;
+    height:150px;
+    width:150px;
+    white-space: normal;
+	
+	
+
+
+}
+
+.btn-group{
+	margin-top:20px;
+	left:45%;
+}
+
+.btn:hover{
+	color:#33a6cc;
+	border-color: #33a6cc;
+}
+
+.btn:active{
+	border-color: #007299;
+	color: #007299;
+	box-shadow: none;
+}
+
+#alpaca {
+	position:fixed;
+	bottom:0;
+	left:;
+
+}
+
+</style>
 
 </html>
