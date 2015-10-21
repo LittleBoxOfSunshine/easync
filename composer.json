@@ -1,0 +1,10 @@
+{   
+	"require": {
+		"matthiasmullie/minify": "1.3.28",
+		"nesbot/carbon": "~1.14",
+		"filp/whoops": "1.*",
+		"yohang/calendr": "1.*",
+		"mrrio/shellwrap": "~0.4.1",
+		"slim/slim": "2.*"
+	}
+}

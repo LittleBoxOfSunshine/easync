@@ -14,11 +14,6 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/trusty64"
 
-  # Disable automatic box update checking. If you disable this, then
-  # boxes will only be checked for updates when the user runs
-  # `vagrant box outdated`. This is not recommended.
-  # config.vm.box_check_update = false
-
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
@@ -26,33 +21,7 @@ Vagrant.configure(2) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
-
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
-
-  # Provider-specific configuration so you can fine-tune various
-  # backing providers for Vagrant. These expose provider-specific options.
-  # Example for VirtualBox:
-  #
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
+  config.vm.network "private_network", ip: "192.168.33.111"
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at
@@ -65,10 +34,48 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-    sudo apt-get install -y apache2
-    rm -rf /var/www
-    mkdir /var/www
-    ln -fs /vagrant /var/www/html
+    #switch to root
+    sudo su
+    
+    apt-get update
+    
+    # Install Apache
+    apt-get install -y apache2
+    
+    # Link the shared folder to the webroot if needed
+    if ! [ -L /var/www ]; then
+      rm -rf /var/www
+      ln -fs /vagrant /var/www
+    fi
+    
+    # Install PHP + dependencies
+    apt-get -y install php5 libapache2-mod-php5 php5-mcrypt php5-curl php5-mysqlnd
+    
+    # Enable php extension
+    php5enmod mcrypt
+    
+    # Install Composer
+    curl -sS https://getcomposer.org/installer | php
+    mv composer.phar /usr/local/bin/composer
+    
+    # Install project dependenceies
+    ( cd /var/www ; composer install)
+    
+    # Configure apache to rewrite
+    echo -e "<VirtualHost *:80>" > /etc/apache2/sites-available/000-default.conf
+    echo -e "\tDocumentRoot /var/www" >> /etc/apache2/sites-available/000-default.conf
+    echo -e "\t<Directory /var/www/>" >> /etc/apache2/sites-available/000-default.conf
+    echo -e "\t\tAllowOverride All" >> /etc/apache2/sites-available/000-default.conf
+    echo -e "\t</Directory>" >> /etc/apache2/sites-available/000-default.conf
+    echo -e "\tErrorLog /error.log" >> /etc/apache2/sites-available/000-default.conf
+    echo -e "\tCustomLog /access.log combined" >> /etc/apache2/sites-available/000-default.conf
+    echo -e "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf
+    
+    # Enable Apache mod_rewrite
+    a2enmod rewrite
+    
+    # Restart Apache2
+    service apache2 restart
+    
   SHELL
 end
