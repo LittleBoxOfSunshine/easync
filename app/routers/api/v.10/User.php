@@ -7,7 +7,7 @@ require __DIR__ . '/vendor/autoload.php';
 $app->group('/api/v1.0/User', function() use ($app) {
 
 	$app->get('/home', function () use ($app){
-
+		echo "This is the home function.";
     });//)->add($MIDDLEWARE_AUTH);
 
 	$app->post('/login', function () use ($app){
@@ -30,7 +30,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
     });
 
 	$app->delete('/logout', function () use ($app){
-
+		echo "This is the delete function.";
     });
 
 	$app->post('/register', function () use ($app){
