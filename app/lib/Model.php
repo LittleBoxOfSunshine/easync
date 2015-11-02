@@ -42,14 +42,14 @@ abstract class Model{
 			// Multiple valid required patterns exist
 			if(is_array($prop)){
 				foreach($prop as $subprop){
-					// If the required property was not initialized, delagate to malforedArgs()
+					// If the required property was not initialized, delagate to malformedArgs()
 					if(!isset($this->$prop))
 						return $this->malformedArgs($fromUserInput, "The required property $prop was not initialized for class: " + get_class($this));
 				}
 			}
 			// Only one valid required pattern exists
 			else{
-				// If the required property was not initialized, delagate to malforedArgs()
+				// If the required property was not initialized, delagate to malformedArgs()
 				if(!isset($this->$prop))
 					return $this->malformedArgs($fromUserInput, "The required property $prop was not initialized for class: " + get_class($this));
 			}
