@@ -14,6 +14,11 @@ class Database{
 	}
 	
 	public static function getConnection(){
+		// Check that the calling class uses the CRUD interface
+		$trace = debug_backtrace();
+		if(!($trace[1]['class'] instanceof CRUD))
+			die('ERROR: Class must implement CRUD to use the database class...');
+			
 		// Connect to the database if not already connected
 		if(!isset(self::$connection))
 			self::init();
@@ -22,6 +27,11 @@ class Database{
 	}
 	
 	public static function prepareAssoc($query){
+		// Check that the calling class uses the CRUD interface
+		$trace = debug_backtrace();
+		if(!($trace[1]['class'] instanceof CRUD))
+			die('ERROR: Class must implement CRUD to use the database class...');	
+		
 		// Connect to the database if not already connected
 		if(!isset(self::$connection))
 			self::init();
