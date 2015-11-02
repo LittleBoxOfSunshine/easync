@@ -58,7 +58,7 @@ abstract class Model{
 	// Function is called when constructor arguments are in
 	private function malformedArgs(& $fromUserInput, & $errorMessage){
 		// Calling function intends on handling the error 
-		if($fromUserInput)
+		if($fromUserInput === true)
 			return false;
 		// No error handling signaled, halt code execution and display the given error message
 		else
