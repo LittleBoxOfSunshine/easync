@@ -25,19 +25,18 @@ class User{
 
 			//Configure password settings
 			//$password_hash = $password;
-			$hashAlgorithm = 'NONE';
-			$numberHashIter = 0;
-			$salt = 'pepper';
+			// $hashAlgorithm = 'NONE';
+			// $numberHashIter = 0;
+			// $salt = 'pepper';
 
 			Database::query("INSERT INTO User
 				(`name`, `email`, `passwordHash`,`phoneNumber`) VALUES (
 				'$name',
 				'$email',
-				'$password',
+				'%s',
 				'$phoneNumber'
-				);
-			");
-
+				);"
+			password_hash($password, PASSWORD_DEFAULT));
 			return true;
 		}
 		else{
@@ -46,6 +45,8 @@ class User{
 	}
 
 	public function checkLogin($password){
+		// return count(\Database::query("SELECT `email` FROM User WHERE
+		// 	`email`='$this->email' AND `passwordHash`='$password' LIMIT 1;")) > 0;
 		return count(\Database::query("SELECT `email` FROM User WHERE
 			`email`='$this->email' AND `passwordHash`='$password' LIMIT 1;")) > 0;
 	}
