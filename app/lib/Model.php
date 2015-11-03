@@ -1,5 +1,11 @@
 <?php
 
+/*
+	TODO:
+		use magic method __set so that private members still work
+		fix required bug
+*/
+
 // Base class for models, standardizes constructor interface, reduces likelyhood of errors, makes auto-inialization easier
 abstract class Model{
 	/**

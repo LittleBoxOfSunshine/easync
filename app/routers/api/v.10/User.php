@@ -13,19 +13,19 @@ $app->group('/api/v1.0/User', function() use ($app) {
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
 		$password = $app->request->post('password');
-		$user = new \User($email);
-
-		if(\Token::tokenExists($email))
-			\Token::revokeTokenByEmail($email);
-
-		if($user->checkLogin($password)){
-			$_SESSION['auth_token'] = \Token::generateToken($email);
-			echo "$email logged in";
+		
+		if(!isset($email) || !isset($password)){
+			echo 'Email and password must be provided...';
 		}
 		else{
-			echo "Invalid login";
+			$user = new User(array('email' => $email, 'password' => $password));
+			if($user->login()){
+				echo 'Login successful';
+			}
+			else{
+				echo 'Incorrect username and/or password';
+			}
 		}
-
 
     });
 
@@ -36,13 +36,18 @@ $app->group('/api/v1.0/User', function() use ($app) {
 	$app->post('/register', function () use ($app){
 		$email = $app->request->post('email');
 		$password = $app->request->post('password');
-		$user = new \User($email);
-		if($user->create($email, $password, $firstname.$lastname, $phoneNumber)){
-			echo 'Account Created. Logging in... ';
-			self::signIn($email, $password);
-		}
-		else{
-			echo 'Account already exists';
+		$firstname = $app->request->post('firstname');
+		$lastname = $app->request->post('lastname');
+		
+		$user = new User(array(
+			'email' => $email,
+			'password' => $password,
+			'firstname' => $firstname,
+			'lastname' => $lastname
+			), true);
+		
+		if($user === false){
+			//handle input error here
 		}
 
     });

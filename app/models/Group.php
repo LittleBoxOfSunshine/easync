@@ -14,12 +14,13 @@ class Group extends Model implements CRUD{
 		parent::__construct(
 			$args,
 			array(
+				array('groupID'),
 				'groupID',
 				'name',
-        'descripition',
+        		'descripition',
 				'creatorUserID',
 				'creationtime',
-        'logo'
+        		'logo'
 			));
 
 	}

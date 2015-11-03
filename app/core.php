@@ -53,6 +53,8 @@ $routers = rglob('/routers/*.router.php');
 foreach($routers as $router){
     require $router;		
 }
+
+// Automatically load the model files
         
 // Start the application
 $app()->run();

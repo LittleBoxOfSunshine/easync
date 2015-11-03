@@ -1,5 +1,5 @@
 <?php
-require_once('../lib/Model.php');
+require_once(__DIR__.'/../lib/Model.php');
 
 class Event extends Model implements CRUD{
 	protected $location;
