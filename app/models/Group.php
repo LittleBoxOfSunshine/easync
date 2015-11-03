@@ -8,21 +8,13 @@ class Group extends Model implements CRUD{
 	protected $creatorUserID;
   	protected $logo;
   	protected $groupID;
-  	protected $userID;
+  	protected $userIDs;
 
 	public function __construct(array $args = array()){
-		parent::__construct(
-			$args,
-			array(
-				array('groupID'),
-				'groupID',
-				'name',
-        		'descripition',
-				'creatorUserID',
-				'creationtime',
-        		'logo'
+		parent::__construct($args, array(
+			array('groupID'),
+			array('name','creatorID')
 			));
-
 	}
 
 	public function getCreationTime(){
@@ -73,11 +65,27 @@ class Group extends Model implements CRUD{
 		$this->groupID = $groupID;
 	}
 
-	public function getUserID(){
-		return $this->userID;
+	public function getUserIDs(){
+		return $this->userIDs;
 	}
 
-	public function setUserID($userID){
-		$this->userID = $userID;
+	public function setUserIDs(array $userIDs = array()){
+		$this->userIDs = $userIDs;
+	}
+	
+	public function create(){
+		
+	}
+	
+	public function update(){
+		
+	}
+	
+	public function delete(){
+		
+	}
+
+	public function load(){
+		
 	}
 }

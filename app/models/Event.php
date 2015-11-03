@@ -125,4 +125,20 @@ class Event extends Model implements CRUD{
 	public function setEventID($eventID){
 		$this->eventID = $eventID;
 	}
+	
+	public function create(){
+		
+	}
+	
+	public function update(){
+		
+	}
+	
+	public function delete(){
+		
+	}
+
+	public function load(){
+		
+	}
 }

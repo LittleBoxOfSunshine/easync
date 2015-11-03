@@ -3,7 +3,7 @@
 require_once __DIR__.'/../lib/Model.php';
 require_once __DIR__.'/../lib/Database.php';
 
-class User extends Model{
+class User extends Model implements CRUD{
 
 	private $email;
 	private $firstname;
@@ -31,6 +31,22 @@ class User extends Model{
 	}
 	
 	public function logout(){
+		
+	}
+	
+	public function create(){
+		
+	}
+	
+	public function update(){
+		
+	}
+	
+	public function delete(){
+		
+	}
+
+	public function load(){
 		
 	}
 }
