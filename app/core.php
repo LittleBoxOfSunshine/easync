@@ -49,7 +49,17 @@ $app->add(new \Slim\Middleware\SessionCookie(array(
 */
 
 // Automatically load router files
-$routers = rglob('/routers/*.router.php');
+$routers = rglob('/routers/*');
+foreach($routers as $router){
+    require $router;		
+}
+
+/*
+    Import models
+*/
+
+// Automatically load model files
+$routers = rglob('/models/*');
 foreach($routers as $router){
     require $router;		
 }
