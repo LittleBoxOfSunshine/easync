@@ -1,11 +1,5 @@
 <?php
 
-/*
-	TODO:
-		use magic method __set so that private members still work
-		fix required bug
-*/
-
 // Base class for models, standardizes constructor interface, reduces likelyhood of errors, makes auto-inialization easier
 abstract class Model{
 	/**
@@ -34,7 +28,7 @@ abstract class Model{
 		foreach($args as $key => $val){
 			// Ensure the key is a valid instance property
 			if(property_exists($this, $key))
-				$this->{$key} = $val;
+				$this->__set($key, $val); // use magic method __set so that private properties in child may be set
 			// Key is not valid, delagate to malformedArgs()
 			else
 				return $this->malformedArgs($fromUserInput, "The key $key is not a valid property of class: " + get_class($this));
@@ -43,15 +37,30 @@ abstract class Model{
 		// Use the provided properties, if none are provided, load all instance properties
 		$properties = count($required) == 0 ? get_object_vars($this) : $required;
 		
+		// Flags for testing arrays
+		$hasValidArray = false;
+		$hasArrays = false;
+		
 		// Ensure that all required properties were successfully initialized
-		foreach($properties as $prop)
+		foreach($properties as $prop){
 			// Multiple valid required patterns exist
-			if(is_array($prop)){
+			if(is_array($prop) && $hasValidArray === false){// hasValidArray check is an optimization to unecessary parsing (consider adding && count($prop) <= count($args) as optimization)
+				$hasArrays = true;
+				
+				// Flag for if current array is valid (assume yes, loop will fix this if it is untrue)
+				$tmpValidArray = true;
+				
 				foreach($prop as $subprop){
 					// If the required property was not initialized, delagate to malformedArgs()
-					if(!isset($this->$prop))
-						return $this->malformedArgs($fromUserInput, "The required property $prop was not initialized for class: " + get_class($this));
+					if(!isset($this->$prop)){
+						$tmpValidArray = false;
+						break; // Data is invalid, no reason to continue checking	
+					}
 				}
+				
+				// Check if array requirements were met
+				if($tempValidArray === true)   
+					$hasValidArray = true;
 			}
 			// Only one valid required pattern exists
 			else{
@@ -59,6 +68,11 @@ abstract class Model{
 				if(!isset($this->$prop))
 					return $this->malformedArgs($fromUserInput, "The required property $prop was not initialized for class: " + get_class($this));
 			}
+		}
+		
+		// Delagate error to malformedArgs() if arrays were used and none of them were valid
+		if($hasArrays === true && $hasValidArray === false)
+			$this->malformedArgs($fromUserInput, 'The required properties were not initialized for class: ' + get_class($this) + 'Requirements are:' + var_export($required));
 	}
 	
 	// Function is called when constructor arguments are in
@@ -68,7 +82,7 @@ abstract class Model{
 			return false;
 		// No error handling signaled, halt code execution and display the given error message
 		else
-			die('ERROR: ' + $errorMessage + 'VAR_DUMP -> ' + var_export());
+			die('ERROR: ' + $errorMessage + ' VAR_DUMP -> ' + var_export($this));
 	}
 	
 }
