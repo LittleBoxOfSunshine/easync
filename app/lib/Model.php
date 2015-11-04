@@ -31,7 +31,7 @@ abstract class Model{
 				$this->__set($key, $val); // use magic method __set so that private properties in child may be set
 			// Key is not valid, delagate to malformedArgs()
 			else
-				return $this->malformedArgs($fromUserInput, "The key $key is not a valid property of class: " + get_class($this));
+				return $this->malformedArgs("The key $key is not a valid property of class: " + get_class($this), $fromUserInput);
 		}
 		
 		// Use the provided properties, if none are provided, load all instance properties
@@ -66,17 +66,58 @@ abstract class Model{
 			else{
 				// If the required property was not initialized, delagate to malformedArgs()
 				if(!isset($this->$prop))
-					return $this->malformedArgs($fromUserInput, "The required property $prop was not initialized for class: " + get_class($this));
+					return $this->malformedArgs("The required property $prop was not initialized for class: " + get_class($this), $fromUserInput);
 			}
 		}
 		
 		// Delagate error to malformedArgs() if arrays were used and none of them were valid
 		if($hasArrays === true && $hasValidArray === false)
-			$this->malformedArgs($fromUserInput, 'The required properties were not initialized for class: ' + get_class($this) + 'Requirements are:' + var_export($required));
+			$this->malformedArgs('The required properties were not initialized for class: ' + get_class($this) + 'Requirements are:' + var_export($required), $fromUserInput);
+	}
+	
+	/** 
+		Provides a FETCH_INTO interface with access to private properties + error checking. Expects associative array where
+		keys correspond to properties defined in the child class
+	*/
+	protected function loadInto(array & $data = array()){
+		foreach($data as $key => $val)
+			if(property_exists($key, $this))
+				$this->__set($key, $val);
+	}
+	
+	/**
+		Provides a FETCH_INTO interface with access to private properties + error checking, but creates arrays instead of 
+		assigning scalar values. Expects an array of associative arrays where keys coreespond to properties defined in the 
+		child class
+	*/
+	protected function loadAllInto(array & $data = array(), array & $properties = array()){
+		// Temporary arrays that child properties will be assigned with
+		$temp = [];
+		
+		// Ensure the number of sql columns matches the number of properties
+		if(count($properties) != count($data[0]))
+			malformedArgs('property count must match column count for loadAllInto');
+		
+		// Validate the array keys have corresponding child properties
+		foreach($properties as $key){
+			if(property_exists($key, $this))
+				$temp[$key] = [];
+			else
+				malformedArgs("property => $key does not exist" + get_class($this));
+		}
+		
+		// Load into the arrays
+		foreach($data as $row)
+			for($i = 0; $i < count($row); $i++)
+				$temp[$properties[$i]][] = $val;
+				
+		// Write the temporary arrays to the child
+		foreach($tmp as $key => $val)
+			$this->__set($key, $val);	
 	}
 	
 	// Function is called when constructor arguments are in
-	private function malformedArgs(& $fromUserInput, & $errorMessage){
+	private function malformedArgs(& $errorMessage, & $fromUserInput=false){
 		// Calling function intends on handling the error 
 		if($fromUserInput === true)
 			return false;
