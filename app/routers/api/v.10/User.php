@@ -49,6 +49,12 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		if($user === false){
 			//handle input error here
 		}
+		else{
+			if(!$user->exists())
+				$user->create();
+			else
+				echo "ERROR: the email $email is already registered...";
+		}
 
     });
 
