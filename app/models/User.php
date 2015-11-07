@@ -20,11 +20,21 @@ class User extends Model implements CRUD{
 			),
 			$fromUserInput
 		);
+
+		// Initialize MySQL bindings
+		if(!isset(self::$binding))
+			self::$binding = Binding(array(
+				':email' => $this->email,
+				':password' => $this->password,
+				':firstname' => $this->firstname,
+				':lastname' => $this->lastname
+			));
 	}
 
 	public function login(){
-		return count(\Database::query("SELECT `email` FROM User WHERE
-			`email`='$email' AND `password`='$password' LIMIT 1;")) > 0;
+		$stmt = \Database::prepareAssoc("SELECT `email` FROM User WHERE
+			`email`='$email' AND `password`=''$password'");
+		$stmt->execute();
 
 	}
 
