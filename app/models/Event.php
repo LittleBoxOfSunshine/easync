@@ -16,10 +16,9 @@ class Event extends Model implements CRUD{
 	protected $eventID;  
 
 	public function __construct(array $args = array()){
-		parent::__construct(
-			$args,
+		parent::__construct($args, array(
+			array('eventID'),
 			array(
-				'eventID',
 				'userID',
 				'name',
 				'creatorUserID',
@@ -27,7 +26,25 @@ class Event extends Model implements CRUD{
 				'startTime',
 				'creationtime',
 				'endTime'
+			)
 			));
+
+		// Initialize MySQL bindings
+		parent::initBinding(array(
+			':location' => $this->$location,
+			':startTime' => $this->$startTime,    
+			':creationTime' => $this->$creationTime, 
+			':updateTime' => $this->$updateTime,   
+			':endTime' => $this->$endTime,   
+			':name' => $this->$name,         
+			':description' => $this->$description,  
+			':creatorUserID' => $this->$creatorUserID,
+			':timeZone' => $this->$timeZone,    
+			':recurrence' => $this->$recurrence,   
+			':attachments' => $this->$attachments, 
+			':eventID' => $this->$eventID,
+			':creatorID' => $this->creatorID
+		));
 	}
 
 	public function create(){
@@ -54,9 +71,7 @@ class Event extends Model implements CRUD{
 	
 	public function delete(){
 		// Remove any data linking back to the event id then remove the group itself (from EventDetails)
-		Database::prepareAssoc("DELETE FROM EventDetails WHERE eventID=:eventID;
-			DELETE FROM Event WHERE eventID=:eventID;
-			DELETE FROM EventDetails WHERE eventID=:eventID;", self::$bindings)->execute();
+		Database::prepareAssoc("DELETE FROM EventDetails WHERE eventID=:eventID;", self::$bindings)->execute();
 	}
 
 	public function load(){
