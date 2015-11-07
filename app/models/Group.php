@@ -22,7 +22,8 @@ class Group extends Model implements CRUD{
 			':name' => $this->name,
 			':description' => $this->description,
 			':creationTime' => $this->creationTime,
-			':logo' => $this->logo
+			':logo' => $this->logo,
+			':groupID' => $this->groupID
 		));
 			
 		// Initialize Permission Arrays
