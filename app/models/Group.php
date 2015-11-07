@@ -14,7 +14,7 @@ class Group extends Model implements CRUD{
 		parent::__construct($args, array(
 			array('groupID'),
 			array('name','creatorID')
-			));
+		));
 			
 		// Initialize MySQL bindings
 		parent::initBinding(array(
