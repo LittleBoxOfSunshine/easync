@@ -20,13 +20,32 @@ class User extends Model implements CRUD{
 			),
 			$fromUserInput
 		);
+
+		// Initialize MySQL bindings
+			parent::initBinding(array(
+				':email' => $this->email,
+				':password' => $this->password,
+				':firstname' => $this->firstname,
+				':lastname' => $this->lastname
+			));
 	}
 
 	public function login(){
-		return count(\Database::query("SELECT `email` FROM User WHERE
-			`email`='$email' AND `password`='$password' LIMIT 1;")) > 0;
+			if(checkLogin() != false) {
+				echo "successful login"
+			}
+			else {
+				echo "Login failed."
+			}
 	}
-	
+
+	public function checkLogin(){
+		$stmt = \Database::prepareAssoc("SELECT `email` FROM User WHERE
+			`email`='$email' AND `password`=''$password'");
+		$stmt->execute();
+		return $stmt->fetch() !== false;
+	}
+
 	public function logout(){
 
 	}
@@ -34,13 +53,12 @@ class User extends Model implements CRUD{
 	public function exists(){
 			$stmt = \Database::prepareAssoc("SELECT `email` FROM User WHERE `email`='$email'");
 			$stmt->execute();
+			return $stmt->fetch() !== false;
 	}
 
 	public function create(){
 		// Prepare sql statement
 		$stmt = Database::prepareAssoc("INSERT INTO User VALUES(:email, :password, :firstname, :lastname);", self::$binding);
-
-		// Run the initial query and store the autoincremented group id
 		$stmt->execute();
 
 	}
