@@ -26,10 +26,6 @@ class User extends Model implements CRUD{
 		
 	}
 	
-	public function register(){
-		
-	}
-	
 	public function logout(){
 		
 	}
