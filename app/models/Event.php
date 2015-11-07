@@ -30,6 +30,47 @@ class Event extends Model implements CRUD{
 			));
 	}
 
+	public function create(){
+		// Prepare sql statement
+		$stmt = Database::prepareAssoc("INSERT INTO EventDetails VALUES(:location, :startTime, :creationTime, :updateTime, :endTime, :name,: description, :creatorUserID, :timeZone, :recurrence, :attachments);", self::$binding);
+		
+		// Run the initial query and store the autoincremented event id
+		$stmt->execute();
+		$this->eventID = Database::lastInsertId();
+		
+		$stmt = Database::prepareAssoc("INSERT INTO Event VALUES(:eventID, :creatorUserID);", self::$binding);
+  
+  		// Run the secondary queries
+  		$stmt->execute();
+	}
+	
+	public function update(){
+		Database::prepareAssoc("UPDATE EventDetails SET creatorUserID=:creatorUserID, location=:location,
+			startTime=:startTime, creationTime=:creationTime, updateTime=:updateTime, 
+			endTime=:endTime, name=:name, description:=description, timeZone:=timeZone, recurrence:=recurrence, attachments:=attachments
+			WHERE eventID=:eventID", 
+			self::$bindings)->execute();
+	}
+	
+	public function delete(){
+		// Remove any data linking back to the event id then remove the group itself (from EventDetails)
+		Database::prepareAssoc("DELETE FROM EventDetails WHERE eventID=:eventID;
+			DELETE FROM Event WHERE eventID=:eventID;
+			DELETE FROM EventDetails WHERE eventID=:eventID;", self::$bindings)->execute();
+	}
+
+	public function load(){
+		// Load event details
+		$stmt = Database::prepareAssoc("SELECT * FROM EventDetails WHERE eventID=:eventID", self::$bindings);
+		$stmt->execute();
+		$this->loadInto($stmt->fetch());
+
+		// Load event user
+		$stmt = Database::prepareAssoc("SELECT `userID` FROM Event WHERE eventID=:eventID", self::$bindings);
+		$stmt->execute();
+		$this->loadInto($stmt->fetch());
+	}
+
 	public function getLocation(){
 		return $this->location;
 	}
@@ -124,21 +165,5 @@ class Event extends Model implements CRUD{
 
 	public function setEventID($eventID){
 		$this->eventID = $eventID;
-	}
-	
-	public function create(){
-		
-	}
-	
-	public function update(){
-		
-	}
-	
-	public function delete(){
-		
-	}
-
-	public function load(){
-		
 	}
 }
