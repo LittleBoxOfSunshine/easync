@@ -2,6 +2,9 @@
 
 // Base class for models, standardizes constructor interface, reduces likelyhood of errors, makes auto-inialization easier
 abstract class Model{
+	
+	private static $binding;
+	
 	/**
 		This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
 		of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
@@ -124,6 +127,13 @@ abstract class Model{
 		// No error handling signaled, halt code execution and display the given error message
 		else
 			die('ERROR: ' + $errorMessage + ' VAR_DUMP -> ' + var_export($this));
+	}
+	
+	//
+	protected static function initBinding(array & $bindingArgs = array()){
+		if(!isset(self::$binding)){
+			self::$binding = Binding($bindingArgs);
+		}
 	}
 	
 }

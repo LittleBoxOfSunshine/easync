@@ -8,9 +8,7 @@ class Group extends Model implements CRUD{
   	protected $logo;
   	protected $groupID;
 	protected $userIDs;
-	protected $permissions;  
-	  
-	private static $binding;
+	protected $permissions;
 
 	public function __construct(array $args = array()){
 		parent::__construct($args, array(
@@ -19,14 +17,13 @@ class Group extends Model implements CRUD{
 			));
 			
 		// Initialize MySQL bindings
-		if(!isset(self::$binding))
-			self::$binding = Binding(array(
-				':creatorID' => $this->creatorID,
-				':name' => $this->name,
-				':description' => $this->description,
-				':creationTime' => $this->creationTime,
-				':logo' => $this->logo
-			));
+		parent::initBinding(array(
+			':creatorID' => $this->creatorID,
+			':name' => $this->name,
+			':description' => $this->description,
+			':creationTime' => $this->creationTime,
+			':logo' => $this->logo
+		));
 			
 		// Initialize Permission Arrays
 		$this->permissions = array(
@@ -119,10 +116,7 @@ class Group extends Model implements CRUD{
 	
 	public function delete(){
 		// Remove any data linking back to the group id then remove the group itself (from GroupDetails)
-		Database::prepareAssoc("DELETE FROM Permissions WHERE groupID=:groupID;
-			DELETE FROM EventGroups WHERE groupID=:groupID;
-			DELETE FROM Group WHERE groupID=:groupID;
-			DELETE FROM GroupDetails WHERE groupID=:groupID;", self::$bindings)->execute();
+		Database::prepareAssoc("DELETE FROM GroupDetails WHERE groupID=:groupID;", self::$bindings)->execute();
 	}
 
 	public function load(){

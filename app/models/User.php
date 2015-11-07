@@ -35,7 +35,6 @@ class User extends Model implements CRUD{
 		$stmt = \Database::prepareAssoc("SELECT `email` FROM User WHERE
 			`email`='$email' AND `password`=''$password'");
 		$stmt->execute();
-
 	}
 
 	public function logout(){
