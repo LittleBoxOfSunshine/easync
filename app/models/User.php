@@ -5,15 +5,15 @@ require_once __DIR__.'/../lib/Database.php';
 
 class User extends Model implements CRUD{
 
-	private $email;
-	private $name;
+	protected $email;
+	protected $name;
 
 	public function __construct(array $args = array(), $fromUserInput=false){
 		parent::__construct(
 			$args,
 			array(
 				array('userID'),
-				array('email', 'password')
+				array('email')
 			),
 			$fromUserInput
 		);
@@ -65,24 +65,32 @@ class User extends Model implements CRUD{
 	}
 
 	public function exists(){
-			$stmt = \Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=':email'");
+			$stmt = \Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=':email'", $this->getBinding());
 			$stmt->execute();
 			return $stmt->fetch() !== false;
 	}
 
-	public function create($password){
+	public function register($password){
+		$this->password = $password;
+		$this->create();
+		unset($this->password);
+	}
+
+	public function create(){
 		// Create salt
-		$size = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
-		$salt = mcrypt_create_iv($size, MCRYPT_DEV_RANDOM);
-
+		//$size = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
+		$salt = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
 		// Hash the password
-		password_hash($password, PASSWORD_BCRYPT, array('salt' => $salt));
-
+		password_hash($this->password, PASSWORD_BCRYPT, array('salt' => $salt));
 		// Prepare sql statement
 		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`)
-			VALUES(:email, :name, :password, :salt);", self::$binding);
+			VALUES(:email, :name, :password, :salt);", parent::getBinding());
 
-		$stmt->bindParam(':password', $password);
+		var_dump(parent::getBinding());
+		$stmt->debugDumpParams();
+
+		$stmt->bindParam(':password', $this->password);
+
 		$stmt->bindParam(':salt', $salt);
 
 		$stmt->execute();

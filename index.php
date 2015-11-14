@@ -1,3 +1,3 @@
 <?php
 
-	require_once 'app/core.php';
+	require_once __DIR__.'/app/core.php';

@@ -1,8 +1,5 @@
 <?php
 
-// Import Dependencies
-require __DIR__ . '/vendor/autoload.php';
-
 // This is the user Controller, so define it as group User
 $app->group('/api/v1.0/User', function() use ($app) {
 
@@ -41,17 +38,17 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		
 		$user = new User(array(
 			'email' => $email,
-			'password' => $password,
-			'firstname' => $firstname,
-			'lastname' => $lastname
+			'name' => $firstname.' '.$lastname
 			), true);
 		
 		if($user === false){
 			//handle input error here
+			echo 'user is malformed';
 		}
 		else{
-			if(!$user->exists())
-				$user->create();
+			if(!$user->exists()){
+				$user->register($password);
+			}
 			else
 				echo "ERROR: the email $email is already registered...";
 		}

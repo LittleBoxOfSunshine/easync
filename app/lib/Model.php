@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__.'/Binding.php';
+require_once __DIR__.'/CRUD.php';
+
 // Base class for models, standardizes constructor interface, reduces likelyhood of errors, makes auto-inialization easier
 abstract class Model{
 	
@@ -26,12 +29,12 @@ abstract class Model{
 		may be malformed, but the calling code is equipped to handle that exception. So, the constructor returns
 		false as an error message instead of halting code execution
 	*/
-	public function __construct(array & $args = array(), array & $required = array(), & $fromUserInput=false){
+	public function __construct(array & $args = array(), array $required = array(), & $fromUserInput=false){
 		// Initialize instance properties to match the key => value pairs of $args
 		foreach($args as $key => $val){
 			// Ensure the key is a valid instance property
 			if(property_exists($this, $key))
-				$this->__set($key, $val); // use magic method __set so that private properties in child may be set
+				$this->$key = $val;//$this->__set($key, $val); // use magic method __set so that private properties in child may be set
 			// Key is not valid, delagate to malformedArgs()
 			else
 				return $this->malformedArgs("The key $key is not a valid property of class: " + get_class($this), $fromUserInput);
@@ -55,14 +58,14 @@ abstract class Model{
 				
 				foreach($prop as $subprop){
 					// If the required property was not initialized, delagate to malformedArgs()
-					if(!isset($this->$prop)){
+					if(!isset($this->$subprop)){
 						$tmpValidArray = false;
 						break; // Data is invalid, no reason to continue checking	
 					}
 				}
 				
 				// Check if array requirements were met
-				if($tempValidArray === true)   
+				if($tmpValidArray === true)   
 					$hasValidArray = true;
 			}
 			// Only one valid required pattern exists
@@ -120,7 +123,7 @@ abstract class Model{
 	}
 	
 	// Function is called when constructor arguments are in
-	private function malformedArgs(& $errorMessage, & $fromUserInput=false){
+	private function malformedArgs($errorMessage, $fromUserInput=false){
 		// Calling function intends on handling the error 
 		if($fromUserInput === true)
 			return false;
@@ -130,29 +133,17 @@ abstract class Model{
 	}
 	
 	//
-	protected static function initBinding(array & $bindingArgs = array()){
+	protected static function initBinding(array $bindingArgs = array()){
+		var_dump($bindingArgs);
+		echo '</br></br>';
 		if(!isset(self::$binding)){
-			self::$binding = Binding($bindingArgs);
+			self::$binding = new Binding($bindingArgs);
 		}
+	}
+	
+	protected static function getBinding(){
+		return self::$binding;
 	}
 	
 }
 
-// This interface is required to use the database object, distinguishes between actions 
-// that involve just a memory object and those that involve the database
-interface CRUD{
-	
-	// Uses instance properties to create a representation of the memory object in the database
-	public abstract function create();
-	
-	// Uses instance properties to update the database representation of the object to match its current state
-	public abstract function update();
-	
-	// Deletes the database representation of the memory object
-	public abstract function delete();
-	
-	// Loads data from the database into instance properties using some minimum subset of instance properties
-	// The different combinations of properties that can be used is implementation specific. Multiple valid
-	// combinations are allowed
-	public abstract function load();
-}

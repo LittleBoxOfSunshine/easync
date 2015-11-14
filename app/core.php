@@ -1,13 +1,17 @@
 <?php
     
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+ini_set('display_startup_errors', 'On');    
+    
 // Import Dependencies
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // Performs glob recursively
 function rglob($pattern, &$flags = 0) {
 	// Run the initial glob
 	$files = glob($pattern, $flags);
-		
+    
 	// Append each file result, recursively call rglob with each directory result  
 	foreach(glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
 		$files = array_merge($files, rglob($dir.'/'.basename($pattern), $flags));
@@ -18,7 +22,6 @@ function rglob($pattern, &$flags = 0) {
 }
 
 $app = new \Slim\Slim(array(
-    'mode' => self::MODE_DEV,
     'debug' => true
 ));
 
@@ -49,9 +52,10 @@ $app->add(new \Slim\Middleware\SessionCookie(array(
 */
 
 // Automatically load router files
-$routers = rglob('/routers/*');
+$routers = rglob(__DIR__.'/routers/*');
 foreach($routers as $router){
-    require $router;		
+    if(!is_dir($router))
+        require_once $router;		
 }
 
 /*
@@ -59,12 +63,16 @@ foreach($routers as $router){
 */
 
 // Automatically load model files
-$routers = rglob('/models/*');
+$routers = rglob(__DIR__.'/models/*');
 foreach($routers as $router){
-    require $router;		
+    if(!is_dir($router))
+        require_once $router;		
 }
 
-// Automatically load the model files
+// Define index route
+$app->get('/', function () use ($app){
+	echo file_get_contents(__DIR__.'/../public/index.html');
+});//)->add($MIDDLEWARE_AUTH);
         
 // Start the application
-$app()->run();
+$app->run();
