@@ -5,6 +5,7 @@
 		"filp/whoops": "1.*",
 		"yohang/calendr": "1.*",
 		"mrrio/shellwrap": "~0.4.1",
-		"slim/slim": "2.*"
+		"slim/slim": "2.*",
+		"google/apiclient": "1.0.*@beta"
 	}
 }
