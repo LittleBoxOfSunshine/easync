@@ -32,9 +32,9 @@ class User extends Model implements CRUD{
 		}
 		else{
 			// Load the user's salt from the database
-			$stmt = \Database::prepareAssoc("SELECT `passwordHash`, `passwordSalt` FROM User WHERE `email`=':email';");	
+			$stmt = \Database::prepareAssoc("SELECT `passwordHash`, `passwordSalt` FROM User WHERE `email`=':email';");
 			$stmt->execute();
-			
+
 			// Try to load the data
 			if($data = $stmt->fetch()){
 				// Hash the password
@@ -47,7 +47,7 @@ class User extends Model implements CRUD{
 			}
 		}
 	}
-	
+
 	public function isLoggedIn(){
 		// check if auth token exists (in session)
 	}
@@ -55,13 +55,13 @@ class User extends Model implements CRUD{
 	public function logout(){
 
 	}
-	
+
 	public function createAuthToken(){
-		
+
 	}
-	
+
 	public function revokeAuthToken(){
-		
+
 	}
 
 	public function exists(){
@@ -74,17 +74,17 @@ class User extends Model implements CRUD{
 		// Create salt
 		$size = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
 		$salt = mcrypt_create_iv($size, MCRYPT_DEV_RANDOM);
-		
+
 		// Hash the password
 		password_hash($password, PASSWORD_BCRYPT, array('salt' => $salt));
-		
+
 		// Prepare sql statement
 		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`)
 			VALUES(:email, :name, :password, :salt);", self::$binding);
-			
+
 		$stmt->bindParam(':password', $password);
 		$stmt->bindParam(':salt', $salt);
-		
+
 		$stmt->execute();
 	}
 
