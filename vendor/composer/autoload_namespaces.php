@@ -9,7 +9,6 @@ return array(
     'Whoops' => array($vendorDir . '/filp/whoops/src'),
     'Slim' => array($vendorDir . '/slim/slim'),
     'MrRio' => array($vendorDir . '/mrrio/shellwrap/src'),
-    'Carbon' => array($vendorDir . '/nesbot/carbon/src'),
     'CalendR' => array($vendorDir . '/yohang/calendr/src'),
     'Boris' => array($vendorDir . '/d11wtq/boris/lib'),
 );
