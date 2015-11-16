@@ -10,7 +10,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
 		$password = $app->request->post('password');
-		
+
 		if(!isset($email) || !isset($password)){
 			echo 'Email and password must be provided...';
 		}
@@ -35,24 +35,30 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		$password = $app->request->post('password');
 		$firstname = $app->request->post('firstname');
 		$lastname = $app->request->post('lastname');
-		
+
 		$user = new User(array(
 			'email' => $email,
 			'name' => $firstname.' '.$lastname
 			), true);
-		
+
 		if($user === false){
 			//handle input error here
 			echo 'user is malformed';
 		}
 		else{
-			if(!$user->exists()){
+			//if(!$user->exists()){
 				$user->register($password);
-			}
-			else
-				echo "ERROR: the email $email is already registered...";
+			//}
+			//else
+				//echo "ERROR: the email $email is already registered...";
 		}
 
     });
+
+		$app->get('/getUserDetails', function() use ($app){
+			echo 'This is getUserDetails function';
+		}
+		
+		});//)->add($MIDDLEWARE_AUTH);
 
 });

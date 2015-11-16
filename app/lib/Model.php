@@ -134,8 +134,6 @@ abstract class Model{
 	
 	//
 	protected static function initBinding(array $bindingArgs = array()){
-		var_dump($bindingArgs);
-		echo '</br></br>';
 		if(!isset(self::$binding)){
 			self::$binding = new Binding($bindingArgs);
 		}
