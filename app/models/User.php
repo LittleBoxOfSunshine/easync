@@ -73,11 +73,11 @@ class User extends Model implements CRUD{
 
 	public function isLoggedIn(){
 		// check if auth token exists (in session)
-		if(!isset($_SESSION['auth_token'])){
+		if(!isset($_SESSION['auth_token']))
 			echo 'Currently logged in';
 		else
 			echo'Not currently logged in';
-		}
+	
 	}
 
 	public function logout(){
@@ -94,14 +94,14 @@ class User extends Model implements CRUD{
 
 	public function createAuthToken(){
 		$token = bin2hex(random_bytes(5));
-		$stmt = Database::prepareAssoc("INSERT INTO Auth_Token (`auth_token`, `userID`) VALUES(:token, :userID));"
+		$stmt = Database::prepareAssoc("INSERT INTO Auth_Token (`auth_token`, `userID`) VALUES(:token, :userID);");
 		$stmt->bindParam(':token', $token);
 		$stmt->execute();
 		return $token;
 	}
 
 	public function revokeAuthToken($auth){
-		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=`:auth`;")
+		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=`:auth`;");
 		$stmt->bindParam(':auth', $auth);
 		$stmt->execute();
 	}
@@ -125,19 +125,12 @@ class User extends Model implements CRUD{
 		// Hash the password
 		$this->password = password_hash($this->password, PASSWORD_BCRYPT, array('salt' => $salt));
 		// Prepare sql statement
-		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`)
-<<<<<<< HEAD
+		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`) 
 			VALUES(:email, :name, :password, :salt);");
 		
 		$stmt->bindParam(':email', $this->email);
 		$stmt->bindParam(':name', $this->name);	
-=======
-			VALUES(:email, :name, :password, :salt);", parent::getBinding());
 
-		var_dump(parent::getBinding());
-		$stmt->debugDumpParams();
-
->>>>>>> c10528c03f45bb944170d03bac133997e52fc42d
 		$stmt->bindParam(':password', $this->password);
 
 		$stmt->bindParam(':salt', $salt);
