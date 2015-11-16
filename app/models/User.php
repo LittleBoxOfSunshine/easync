@@ -18,11 +18,6 @@ class User extends Model implements CRUD{
 			$fromUserInput
 		);
 
-		// Initialize MySQL bindings
-		parent::initBinding(array(
-			':email' => $this->email,
-			':name' => $this->name
-		));
 	}
 
 	public function login($password, $googleAuth=false){
@@ -81,18 +76,27 @@ class User extends Model implements CRUD{
 		//$size = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
 		$salt = mcrypt_create_iv(22, MCRYPT_DEV_URANDOM);
 		// Hash the password
-		password_hash($this->password, PASSWORD_BCRYPT, array('salt' => $salt));
+		$this->password = password_hash($this->password, PASSWORD_BCRYPT, array('salt' => $salt));
 		// Prepare sql statement
 		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`)
-			VALUES(:email, :name, :password, :salt);", parent::getBinding());
+			VALUES(:email, :name, :password, :salt);");
 		
-		var_dump(parent::getBinding());
-		$stmt->debugDumpParams();
-			
+		$stmt->bindParam(':email', $this->email);
+		$stmt->bindParam(':name', $this->name);	
 		$stmt->bindParam(':password', $this->password);
 		$stmt->bindParam(':salt', $salt);
 		
 		$stmt->execute();
+		
+		if($stmt->errorCode() === '00000'){
+			echo 'Account Created.';
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'ERROR: This email is already registered...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
+		}
 	}
 
 	public function update(){

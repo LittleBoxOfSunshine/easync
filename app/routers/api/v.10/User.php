@@ -46,11 +46,11 @@ $app->group('/api/v1.0/User', function() use ($app) {
 			echo 'user is malformed';
 		}
 		else{
-			if(!$user->exists()){
+			//if(!$user->exists()){
 				$user->register($password);
-			}
-			else
-				echo "ERROR: the email $email is already registered...";
+			//}
+			//else
+				//echo "ERROR: the email $email is already registered...";
 		}
 
     });
