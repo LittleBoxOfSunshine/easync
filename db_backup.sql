@@ -55,7 +55,7 @@ DROP TABLE IF EXISTS `CalendarTokens`;
 CREATE TABLE `CalendarTokens` (
   `userID` int(11) NOT NULL DEFAULT '0',
   `platformID` varchar(255) NOT NULL DEFAULT '',
-  `calID` int(11) NOT NULL DEFAULT '0',
+  `calID` varchar(255) NOT NULL DEFAULT '',
   `token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`userID`, `platformID`, `calID`),
   FOREIGN KEY (`userID`) REFERENCES User(userID)

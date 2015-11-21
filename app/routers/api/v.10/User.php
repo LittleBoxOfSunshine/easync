@@ -55,10 +55,25 @@ $app->group('/api/v1.0/User', function() use ($app) {
 
     });
 
-		$app->get('/getUserDetails', function() use ($app){
-			echo 'This is getUserDetails function';
+    $app->get('/addGoogleCal', function () use ($app){
+			 
+	    if (!isset($_SESSION['token'])) {
+	    	// Step 1:  The user has not authenticated - redirect them  
+		    if (!isset($_GET['code'])) {
+		    	GoogleCalendar::requestAccess($app);
+		    }
+		    // Step 2: The user accepted your access now you need to exchange it.
+		    else{
+		    	GoogleCalendar::acceptAccess($app);
+		    }
+	    }
+
+	    $test = new GoogleCalendar();
 		
+	});//)->add($MIDDLEWARE_AUTH);
 
-		});//)->add($MIDDLEWARE_AUTH);
-
+	$app->get('/getUserDetails', function() use ($app){
+		echo 'This is getUserDetails function';
+	
+	});//)->add($MIDDLEWARE_AUTH);
 });
