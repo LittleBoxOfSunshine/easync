@@ -57,8 +57,8 @@ $app->group('/api/v1.0/User', function() use ($app) {
 
 		$app->get('/getUserDetails', function() use ($app){
 			echo 'This is getUserDetails function';
-		}
 		
+
 		});//)->add($MIDDLEWARE_AUTH);
 
 });

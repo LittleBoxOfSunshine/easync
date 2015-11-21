@@ -4,18 +4,15 @@ require_once(__DIR__.'/../lib/Model.php');
 require __DIR__ . '/../../vendor/autoload.php';
 
 class Google_Calendar extends Model implements CRUD{
-private $buttonCreated;
-public function __construct(){$this->buttonCreated = false;}
-public function getButton(){return $this->buttonCreated;}
-	public function testCal(){
-    echo "infunc";
+	public function __construct(){
+    echo "in constructor \n";
 		 // ********************************************************  //
 	    // Get these values from https://console.developers.google.com
 	    // Be sure to enable the Analytics API
 	    // ********************************************************    //
 	    $client_id = '66468154963-kjvu0u6hohvv59l03d0gr8kcomi4pggd.apps.googleusercontent.com';
 	    $client_secret = 'oNwvkqFISBzSjxNeWtZcnrAo';
-	    $redirect_uri = 'http://easync.com/';
+	    $redirect_uri = 'http://easync.com/test';
 
 	    $client = new Google_Client();
 	    $client->setApplicationName("Client_Library_Examples");
@@ -46,48 +43,42 @@ public function getButton(){return $this->buttonCreated;}
 	      $authUrl = $client->createAuthUrl();
 
 	      print "<a class='login' href='$authUrl'>Connect</a>";
-        $this->buttonCreated = true;
 	    }    
 
 
-	 
+	    // Step 3: We have access we can now create our service
+	    if (isset($_SESSION['token'])) {
+	    $client->setAccessToken($_SESSION['token']);
+	    print "<a class='logout' href='http://easync.com/test?logout=1'>LogOut</a><br>"; 
+	    
+	    $service = new Google_Service_Calendar($client);    
+	    
+	    $calendarList  = $service->calendarList->listCalendarList();
+
+		  while(true) {
+		      foreach ($calendarList->getItems() as $calendarListEntry) {
+
+		        echo $calendarListEntry->getSummary()."<br>\n";
+
+
+		        // get events 
+		        $events = $service->events->listEvents($calendarListEntry->id);
+
+
+		        foreach ($events->getItems() as $event) {
+		            echo "-----".$event->getSummary()."<br>";
+		        }
+		      }
+		      $pageToken = $calendarList->getNextPageToken();
+		      if ($pageToken) {
+		        $optParams = array('pageToken' => $pageToken);
+		        $calendarList = $service->calendarList->listCalendarList($optParams);
+		      } else {
+		        break;
+		      }
+		  }
+	  }	
 	}
-
-  public function test2(){
-    echo "intest2";
-     // Step 3: We have access we can now create our service
-      if (isset($_SESSION['token'])) {
-      $client->setAccessToken($_SESSION['token']);
-      print "<a class='logout' href='http://www.daimto.com/Tutorials/PHP/GCOAuth.php?logout=1'>LogOut</a><br>"; 
-      
-      $service = new Google_Service_Calendar($client);    
-      
-      $calendarList  = $service->calendarList->listCalendarList();
-
-      while(true) {
-          foreach ($calendarList->getItems() as $calendarListEntry) {
-
-            echo $calendarListEntry->getSummary()."<br>\n";
-
-
-            // get events 
-            $events = $service->events->listEvents($calendarListEntry->id);
-
-
-            foreach ($events->getItems() as $event) {
-                echo "-----".$event->getSummary()."<br>";
-            }
-          }
-          $pageToken = $calendarList->getNextPageToken();
-          if ($pageToken) {
-            $optParams = array('pageToken' => $pageToken);
-            $calendarList = $service->calendarList->listCalendarList($optParams);
-          } else {
-            break;
-          }
-      }
-    } 
-  }
 
 
 	/**
