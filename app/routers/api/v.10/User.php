@@ -67,10 +67,15 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		    	GoogleCalendar::acceptAccess($app);
 		    }
 	    }
-
+	    
 	    $test = new GoogleCalendar();
+	    	//$test->getEvents();
 		
 	});//)->add($MIDDLEWARE_AUTH);
+
+	$app->get('/getSettings', function () use ($app){
+		
+	});
 
 	$app->get('/getUserDetails', function() use ($app){
 		echo 'This is getUserDetails function';

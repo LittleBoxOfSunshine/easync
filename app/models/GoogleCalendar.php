@@ -64,7 +64,8 @@ class GoogleCalendar extends Model{
 	
 	public static function acceptAccess($app){
 		$client = self::makeGoogleClient();
-		$client->authenticate($_GET['code']);  
+		if (!isset($_GET['code']))
+			$client->authenticate($_GET['code']);  
 		$_SESSION['token'] = $client->getAccessToken();
 /*
 		$stmt = Database::prepareAssoc("SELECT * FROM `User` WHERE token=:token");
@@ -75,6 +76,7 @@ class GoogleCalendar extends Model{
 
 
 	public function getEvents(){
+		echo "getEvents";
 
 		    $calendarList  = $this->calendarList->calendarList->listCalendarList();
 				  while(true) {
