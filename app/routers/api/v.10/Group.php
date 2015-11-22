@@ -23,6 +23,6 @@ $app->group('/api/v1.0/Group', function() use ($app) {
 			$stmt->execute();	
 		}
 		
-	});//)->add($MIDDLEWARE_AUTH);
+	})->add(new Authentication());
 	
 });

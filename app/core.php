@@ -42,10 +42,26 @@ $app->add(new \Slim\Middleware\SessionCookie(array(
     'cipher_mode' => MCRYPT_MODE_CBC
 )));
 
-/*
-    Define Route Specific Middleware
-*/
-
+// Define Authentication Middleware
+class Authentication extends SlimMiddleware{
+    protected $stmt;
+    
+    public function __construct(){
+        $this->stmt = Database::prepareAssoc("SELECT ");
+    }
+    
+    public function call(){
+        $this->stmt->bindParam(':authToken', $authToken);
+        $this->stmt->execute();
+        
+        if(count($this->stmt->fetch()) > 0){
+            $this->app->response->setStatus(403);
+        }
+        else{
+            $this->next->call();
+        }
+    }
+}
     
 /*
     Define routes

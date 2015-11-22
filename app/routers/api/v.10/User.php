@@ -5,7 +5,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 
 	$app->get('/home', function () use ($app){
 		echo "This is the home function.";
-    });//)->add($MIDDLEWARE_AUTH);
+    })->add(new Authentication());
 
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
@@ -28,7 +28,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 
 	$app->delete('/logout', function () use ($app){
 		echo "This is the delete function.";
-    });
+    })->add(new Authentication());
 
 	$app->post('/register', function () use ($app){
 		$email = $app->request->post('email');
@@ -58,7 +58,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		$app->get('/getUserDetails', function() use ($app){
 			echo 'This is getUserDetails function';
 		
-		});//)->add($MIDDLEWARE_AUTH);
+		})->add(new Authentication());
 		
 	$app->get('/getContacts', function() use ($app){
 
@@ -66,7 +66,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
 		$stmt->execute();	
 
-	});//)->add($MIDDLEWARE_AUTH);
+	})->add(new Authentication());
 	
 	$app->get('/addContacts', function() use ($app){
 		
@@ -81,6 +81,6 @@ $app->group('/api/v1.0/User', function() use ($app) {
 			$stmt->execute();
 		}
 
-	});//)->add($MIDDLEWARE_AUTH);		
+	})->add(new Authentication());		
 		
 });

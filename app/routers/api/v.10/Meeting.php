@@ -8,6 +8,6 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		
 		// modify attendie entry to acception
 		
-	});//)->add($MIDDLEWARE_AUTH);
+	})->add(new Authentication());
 	
 });
