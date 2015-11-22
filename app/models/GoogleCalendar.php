@@ -66,6 +66,11 @@ class GoogleCalendar extends Model{
 		$client = self::makeGoogleClient();
 		$client->authenticate($_GET['code']);  
 		$_SESSION['token'] = $client->getAccessToken();
+/*
+		$stmt = Database::prepareAssoc("SELECT * FROM `User` WHERE token=:token");
+		$stmt->execute();
+		var_dump($stmt->fetch());
+	*/
 	}
 
 
