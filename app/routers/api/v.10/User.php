@@ -56,7 +56,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
     });
 
     $app->get('/addGoogleCal', function () use ($app){
-			 
+		$userID = $app->request->post('userID');
 	    if (!isset($_SESSION['token'])) {
 	    	// Step 1:  The user has not authenticated - redirect them  
 		    if (!isset($_GET['code'])) {
