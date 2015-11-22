@@ -59,5 +59,13 @@ $app->group('/api/v1.0/User', function() use ($app) {
 			echo 'This is getUserDetails function';
 		
 		});//)->add($MIDDLEWARE_AUTH);
+		
+	$app->get('/getContacts', function() use ($app){
 
+		$stmt = Database::prepareAssoc("SELECT `contactEmail` FROM `Contacts` WHERE `userID`=:userID;");
+		$stmt->bindParam(':userID', authToUserID($_SESSION['token']));
+		$stmt->execute();	
+
+	});//)->add($MIDDLEWARE_AUTH);	
+		
 });

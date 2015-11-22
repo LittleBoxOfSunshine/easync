@@ -101,7 +101,13 @@ class User extends Model implements CRUD{
 	}
 
 	public function revokeAuthToken($auth){
-		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=`:auth`;");
+		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=':auth';");
+		$stmt->bindParam(':auth', $auth);
+		$stmt->execute();
+	}
+	
+	public static function authToUserID($authToken){
+		$stmt = Database::prepareAssoc("SELECT userID FROM Auth_Token WHERE `auth_token`=':auth'");
 		$stmt->bindParam(':auth', $auth);
 		$stmt->execute();
 	}
