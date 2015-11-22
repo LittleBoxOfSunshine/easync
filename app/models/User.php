@@ -107,11 +107,18 @@ class User extends Model implements CRUD{
 	}
 	
 	public static function authToUserID($authToken){
-		$stmt = Database::prepareAssoc("SELECT userID FROM Auth_Token WHERE `auth_token`=':auth';");
-		$stmt->bindParam(':auth', $auth);
-		$stmt->execute();
-		$ret = $stmt->fetch();
-		return $ret['userID'];
+		global $USER_ID;
+		
+		if(isset($_SESSION['auth_token']) && $_SESSION['auth_token'] == $authToken && isset($USER_ID)){
+			return $USER_ID;
+		}
+		else{
+			$stmt = Database::prepareAssoc("SELECT userID FROM Auth_Token WHERE `auth_token`=':auth';");
+			$stmt->bindParam(':auth', $auth);
+			$stmt->execute();
+			$ret = $stmt->fetch();
+			return $ret['userID'];
+		}
 	}
 	
 	public static function emailToUser($email){

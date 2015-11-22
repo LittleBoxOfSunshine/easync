@@ -47,19 +47,32 @@ class Authentication extends SlimMiddleware{
     protected $stmt;
     
     public function __construct(){
-        $this->stmt = Database::prepareAssoc("SELECT ");
+        $this->stmt = Database::prepareAssoc("SELECT uid FROM `Auth_Token` WHERE `auth_token`=:authToken");
     }
     
     public function call(){
-        $this->stmt->bindParam(':authToken', $authToken);
+        if(!isset($_SESSION['auth_Token']))
+            $this->error403();
+        
+        $this->stmt->bindParam(':authToken', $_SESSION['auth_token']);
         $this->stmt->execute();
         
-        if(count($this->stmt->fetch()) > 0){
-            $this->app->response->setStatus(403);
+        $row = $this->stmt->fetch();
+        
+        if(count($row) == 0){
+            $this->error403();
         }
         else{
+            // Define userID global
+            global $USER_ID;
+            $USER_ID = $row['uid'];
             $this->next->call();
         }
+    }
+    
+    private function error403(){
+            $this->app->response->setStatus(403);
+            echo 'ERROR: You must be authenticated to use this api route...';
     }
 }
     
