@@ -63,9 +63,24 @@ $app->group('/api/v1.0/User', function() use ($app) {
 	$app->get('/getContacts', function() use ($app){
 
 		$stmt = Database::prepareAssoc("SELECT `contactEmail` FROM `Contacts` WHERE `userID`=:userID;");
-		$stmt->bindParam(':userID', authToUserID($_SESSION['token']));
+		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
 		$stmt->execute();	
 
-	});//)->add($MIDDLEWARE_AUTH);	
+	});//)->add($MIDDLEWARE_AUTH);
+	
+	$app->get('/addContacts', function() use ($app){
+		
+		$userID = $app->request()->post('userID');
+		$contacts = $app->request()->post('contacts');
+
+		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, ':contactEmail');");
+		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
+		
+		foreach($contacts as $contact){
+			$stmt->bindParam(':contactEmail', $contact);
+			$stmt->execute();
+		}
+
+	});//)->add($MIDDLEWARE_AUTH);		
 		
 });
