@@ -15,8 +15,8 @@ $app->group('/api/v1.0/User', function() use ($app) {
 			echo 'Email and password must be provided...';
 		}
 		else{
-			$user = new User(array('email' => $email, 'password' => $password));
-			if($user->login()){
+			$user = new User(array('email' => $email));
+			if($user->login($password)){
 				echo 'Login successful';
 			}
 			else{
@@ -27,6 +27,9 @@ $app->group('/api/v1.0/User', function() use ($app) {
     });
 
 	$app->delete('/logout', function () use ($app){
+		global $USER_ID;
+		$user = new User(array('userId' => $USER_ID));
+		$user->logout();
 		echo "This is the delete function.";
     });
 
@@ -56,8 +59,11 @@ $app->group('/api/v1.0/User', function() use ($app) {
     });
 
 		$app->get('/getUserDetails', function() use ($app){
+			global $USER_ID;
+			$user = new User(array('userId' => $USER_ID));
+			$user->getUserDetails();
 			echo 'This is getUserDetails function';
-		
+
 		});//)->add($MIDDLEWARE_AUTH);
 
 });

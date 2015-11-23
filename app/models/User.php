@@ -77,7 +77,7 @@ class User extends Model implements CRUD{
 			echo 'Currently logged in';
 		else
 			echo'Not currently logged in';
-	
+
 	}
 
 	public function logout(){
@@ -125,18 +125,18 @@ class User extends Model implements CRUD{
 		// Hash the password
 		$this->password = password_hash($this->password, PASSWORD_BCRYPT, array('salt' => $salt));
 		// Prepare sql statement
-		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`) 
+		$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `passwordHash`, `passwordSalt`)
 			VALUES(:email, :name, :password, :salt);");
-		
+
 		$stmt->bindParam(':email', $this->email);
-		$stmt->bindParam(':name', $this->name);	
+		$stmt->bindParam(':name', $this->name);
 
 		$stmt->bindParam(':password', $this->password);
 
 		$stmt->bindParam(':salt', $salt);
 
 		$stmt->execute();
-		
+
 		if($stmt->errorCode() === '00000'){
 			echo 'Account Created.';
 		}
