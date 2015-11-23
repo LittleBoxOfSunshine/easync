@@ -15,8 +15,8 @@ $app->group('/api/v1.0/User', function() use ($app) {
 			echo 'Email and password must be provided...';
 		}
 		else{
-			$user = new User(array('email' => $email, 'password' => $password));
-			if($user->login()){
+			$user = new User(array('email' => $email));
+			if($user->login($password)){
 				echo 'Login successful';
 			}
 			else{

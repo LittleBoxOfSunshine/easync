@@ -37,7 +37,7 @@ abstract class Model{
 				$this->$key = $val;//$this->__set($key, $val); // use magic method __set so that private properties in child may be set
 			// Key is not valid, delagate to malformedArgs()
 			else
-				return $this->malformedArgs("The key $key is not a valid property of class: " + get_class($this), $fromUserInput);
+				return $this->malformedArgs("The key $key is not a valid property of class: " . get_class($this), $fromUserInput);
 		}
 		
 		// Use the provided properties, if none are provided, load all instance properties
@@ -72,13 +72,13 @@ abstract class Model{
 			else{
 				// If the required property was not initialized, delagate to malformedArgs()
 				if(!isset($this->$prop))
-					return $this->malformedArgs("The required property $prop was not initialized for class: " + get_class($this), $fromUserInput);
+					return $this->malformedArgs("The required property {$prop} was not initialized for class: " . get_class($this), $fromUserInput);
 			}
 		}
 		
 		// Delagate error to malformedArgs() if arrays were used and none of them were valid
 		if($hasArrays === true && $hasValidArray === false)
-			$this->malformedArgs('The required properties were not initialized for class: ' + get_class($this) + 'Requirements are:' + var_export($required), $fromUserInput);
+			$this->malformedArgs('The required properties were not initialized for class: ' . get_class($this) . 'Requirements are: ' .  var_export($required, true) , $fromUserInput);
 	}
 	
 	/** 
@@ -109,7 +109,7 @@ abstract class Model{
 			if(property_exists($key, $this))
 				$temp[$key] = [];
 			else
-				malformedArgs("property => $key does not exist" + get_class($this));
+				malformedArgs("property => $key does not exist" . get_class($this));
 		}
 		
 		// Load into the arrays
@@ -129,7 +129,7 @@ abstract class Model{
 			return false;
 		// No error handling signaled, halt code execution and display the given error message
 		else
-			die('ERROR: ' + $errorMessage + ' VAR_DUMP -> ' + var_export($this));
+			die('ERROR: ' . $errorMessage . ' VAR_DUMP -> ' . var_export($this, true));
 	}
 	
 	//
