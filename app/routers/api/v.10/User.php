@@ -69,7 +69,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 	    }
 	    
 	    $test = new GoogleCalendar();
-	    	//$test->getEvents();
+	   	$test->getEvents();
 		
 	});//)->add($MIDDLEWARE_AUTH);
 

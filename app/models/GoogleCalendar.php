@@ -2,8 +2,8 @@
 
 require_once(__DIR__.'/../lib/Model.php');
 require __DIR__ . '/../../vendor/autoload.php';
-
-class GoogleCalendar extends Model{
+//class GoogleCalendar extends Model{
+class GoogleCalendar{
 	const CLIENT_ID = '66468154963-kjvu0u6hohvv59l03d0gr8kcomi4pggd.apps.googleusercontent.com';
 	const CLIENT_SECRET = 'oNwvkqFISBzSjxNeWtZcnrAo';
 	const REDIRECT_URI = 'http://easync.com/api/v1.0/User/addGoogleCal';
@@ -20,21 +20,23 @@ class GoogleCalendar extends Model{
 	    $args = array_merge(array(
 	    	'calID' => self::PLATFORM_ID
 	    ), $args);
-
+/*
 	    parent::__construct($args,
 			array(
 				'userID',
 				'calID' //NOTE: assign default of *
 			)
 		);
-		
+*/
+	    echo "hi";
 		$this->client = self::makeGoogleClient();
+/*
 		// Refresh the token if it's expired.
 		if($this->client->isAccessTokenExpired()) {
 			$this->client->refreshToken($this->client->getRefreshToken());
 			//save the token!
 		}
-
+*/
 		$this->calendarList = new Google_Service_Calendar($this->client);   
 
 
