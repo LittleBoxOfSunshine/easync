@@ -6,7 +6,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->get('/home', $AUTH_MIDDLEWARE(), function () use ($app){
 		echo "This is the home function.";
     });
-
+	
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
 		$password = $app->request->post('password');
@@ -61,4 +61,28 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo 'This is getUserDetails function';
 
 	});
+		
+	$app->get('/getContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+
+		$stmt = Database::prepareAssoc("SELECT `contactEmail` FROM `Contacts` WHERE `userID`=:userID;");
+		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
+		$stmt->execute();	
+
+	});
+	
+	$app->get('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+		
+		$userID = $app->request()->post('userID');
+		$contacts = $app->request()->post('contacts');
+
+		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, ':contactEmail');");
+		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
+		
+		foreach($contacts as $contact){
+			$stmt->bindParam(':contactEmail', $contact);
+			$stmt->execute();
+		}
+
+	});		
+		
 });

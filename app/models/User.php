@@ -106,16 +106,48 @@ class User extends Model implements CRUD{
 	}
 
 	public function revokeAuthToken($auth){
-		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=`:auth`;");
+		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=':auth';");
 		$stmt->bindParam(':auth', $auth);
 		$stmt->execute();
+	}
+	
+	public static function authToUserID($authToken){
+		global $USER_ID;
+		
+		if(isset($_SESSION['auth_token']) && $_SESSION['auth_token'] == $authToken && isset($USER_ID)){
+			return $USER_ID;
+		}
+		else{
+			$stmt = Database::prepareAssoc("SELECT userID FROM Auth_Token WHERE `auth_token`=':auth';");
+			$stmt->bindParam(':auth', $auth);
+			$stmt->execute();
+			$ret = $stmt->fetch();
+			return $ret['userID'];
+		}
+	}
+	
+	public static function emailToUser($email){
+		$stmt = Database::perepareAssoc("SELECT userID FROM User WHERE email=:email;");
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
+		$ret = $stmt->fetch();
+		return $ret['userId'];
+	}
+	
+	public static function userToEmail($userID){
+		$stmt = Database::perepareAssoc("SELECT email FROM User WHERE userID=:userID;");
+		$stmt->bindParam(':userID', $userID);
+		$stmt->execute();
+		$ret = $stmt->fetch();
+		return $ret['email'];
 	}
 
 	public function exists(){
 			$stmt = Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=':email'", $this->getBinding());
 			$stmt->bindParam(':email', $this->email);
 			$stmt->execute();
-			return $stmt->fetch() !== false;
+			$ret = $stmt->fetch();
+			return $ret['email'] !== false;
 	}
 
 	public function register($password){
