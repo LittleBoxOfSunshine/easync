@@ -3,7 +3,6 @@
 require_once(__DIR__.'/../lib/Model.php');
 require __DIR__ . '/../../vendor/autoload.php';
 class GoogleCalendar extends Model{
-//class GoogleCalendar{
 	const CLIENT_ID = '66468154963-kjvu0u6hohvv59l03d0gr8kcomi4pggd.apps.googleusercontent.com';
 	const CLIENT_SECRET = 'oNwvkqFISBzSjxNeWtZcnrAo';
 	const REDIRECT_URI = 'http://easync.com/api/v1.0/User/addGoogleCal';
@@ -24,19 +23,22 @@ class GoogleCalendar extends Model{
 	    parent::__construct($args,
 			array(
 				'userID',
-				'calID' //NOTE: assign default of *
+				'calID'
 			)
 		);
 
-	    echo "hi";
+	    
 		$this->client = self::makeGoogleClient();
-/*
+
 		// Refresh the token if it's expired.
 		if($this->client->isAccessTokenExpired()) {
-			$this->client->refreshToken($this->client->getRefreshToken());
+			$refresh = $this->client->getRefreshToken();
+			$this->client->refreshToken($refresh);
 			//save the token!
+			$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`='$refresh' WHERE userID=:userID AND platformID=:platformID");
+			$stmt->execute();
 		}
-*/
+
 		$this->calendarList = new Google_Service_Calendar($this->client);   
 
 
@@ -52,8 +54,12 @@ class GoogleCalendar extends Model{
 
 	    $client->setScopes(array('https://www.googleapis.com/auth/calendar'));
 
-	    if( isset($_SESSION['token']) ){
-	    	$client->setAccessToken($_SESSION['token']);
+	    $stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+		$stmt->execute();
+		$calToken = $stmt->fetch();
+
+	    if( count($calToken) > 0 ){
+	    	$client->setAccessToken($calToken['token']);
 	    }
 
 	    return $client;
@@ -64,22 +70,19 @@ class GoogleCalendar extends Model{
  		$app->redirect($authUrl);
 	}
 	
-	public static function acceptAccess($app){
+	public static function acceptAccess(){
 		$client = self::makeGoogleClient();
-		//if (!isset($_GET['code']))
 			$client->authenticate($_GET['code']);  
-		$_SESSION['token'] = $client->getAccessToken();
-/*
-		$stmt = Database::prepareAssoc("SELECT * FROM `User` WHERE token=:token");
+
+		$token= $client->getAccessToken();
+
+		$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`='$token' WHERE userID=:userID AND platformID=:platformID");
 		$stmt->execute();
-		var_dump($stmt->fetch());
-	*/
+
 	}
 
 
 	public function getEvents(){
-		echo "getEvents";
-
 		    $calendarList  = $this->calendarList->calendarList->listCalendarList();
 				  while(true) {
 				      foreach ($calendarList->getItems() as $calendarListEntry) {

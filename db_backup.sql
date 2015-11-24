@@ -257,7 +257,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `Tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Tokens` (
+CREATE TABLE `Auth_Token` (
   `auth_token` int(11) DEFAULT NULL,
   `userID` int(11) DEFAULT NULL,
   PRIMARY KEY (`userID`,`auth_token`),

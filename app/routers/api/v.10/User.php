@@ -56,15 +56,18 @@ $app->group('/api/v1.0/User', function() use ($app) {
     });
 
     $app->get('/addGoogleCal', function () use ($app){
+    	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+		$stmt->execute();
+		$calToken = $stmt->fetch();
 
-	    if (!isset($_SESSION['token'])) {
+	    if ( count($calToken) == 0 ) {
 	    	// Step 1:  The user has not authenticated - redirect them  
 		    if (!isset($_GET['code'])) {
 		    	GoogleCalendar::requestAccess($app);
 		    }
 		    // Step 2: The user accepted your access now you need to exchange it.
 		    else{
-		    	GoogleCalendar::acceptAccess($app);
+		    	GoogleCalendar::acceptAccess();
 		    }
 	    }
 	    
