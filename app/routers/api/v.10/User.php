@@ -66,24 +66,45 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	});
 		
 	$app->get('/getContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
 
 		$stmt = Database::prepareAssoc("SELECT `contactEmail` FROM `Contacts` WHERE `userID`=:userID;");
-		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
-		$stmt->execute();	
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+		
+		$data = [];
+		while($row = $stmt->fetch())
+			$data[] = $row['contactEmail'];
+		
+		echo json_encode($data);	
 
 	});
 	
-	$app->get('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$contacts = json_decode($app->request()->getBody());
+		$contacts = $contacts->emails;
 		
-		$userID = $app->request()->post('userID');
-		$contacts = $app->request()->post('contacts');
+		Database::beginTransaction();
 
-		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, ':contactEmail');");
-		$stmt->bindParam(':userID', User::authToUserID($_SESSION['token']));
+		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, :contactEmail);");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':contactEmail', $contact);
 		
-		foreach($contacts as $contact){
-			$stmt->bindParam(':contactEmail', $contact);
+		foreach($contacts as $contact)
 			$stmt->execute();
+			
+		Database::commit();
+		
+		if($stmt->errorCode() === '00000'){
+			echo 'Contacts Added';
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'WARNING: These contacts already exist...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
 		}
 
 	});		

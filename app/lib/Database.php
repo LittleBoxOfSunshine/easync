@@ -11,7 +11,7 @@ class Database{
 		try {
 			self::$connection = new PDO('mysql:host=54.69.194.54;dbname=easync', 'easync', 'crayaladb15');
 			self::$connection->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT );
-			self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			//self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} catch(PDOException $e) {
 			echo 'ERROR: ' . $e->getMessage();
 			die();
@@ -66,4 +66,17 @@ class Database{
 			die('ERROR: No connection to get lastInsertId from...');
 	}
 
+	public static function beginTransaction(){
+		if(!isset(self::$connection))
+			self::init();
+		
+		self::$connection->beginTransaction();
+	}
+	
+	public static function commit(){
+		if(isset(self::$connection))
+			self::$connection->commit();
+		else
+			die('ERROR: No connection to commit with...');
+	}
 }
