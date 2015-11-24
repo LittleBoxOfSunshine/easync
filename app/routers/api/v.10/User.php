@@ -1,11 +1,11 @@
 <?php
 
 // This is the user Controller, so define it as group User
-$app->group('/api/v1.0/User', function() use ($app) {
+$app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
-	$app->get('/home', function () use ($app){
+	$app->get('/home', $AUTH_MIDDLEWARE(), function () use ($app){
 		echo "This is the home function.";
-    });//)->add($MIDDLEWARE_AUTH);
+    });
 
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
@@ -16,7 +16,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 		}
 		else{
 			$user = new User(array('email' => $email));
-			if($user->login($password)){
+			if($user->login($password) === true){
 				echo 'Login successful';
 			}
 			else{
@@ -26,7 +26,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 
     });
 
-	$app->delete('/logout', function () use ($app){
+	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
 		$user = new User(array('userId' => $USER_ID));
 		$user->logout();
@@ -49,21 +49,16 @@ $app->group('/api/v1.0/User', function() use ($app) {
 			echo 'user is malformed';
 		}
 		else{
-			//if(!$user->exists()){
-				$user->register($password);
-			//}
-			//else
-				//echo "ERROR: the email $email is already registered...";
+			$user->register($password);
 		}
 
     });
 
-		$app->get('/getUserDetails', function() use ($app){
-			global $USER_ID;
-			$user = new User(array('userId' => $USER_ID));
-			$user->getUserDetails();
-			echo 'This is getUserDetails function';
+	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$user = new User(array('userId' => $USER_ID));
+		$user->getUserDetails();
+		echo 'This is getUserDetails function';
 
-		});//)->add($MIDDLEWARE_AUTH);
-
+	});
 });

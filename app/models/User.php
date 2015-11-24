@@ -27,19 +27,23 @@ class User extends Model implements CRUD{
 		}
 		else{
 			// Load the user's salt from the database
-			$stmt = Database::prepareAssoc("SELECT `passwordHash`, `passwordSalt` FROM User WHERE `email`=':email';");
+			$stmt = Database::prepareAssoc("SELECT `passwordHash`, `passwordSalt`, `userID` FROM User WHERE `email`=:email;");
+			$stmt->bindParam(':email', $this->email);
 			$stmt->execute();
 
 			// Try to load the data
 			if($data = $stmt->fetch()){
 				// Hash the password
 				$options = array('salt' => $data['passwordSalt']);
-				$_SESSION['auth_token'] = $this->createAuthToken();
-				return strcmp(password_hash($password, PASSWORD_BCRYPT, $options), $data['passwordHash']) == 0;
+				$this->userID = $data['userID'];
+				
+				if(strcmp(password_hash($password, PASSWORD_BCRYPT, $options), $data['passwordHash']) === 0){
+					$_SESSION['auth_token'] = $this->createAuthToken();
+					return true;
+				}
 			}
-			else{
-				return false;
-			}
+			
+			return false;
 		}
 	}
 
@@ -93,9 +97,10 @@ class User extends Model implements CRUD{
 	}
 
 	public function createAuthToken(){
-		$token = bin2hex(random_bytes(5));
+		$token = bin2hex(openssl_random_pseudo_bytes(32));
 		$stmt = Database::prepareAssoc("INSERT INTO Auth_Token (`auth_token`, `userID`) VALUES(:token, :userID);");
 		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $this->userID);
 		$stmt->execute();
 		return $token;
 	}
@@ -108,6 +113,7 @@ class User extends Model implements CRUD{
 
 	public function exists(){
 			$stmt = Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=':email'", $this->getBinding());
+			$stmt->bindParam(':email', $this->email);
 			$stmt->execute();
 			return $stmt->fetch() !== false;
 	}
