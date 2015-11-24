@@ -2,5 +2,5 @@
 
 *.swp
 
-/.vagrant
-/.vscode
+.vagrant
+.vscode
