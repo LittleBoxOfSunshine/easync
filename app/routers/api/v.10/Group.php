@@ -1,9 +1,9 @@
 <?php
 
 // This is the group Controller, so define it as group Group
-$app->group('/api/v1.0/Group', function() use ($app) {
+$app->group('/api/v1.0/Group', function() use ($app, $AUTH_MIDDLEWARE) {
 	
-	$app->post('/createGroup', function() use ($app){
+	$app->post('/createGroup', $AUTH_MIDDLEWARE(), function() use ($app){
 		$emails = $app->request()->post('emails');
 		$groupName = $app->request()->post('groupName');
 		
@@ -23,6 +23,6 @@ $app->group('/api/v1.0/Group', function() use ($app) {
 			$stmt->execute();	
 		}
 		
-	})->add(new Authentication());
+	});
 	
 });

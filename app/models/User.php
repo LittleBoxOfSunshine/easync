@@ -86,7 +86,7 @@ class User extends Model implements CRUD{
 
 	public function logout(){
 		if(isset($_SESSION['auth_token'])){
-			revokeAuthToken($_SESSION['auth_token']);
+			$this->revokeAuthToken($_SESSION['auth_token']);
 			unset($_SESSION['auth_token']);
 			echo 'Logout completed';
 		}
@@ -106,7 +106,7 @@ class User extends Model implements CRUD{
 	}
 
 	public function revokeAuthToken($auth){
-		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=':auth';");
+		$stmt = Database::prepareAssoc("DELETE FROM Auth_Token WHERE `auth_token`=:auth;");
 		$stmt->bindParam(':auth', $auth);
 		$stmt->execute();
 	}
@@ -118,7 +118,7 @@ class User extends Model implements CRUD{
 			return $USER_ID;
 		}
 		else{
-			$stmt = Database::prepareAssoc("SELECT userID FROM Auth_Token WHERE `auth_token`=':auth';");
+			$stmt = Database::prepareAssoc("SELECT userID FROM Auth_Token WHERE `auth_token`=:auth;");
 			$stmt->bindParam(':auth', $auth);
 			$stmt->execute();
 			$ret = $stmt->fetch();

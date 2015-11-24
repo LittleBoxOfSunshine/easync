@@ -16,6 +16,10 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 		else{
 			$user = new User(array('email' => $email));
+			
+			if(isset($_SESSION['auth_token']))
+				$user->revokeAuthToken($_SESSION['auth_token']);
+			
 			if($user->login($password) === true){
 				echo 'Login successful';
 			}
@@ -28,9 +32,8 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
-		$user = new User(array('userId' => $USER_ID));
+		$user = new User(array('userID' => $USER_ID));
 		$user->logout();
-		echo "This is the delete function.";
     });
 
 	$app->post('/register', function () use ($app){

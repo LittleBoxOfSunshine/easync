@@ -46,9 +46,15 @@ require_once __DIR__.'/lib/Database.php';
 
 $AUTH_MIDDLEWARE = function () use ($app){
     
-    return function () use ($app) {
+    global $USER_ID;
     
-        $stmt = Database::prepareAssoc("SELECT uid FROM `Auth_Token` WHERE `auth_token`=:authToken");
+    return function () use ($app) {
+        global $USER_ID;
+        // This only needs to run once
+        if($USER_ID != NULL)
+            return;
+            
+        $stmt = Database::prepareAssoc("SELECT userID FROM `Auth_Token` WHERE `auth_token`=:authToken");
         
         $error403 = function () use ($app){
             $app->halt(403, 'ERROR: You must be authenticated to use this api route...');
@@ -56,19 +62,16 @@ $AUTH_MIDDLEWARE = function () use ($app){
         
         if(!isset($_SESSION['auth_token']))
             $error403();
-            
+
         $stmt->bindParam(':authToken', $_SESSION['auth_token']);
         $stmt->execute();
             
-        $row = $stmt->fetch();
-            
-        if(count($row) == 0){
-            $error403();
+        if($row = $stmt->fetch()){
+            // Define userID global
+            $USER_ID = $row['userID'];
         }
         else{
-            // Define userID global
-            global $USER_ID;
-            $USER_ID = $row['uid'];            
+            $error403();
         }
     };
     
