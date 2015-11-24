@@ -84,7 +84,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$contacts = json_decode($app->request()->getBody());
-		$contacts = $contacts->emails;
 		
 		Database::beginTransaction();
 
