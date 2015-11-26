@@ -112,6 +112,15 @@ class Authentication extends SlimMiddleware{
     }
 }
 */
+
+/*
+    Import lib
+*/
+$routers = rglob(__DIR__.'/lib/*');
+foreach($routers as $router){
+    if(!is_dir($router))
+        require_once $router;		
+}
     
 /*
     Define routes

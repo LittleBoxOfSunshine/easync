@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__.'/../lib/Model.php';
-require_once __DIR__.'/../lib/Database.php';
-
 class User extends Model implements CRUD{
 
 	protected $email;
@@ -127,15 +124,34 @@ class User extends Model implements CRUD{
 	}
 	
 	public static function emailToUser($email){
-		$stmt = Database::perepareAssoc("SELECT userID FROM User WHERE email=:email;");
-		$stmt->bindParam(':email', $email);
-		$stmt->execute();
-		$ret = $stmt->fetch();
-		return $ret['userId'];
+		if(is_array($email)){
+			Database::beginTransaction();
+			$stmt = Database::prepareAssoc("SELECT userID FROM User WHERE email=:email;");
+			$stmt->bindParam(':email', $e);
+			
+			foreach($email as $e)
+				$stmt->execute();
+			
+			Database::commit();
+			
+			$data = [];
+			while($row = $stmt->fetch())
+				$data[] = $row['userID'];
+				
+			return $data;
+			
+		}
+		else{
+			$stmt = Database::prepareAssoc("SELECT userID FROM User WHERE email=:email;");
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+			$ret = $stmt->fetch();
+			return $ret['userId'];
+		}
 	}
 	
 	public static function userToEmail($userID){
-		$stmt = Database::perepareAssoc("SELECT email FROM User WHERE userID=:userID;");
+		$stmt = Database::prepareAssoc("SELECT email FROM User WHERE userID=:userID;");
 		$stmt->bindParam(':userID', $userID);
 		$stmt->execute();
 		$ret = $stmt->fetch();
@@ -143,7 +159,7 @@ class User extends Model implements CRUD{
 	}
 
 	public function exists(){
-			$stmt = Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=':email'", $this->getBinding());
+			$stmt = Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=:email", $this->getBinding());
 			$stmt->bindParam(':email', $this->email);
 			$stmt->execute();
 			$ret = $stmt->fetch();
