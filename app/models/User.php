@@ -124,6 +124,7 @@ class User extends Model implements CRUD{
 	}
 	
 	public static function emailToUser($email){
+		/*var_dump($email);
 		if(is_array($email)){
 			Database::beginTransaction();
 			$stmt = Database::prepareAssoc("SELECT userID FROM User WHERE email=:email;");
@@ -135,19 +136,20 @@ class User extends Model implements CRUD{
 			Database::commit();
 			
 			$data = [];
-			while($row = $stmt->fetch())
-				$data[] = $row['userID'];
+			while($stmt->nextRowset())
+				while($row = $stmt->fetch())
+					$data[] = $row['userID'];
 				
 			return $data;
 			
 		}
-		else{
+		else{*/
 			$stmt = Database::prepareAssoc("SELECT userID FROM User WHERE email=:email;");
 			$stmt->bindParam(':email', $email);
 			$stmt->execute();
 			$ret = $stmt->fetch();
-			return $ret['userId'];
-		}
+			return $ret['userID'];
+		//}
 	}
 	
 	public static function userToEmail($userID){
