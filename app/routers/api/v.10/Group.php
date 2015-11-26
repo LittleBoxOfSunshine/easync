@@ -7,6 +7,11 @@ $app->group('/api/v1.0/Group', function() use ($app, $AUTH_MIDDLEWARE) {
 		global $USER_ID;
 		$input = json_decode($app->request()->getBody());
 		
+		if(!isset($input->groupName) || !isset($input->emails)){
+			echo 'ERROR: Malformed data...';
+			return;
+		}
+		
 		// Create the group details (name and date?)
 		$stmt = Database::prepareAssoc("INSERT INTO GroupDetails (`creatorUserID`, `name`) VALUES (:creatorID, :name);");
 		$stmt->bindParam(':creatorID', $USER_ID);

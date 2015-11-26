@@ -31,7 +31,7 @@ $app = new \Slim\Slim(array(
 
 // Enable client side sessions
 $app->add(new \Slim\Middleware\SessionCookie(array(
-    'expires' => '20 minutes',
+    'expires' => '30 days',
     'path' => '/',
     'domain' => null,
     'secure' => false,

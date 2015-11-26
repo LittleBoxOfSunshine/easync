@@ -77,6 +77,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
 		
+		//This query should be used to convert group names to userID lists	
+		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
+		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+		
+		while($row = $stmt->fetch())
+			$data[] = $row['name'];
+		
 		echo json_encode($data);	
 
 	});
