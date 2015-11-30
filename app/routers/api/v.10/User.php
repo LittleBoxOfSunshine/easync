@@ -1,11 +1,11 @@
 <?php
 
 // This is the user Controller, so define it as group User
-$app->group('/api/v1.0/User', function() use ($app) {
+$app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
-	$app->get('/home', function () use ($app){
+	$app->get('/home', $AUTH_MIDDLEWARE(), function () use ($app){
 		echo "This is the home function.";
-    });//)->add($MIDDLEWARE_AUTH);
+    });
 
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
@@ -55,7 +55,7 @@ $app->group('/api/v1.0/User', function() use ($app) {
 
     });
 
-    $app->get('/addGoogleCal', function () use ($app){
+    $app->get('/addGoogleCal', $AUTH_MIDDLEWARE(), function () use ($app){
     	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
 		$stmt->execute();
 		$calToken = $stmt->fetch();
@@ -74,14 +74,14 @@ $app->group('/api/v1.0/User', function() use ($app) {
 	    $test = new GoogleCalendar();
 	   	$test->getEvents();
 		
-	});//)->add($MIDDLEWARE_AUTH);
+	});
 
 	$app->get('/getSettings', function () use ($app){
 		
 	});
 
-	$app->get('/getUserDetails', function() use ($app){
+	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
 		echo 'This is getUserDetails function';
 	
-	});//)->add($MIDDLEWARE_AUTH);
+	});
 });
