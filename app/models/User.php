@@ -45,13 +45,10 @@ class User extends Model implements CRUD{
 	}
 
 	public function getUserDetails(){
-		$stmt = Database::prepareAssoc("SELECT * FROM `User` WHERE `userID`=:userID;");
+		$stmt = Database::prepareAssoc("SELECT `name`,`email`,`phoneNumber`,`avatar` FROM `User` WHERE `userID`=:userID;");
 		$stmt->bindParam(':userID', $this->userID);
 		$stmt->execute();
-		$data = [];
-		while($row = $stmt->fetch()) {
-			$data[] = $row;
-		}
+		$data = $stmt->fetch();
 
 		echo json_encode($data);
 
@@ -170,11 +167,14 @@ class User extends Model implements CRUD{
 	}
 
 	public function exists(){
-			$stmt = Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=:email", $this->getBinding());
-			$stmt->bindParam(':email', $this->email);
+			$stmt = Database::prepareAssoc("SELECT `email` FROM `User` WHERE `userID`=:userID;");
+			$stmt->bindParam(':userID', $this->userID);
 			$stmt->execute();
-			$ret = $stmt->fetch();
-			return $ret['email'] !== false;
+			if($stmt->fetch())
+				return true;
+			else
+				return false;
+
 	}
 
 	public function register($password){

@@ -57,12 +57,19 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
+	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		$user = new User(array('userID' => $USER_ID));
+		echo json_encode($user->exists());
+
+	});
+
 	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
-		$user = new User(array('userId' => $USER_ID));
+		$app->response->headers->set('Content-Type', 'application/json');
+		$user = new User(array('userID' => $USER_ID));
 		$user->getUserDetails();
-		echo 'This is getUserDetails function';
-
 	});
 
 	$app->get('/getContacts', $AUTH_MIDDLEWARE(), function() use ($app){
