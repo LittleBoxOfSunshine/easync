@@ -115,6 +115,25 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'A MySQL error has occurred.';
 		}
 
-	});		
+	});
+	
+	$app->post('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;	
+		$app->response->headers->set('Content-Type', 'application/json');
 		
+		
+	});
+		
+	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		
+		if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}
+		
+		$data = $app->request()->getBody();
+				
+	});
+	
 });
