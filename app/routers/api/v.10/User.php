@@ -6,7 +6,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->get('/home', $AUTH_MIDDLEWARE(), function () use ($app){
 		echo "This is the home function.";
     });
-	
+
 	$app->post('/login', function () use ($app){
 		$email = $app->request->post('email');
 		$password = $app->request->post('password');
@@ -16,10 +16,10 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 		else{
 			$user = new User(array('email' => $email));
-			
+
 			if(isset($_SESSION['auth_token']))
 				$user->revokeAuthToken($_SESSION['auth_token']);
-			
+
 			if($user->login($password) === true){
 				echo 'Login successful';
 			}
@@ -64,7 +64,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo 'This is getUserDetails function';
 
 	});
-		
+
 	$app->get('/getContacts', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
@@ -72,39 +72,39 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$stmt = Database::prepareAssoc("SELECT `contactEmail` FROM `Contacts` WHERE `userID`=:userID;");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		
+
 		$data = [];
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
-		
-		//This query should be used to convert group names to userID lists	
+
+		//This query should be used to convert group names to userID lists
 		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
 		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		
+
 		while($row = $stmt->fetch())
 			$data[] = $row['name'];
-		
-		echo json_encode($data);	
+
+		echo json_encode($data);
 
 	});
-	
+
 	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$contacts = json_decode($app->request()->getBody());
-		
+
 		Database::beginTransaction();
 
 		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, :contactEmail);");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':contactEmail', $contact);
-		
+
 		foreach($contacts as $contact)
 			$stmt->execute();
-			
+
 		Database::commit();
-		
+
 		if($stmt->errorCode() === '00000'){
 			echo 'Contacts Added';
 		}
@@ -115,6 +115,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'A MySQL error has occurred.';
 		}
 
-	});		
-		
+	});
+
 });
