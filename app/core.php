@@ -148,6 +148,8 @@ foreach($routers as $router){
 $app->get('/', function () use ($app){
 	echo file_get_contents(__DIR__.'/../public/index.html');
 });
+
+$app->response->headers->set('Access-Control-Allow-Origin', 'http://localhost');
         
 // Start the application
 $app->run();
