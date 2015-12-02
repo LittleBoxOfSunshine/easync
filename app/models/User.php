@@ -33,18 +33,24 @@ class User extends Model implements CRUD{
 				// Hash the password
 				$options = array('salt' => $data['passwordSalt']);
 				$this->userID = $data['userID'];
-				
+
 				if(strcmp(password_hash($password, PASSWORD_BCRYPT, $options), $data['passwordHash']) === 0){
 					$_SESSION['auth_token'] = $this->createAuthToken();
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
 	}
 
 	public function getUserDetails(){
+		$stmt = Database::prepareAssoc("SELECT `name`,`email`,`phoneNumber`,`avatar` FROM `User` WHERE `userID`=:userID;");
+		$stmt->bindParam(':userID', $this->userID);
+		$stmt->execute();
+		$data = $stmt->fetch();
+
+		echo json_encode($data);
 
 	}
 
@@ -107,10 +113,10 @@ class User extends Model implements CRUD{
 		$stmt->bindParam(':auth', $auth);
 		$stmt->execute();
 	}
-	
+
 	public static function authToUserID($authToken){
 		global $USER_ID;
-		
+
 		if(isset($_SESSION['auth_token']) && $_SESSION['auth_token'] == $authToken && isset($USER_ID)){
 			return $USER_ID;
 		}
@@ -122,26 +128,26 @@ class User extends Model implements CRUD{
 			return $ret['userID'];
 		}
 	}
-	
+
 	public static function emailToUser($email){
 		/*var_dump($email);
 		if(is_array($email)){
 			Database::beginTransaction();
 			$stmt = Database::prepareAssoc("SELECT userID FROM User WHERE email=:email;");
 			$stmt->bindParam(':email', $e);
-			
+
 			foreach($email as $e)
 				$stmt->execute();
-			
+
 			Database::commit();
-			
+
 			$data = [];
 			while($stmt->nextRowset())
 				while($row = $stmt->fetch())
 					$data[] = $row['userID'];
-				
+
 			return $data;
-			
+
 		}
 		else{*/
 			$stmt = Database::prepareAssoc("SELECT userID FROM User WHERE email=:email;");
@@ -151,7 +157,7 @@ class User extends Model implements CRUD{
 			return $ret['userID'];
 		//}
 	}
-	
+
 	public static function userToEmail($userID){
 		$stmt = Database::prepareAssoc("SELECT email FROM User WHERE userID=:userID;");
 		$stmt->bindParam(':userID', $userID);
@@ -161,11 +167,14 @@ class User extends Model implements CRUD{
 	}
 
 	public function exists(){
-			$stmt = Database::prepareAssoc("SELECT `email` FROM User WHERE `email`=:email", $this->getBinding());
-			$stmt->bindParam(':email', $this->email);
+			$stmt = Database::prepareAssoc("SELECT `email` FROM `User` WHERE `userID`=:userID;");
+			$stmt->bindParam(':userID', $this->userID);
 			$stmt->execute();
-			$ret = $stmt->fetch();
-			return $ret['email'] !== false;
+			if($stmt->fetch())
+				return true;
+			else
+				return false;
+
 	}
 
 	public function register($password){
