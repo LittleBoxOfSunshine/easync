@@ -4,8 +4,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 	
 	//for giving list of meeting possibilities
 	$app->post('/planMeeting', $AUTH_MIDDLEWARE(), function () use ($app){
-		$foo = json_decode($app->request()->getBody());
-		$foo = $foo->bar;
 		
 		/*
 
@@ -20,7 +18,9 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			all attendees required(bool)
 
 		output: array of the ranges, sorted by rank;# of people can't attend each one
+		*/
 
+		/*
 		steps: (a lot of these will be combined/moved)
 			copy emails, prune those w/out googlecal acess
 			load any tokens, construct any API objects
@@ -33,8 +33,19 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			diff, rank by max #tendies
 			give top options or failure if no optoins exist (store copy of results in session)
 			
-
 		*/
+
+		$users = json_decode($app->request()->getBody());
+		$emails = $users->emails;
+
+		//get non null googAuthToken from user, get calId with token from CalendarTokens
+		/*
+
+		$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+		$stmt->execute();
+		$calToken = $stmt->fetch();
+		*/
+
 	});
 
 	//if exists, update rather than insert
