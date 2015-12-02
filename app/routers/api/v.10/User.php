@@ -60,18 +60,29 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
+
 		$email = $app->request->get('email');
 		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();
-		
+
 		$dat = $stmt->fetch();
-		
+
 		if($dat !== false)
 			echo json_encode(true);
 		else
 			echo json_encode(false);
+	});
+
+	$app->post('/nearbyInIt', function () use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		$meetingID = uniqid();
+		$stmt = Database::prepareAssoc("INSERT INTO MeetingDetails `meetingID` VALUES :meetingID;");
+		$stmt->bindParam(':meetingID', $meetingID);
+		$stmt->execute();
+		echo json_encode($meetingID);
+
 	});
 
 	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -132,23 +143,23 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
-	
+
 	$app->post('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
-		global $USER_ID;	
+		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
-		
+
+
 	});
-		
+
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
-		
+
 		if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
 		}
-		
+
 		$data = $app->request()->getBody();
-				
+
 	});
 });
