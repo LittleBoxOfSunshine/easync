@@ -35,8 +35,27 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			
 		*/
 
-		$users = json_decode($app->request()->getBody());
-		$emails = $users->emails;
+		//$users = json_decode($app->request()->getBody());
+		//$emails = $users->emails;
+
+		$json = '{
+		  "emails": [
+		    "smitheric95@gmail.com",
+		    "cahenk95@gmail.com"
+		  ],
+		  "length": "P3H",
+		  "dayEnd": "09:00:00",
+		  "dayStart": "17:00:00",
+		  "allRequired": false,
+		  "EventDetails": {
+		    "startTime": "11:00:00",
+		    "endTime": "12:00:00",
+		    "name": "Test Meeting",
+		    "creatorUserID": "999999",
+		    "timeZone": "America/Chicago"
+		  }
+		}';
+		$result = json_decode ($json);		
 
 		//get non null googAuthToken from user, get calId with token from CalendarTokens
 		/*
