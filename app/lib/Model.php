@@ -78,11 +78,7 @@ abstract class Model{
 		
 		// Delagate error to malformedArgs() if arrays were used and none of them were valid
 		if($hasArrays === true && $hasValidArray === false)
-<<<<<<< HEAD
-			$this->malformedArgs('The required properties were not initialized for class: ' . get_class($this) . 'Requirements are: ' .  var_export($required, true) , $fromUserInput);
-=======
 			$this->malformedArgs('The required properties were not initialized for class: ' . get_class($this) . ' requirements are: ' .  var_export($required, true) , $fromUserInput);
->>>>>>> origin/backend
 	}
 	
 	/** 

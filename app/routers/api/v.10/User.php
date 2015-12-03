@@ -16,15 +16,11 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 		else{
 			$user = new User(array('email' => $email));
-<<<<<<< HEAD
-			if($user->login($password)){
-=======
 
 			if(isset($_SESSION['auth_token']))
 				$user->revokeAuthToken($_SESSION['auth_token']);
 
 			if($user->login($password) === true){
->>>>>>> origin/backend
 				echo 'Login successful';
 			}
 			else{
@@ -61,7 +57,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
-<<<<<<< HEAD
     $app->get('/addGoogleCal', $AUTH_MIDDLEWARE(), function () use ($app){
     	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
 		$stmt->execute();
@@ -83,14 +78,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		
 	});
 
-	$app->get('/getSettings', function () use ($app){
-		
-	});
-
-	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
-		echo 'This is getUserDetails function';
-	
-=======
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
@@ -184,6 +171,5 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		
 		$data = $app->request()->getBody();
 				
->>>>>>> origin/backend
 	});
 });
