@@ -16,7 +16,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 		else{
 			$user = new User(array('email' => $email));
+<<<<<<< HEAD
 			if($user->login($password)){
+=======
+
+			if(isset($_SESSION['auth_token']))
+				$user->revokeAuthToken($_SESSION['auth_token']);
+
+			if($user->login($password) === true){
+>>>>>>> origin/backend
 				echo 'Login successful';
 			}
 			else{
@@ -26,8 +34,10 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
-	$app->delete('/logout', function () use ($app){
-		echo "This is the delete function.";
+	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$user = new User(array('userID' => $USER_ID));
+		$user->logout();
     });
 
 	$app->post('/register', function () use ($app){
@@ -46,15 +56,12 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'user is malformed';
 		}
 		else{
-			//if(!$user->exists()){
-				$user->register($password);
-			//}
-			//else
-				//echo "ERROR: the email $email is already registered...";
+			$user->register($password);
 		}
 
     });
 
+<<<<<<< HEAD
     $app->get('/addGoogleCal', $AUTH_MIDDLEWARE(), function () use ($app){
     	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
 		$stmt->execute();
@@ -83,5 +90,100 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
 		echo 'This is getUserDetails function';
 	
+=======
+	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		
+		$email = $app->request->get('email');
+		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
+		
+		$dat = $stmt->fetch();
+		
+		if($dat !== false)
+			echo json_encode(true);
+		else
+			echo json_encode(false);
+	});
+
+	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		$user = new User(array('userID' => $USER_ID));
+		$user->getUserDetails();
+	});
+
+	$app->get('/getContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		$stmt = Database::prepareAssoc("SELECT `contactEmail` FROM `Contacts` WHERE `userID`=:userID;");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		$data = [];
+		while($row = $stmt->fetch())
+			$data[] = $row['contactEmail'];
+
+		//This query should be used to convert group names to userID lists
+		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
+		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		while($row = $stmt->fetch())
+			$data[] = $row['name'];
+
+		echo json_encode($data);
+
+	});
+
+	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$contacts = json_decode($app->request()->getBody());
+
+		Database::beginTransaction();
+
+		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, :contactEmail);");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':contactEmail', $contact);
+
+		foreach($contacts as $contact)
+			$stmt->execute();
+
+		Database::commit();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Contacts Added';
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'WARNING: These contacts already exist...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
+		}
+
+	});
+	
+	$app->post('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;	
+		$app->response->headers->set('Content-Type', 'application/json');
+		
+		
+	});
+		
+	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		
+		if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}
+		
+		$data = $app->request()->getBody();
+				
+>>>>>>> origin/backend
 	});
 });

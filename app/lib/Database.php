@@ -66,4 +66,17 @@ class Database{
 			die('ERROR: No connection to get lastInsertId from...');
 	}
 
+	public static function beginTransaction(){
+		if(!isset(self::$connection))
+			self::init();
+		
+		self::$connection->beginTransaction();
+	}
+	
+	public static function commit(){
+		if(isset(self::$connection))
+			self::$connection->commit();
+		else
+			die('ERROR: No connection to commit with...');
+	}
 }

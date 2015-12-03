@@ -69,7 +69,7 @@ abstract class Model{
 					$hasValidArray = true;
 			}
 			// Only one valid required pattern exists
-			else{
+			else if(!is_array($prop)){
 				// If the required property was not initialized, delagate to malformedArgs()
 				if(!isset($this->$prop))
 					return $this->malformedArgs("The required property {$prop} was not initialized for class: " . get_class($this), $fromUserInput);
@@ -78,7 +78,11 @@ abstract class Model{
 		
 		// Delagate error to malformedArgs() if arrays were used and none of them were valid
 		if($hasArrays === true && $hasValidArray === false)
+<<<<<<< HEAD
 			$this->malformedArgs('The required properties were not initialized for class: ' . get_class($this) . 'Requirements are: ' .  var_export($required, true) , $fromUserInput);
+=======
+			$this->malformedArgs('The required properties were not initialized for class: ' . get_class($this) . ' requirements are: ' .  var_export($required, true) , $fromUserInput);
+>>>>>>> origin/backend
 	}
 	
 	/** 
@@ -144,4 +148,3 @@ abstract class Model{
 	}
 	
 }
-

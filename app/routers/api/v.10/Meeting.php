@@ -112,4 +112,11 @@ delete this!!!!!!
 		}
 
 	});	
+	
+	$app->post('/rsvp', $AUTH_MIDDLEWARE(), function() use ($app){
+		$rsvpToken = $app->request->post('rsvpToken');
+		
+		// modify attendie entry to acception
+		
+	});
 });
