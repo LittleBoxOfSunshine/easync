@@ -28,12 +28,11 @@ class GoogleCalendar extends Model{
 		);
 
 	    
-		$this->client = self::makeGoogleClient();
+		$this->client = self::makeGoogleClient($this->userID);
 
 		// Refresh the token if it's expired.
 		if($this->client->isAccessTokenExpired()) {
-			$refresh = $this->client->getRefreshToken();
-			$this->client->refreshToken($refresh);
+			$this->client->refreshToken();
 			//save the token!
 			$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`='$refresh' WHERE userID=:userID AND platformID=:platformID");
 			$stmt->execute();
@@ -44,41 +43,62 @@ class GoogleCalendar extends Model{
 
 	}
 
-	private static function makeGoogleClient(){
+	private static function makeGoogleClient($USER_ID){
 		$client = new Google_Client();
 	    $client->setApplicationName("Easync");
 	    $client->setClientId(self::CLIENT_ID);
 	    $client->setClientSecret(self::CLIENT_SECRET);
 	    $client->setRedirectUri(self::REDIRECT_URI);
 	    $client->setAccessType('offline');   // Gets us our refreshtoken
+	    //$client->setApprovalPrompt('force');
 
 	    $client->setScopes(array('https://www.googleapis.com/auth/calendar'));
 
-	    $stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
-		$stmt->execute();
-		$calToken = $stmt->fetch();
+	    $platID = self::PLATFORM_ID;
 
-	    if( count($calToken) > 0 ){
-	    	$client->setAccessToken($calToken['token']);
+
+	    $calToken = self::loadTokens($USER_ID);
+
+	    if( $calToken !== false ){
+	    	$client->setAccessToken($calToken);
+	   		//$client->refreshToken($calToken->refresh_token);
 	    }
 
 	    return $client;
 	}
 
-	public static function requestAccess($app){
-		$authUrl = self::makeGoogleClient()->createAuthUrl();
+	private static function loadTokens($USER_ID){
+		$platID = self::PLATFORM_ID;
+
+	    $stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':platformID', $platID );
+		$stmt->execute();
+		$allTokens = $stmt->fetch();
+
+		if( $allTokens !== false )
+			return $allTokens['token'];
+		else
+			return false;
+	}
+
+	public static function requestAccess($app, $USER_ID){
+		$authUrl = self::makeGoogleClient($USER_ID)->createAuthUrl();
  		$app->redirect($authUrl);
 	}
 	
-	public static function acceptAccess(){
-		$client = self::makeGoogleClient();
-			$client->authenticate($_GET['code']);  
+	public static function acceptAccess($userID){
+		$client = self::makeGoogleClient($userID);
+		$client->authenticate($_GET['code']);  
 
-		$token= $client->getAccessToken();
+		$token = $client->getAccessToken();
+		$platID = self::PLATFORM_ID;
 
-		$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`='$token' WHERE userID=:userID AND platformID=:platformID");
+		$stmt = Database::prepareAssoc("INSERT INTO `CalendarTokens` (token, userID, platformID) VALUES (:token, :userID, :platformID) ON DUPLICATE KEY UPDATE token=:token");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $userID);
+		$stmt->bindParam(':platformID', $platID);
 		$stmt->execute();
-
 	}
 
 
