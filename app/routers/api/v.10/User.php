@@ -8,8 +8,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/login', function () use ($app){
-		$email = $app->request->post('email');
-		$password = $app->request->post('password');
+		
+		if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}
+
+		$data = json_decode($app->request()->getBody());
+		$email = $data['email'];
+		$password = $data['password'];
 
 		if(!isset($email) || !isset($password)){
 			echo 'Email and password must be provided...';
@@ -37,10 +44,17 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/register', function () use ($app){
-		$email = $app->request->post('email');
-		$password = $app->request->post('password');
-		$firstname = $app->request->post('firstname');
-		$lastname = $app->request->post('lastname');
+		
+		if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}
+
+		$data = json_decode($app->request()->getBody());
+		$email = $data['email'];
+		$password = $data['password'];
+		$firstname = $data['firstname'];
+		$lastname = $data['lastname'];
 		
 		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
 			echo 'email, password, firstname, and lastname must be provided...';
