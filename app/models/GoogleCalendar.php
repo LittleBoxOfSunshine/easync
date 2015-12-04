@@ -29,17 +29,24 @@ class GoogleCalendar extends Model{
 
 	    
 		$this->client = self::makeGoogleClient($this->userID);
-
+		
 		// Refresh the token if it's expired.
-		if($this->client->isAccessTokenExpired()) {
-			$this->client->refreshToken();
+		if($this->client->isAccessTokenExpired()){
+			$temp = json_decode($this->client->getAccessToken());
+
+			if($temp == NULL)
+				die("ERROR: user has not allowed easync to access their Google Calendar");
+
+			$this->client->refreshToken($temp['refresh_token']);
+			$token = $this->client->getAccessToken();
 			//save the token!
-			$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`='$refresh' WHERE userID=:userID AND platformID=:platformID");
+			$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`=:token WHERE userID=:userID AND platformID=:platformID");
+			$stmt->bindParam(':token', $token);
 			$stmt->execute();
 		}
-
+		
+		
 		$this->calendarList = new Google_Service_Calendar($this->client);   
-
 
 	}
 
@@ -61,7 +68,6 @@ class GoogleCalendar extends Model{
 
 	    if( $calToken !== false ){
 	    	$client->setAccessToken($calToken);
-	   		//$client->refreshToken($calToken->refresh_token);
 	    }
 
 	    return $client;
@@ -90,37 +96,42 @@ class GoogleCalendar extends Model{
 	public static function acceptAccess($userID){
 		$client = self::makeGoogleClient($userID);
 		$client->authenticate($_GET['code']);  
-
+		echo "inserting token in aA()\n";
 		$token = $client->getAccessToken();
+		var_dump($token);
 		$platID = self::PLATFORM_ID;
 
 		$stmt = Database::prepareAssoc("INSERT INTO `CalendarTokens` (token, userID, platformID) VALUES (:token, :userID, :platformID) ON DUPLICATE KEY UPDATE token=:token");
 		$stmt->bindParam(':token', $token);
 		$stmt->bindParam(':userID', $userID);
 		$stmt->bindParam(':platformID', $platID);
-		$stmt->execute();
+	    $stmt->execute();
 	}
 
 
 	public function getEvents(){
-		    $calendarList  = $this->calendarList->calendarList->listCalendarList();
-				  while(true) {
-				      foreach ($calendarList->getItems() as $calendarListEntry) {
-				        echo $calendarListEntry->getSummary()."<br>\n";
-				        // get events 
-				        $events = $this->calendarList->events->listEvents($calendarListEntry->id);
-				        foreach ($events->getItems() as $event) {
-				            echo "-----".$event->getSummary()."<br>";
-				        }
-				      }
-				      $pageToken = $calendarList->getNextPageToken();
-				      if ($pageToken) {
-				        $optParams = array('pageToken' => $pageToken);
-				        $calendarList = $this->calendarList->calendarList->listCalendarList($optParams);
-				      } else {
-				        break;
-				      }
-				  }
+		$calendarList  = $this->calendarList->calendarList->listCalendarList();
+
+		while(true) {
+		    foreach($calendarList->getItems() as $calendarListEntry) {
+		      echo $calendarListEntry->getSummary()."<br>\n";
+		      // get events 
+		      $events = $this->calendarList->events->listEvents($calendarListEntry->id);
+		      foreach ($events->getItems() as $event) {
+		          echo "-----".$event->getSummary()."<br>";
+		      }
+		    }
+
+		    $pageToken = $calendarList->getNextPageToken();
+
+		    if($pageToken) {
+		      $optParams = array('pageToken' => $pageToken);
+		      $calendarList = $this->calendarList->calendarList->listCalendarList($optParams);
+		    } 
+		    else{
+		      break;
+		    }
+		}
 	  	
 	}
 	

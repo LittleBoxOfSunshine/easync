@@ -35,15 +35,27 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			
 		*/
 
-		$users = json_decode($app->request()->getBody());
-		$emails = $users->emails;
+		$meetingID = $app->request->post('meetingID');
 
-		//get non null googAuthToken from user, get calId with token from CalendarTokens
+		$meeting = json_decode($app->request()->getBody());
+		$emails = $meeting->emails;
+
 
 		foreach($emails as $email){
-			//$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
-			//$stmt->execute();
-			//$calToken = $stmt->fetch();
+			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+			$userID = $stmt->fetch();
+
+			if($userID == false)
+				echo "ERROR: The user: " . $email . " does not have a userID\n";
+			else{
+				$userID = $userID['userID'];
+				
+				$test = new GoogleCalendar(array('userID' => $userID));
+			   	$test->getEvents();
+			} 
+
 		}
 
 	});
@@ -61,37 +73,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			send confimartion/rsvp emails to list of emails
 			echo successs/failure
 		*/
-	});
-
-/*
-delete this!!!!!!
-*/
-	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
-		global $USER_ID;
-		$contacts = json_decode($app->request()->getBody());
-		$contacts = $contacts->emails;
-		
-		Database::beginTransaction();
-
-		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, :contactEmail);");
-		$stmt->bindParam(':userID', $USER_ID);
-		$stmt->bindParam(':contactEmail', $contact);
-		
-		foreach($contacts as $contact)
-			$stmt->execute();
-			
-		Database::commit();
-		
-		if($stmt->errorCode() === '00000'){
-			echo 'Contacts Added';
-		}
-		else if($stmt->errorCode() === '23000'){
-			echo 'WARNING: These contacts already exist...';
-		}
-		else{
-			echo 'A MySQL error has occurred.';
-		}
-
 	});	
 	
 	$app->post('/rsvp', $AUTH_MIDDLEWARE(), function() use ($app){
