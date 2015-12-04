@@ -62,6 +62,33 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
+    $app->get('/addGoogleCal', $AUTH_MIDDLEWARE(), function () use ($app){
+    	global $USER_ID;
+		$platformID = 'Google';
+
+    	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':platformID', $platformID);
+		$stmt->execute();
+		$calToken = $stmt->fetch();
+
+	    if ( $calToken === false ) {
+	    	// Step 1:  The user has not authenticated - redirect them  
+		    if (!isset($_GET['code'])) {
+		    	GoogleCalendar::requestAccess($app, $USER_ID);
+		    }
+		    // Step 2: The user accepted your access now you need to exchange it.
+		    else{
+		    	GoogleCalendar::acceptAccess($USER_ID);
+		    }
+	    }
+	    
+	    $test = new GoogleCalendar(array('userID' => $USER_ID));
+	   	//$test = new GoogleCalendar;
+	   	$test->getEvents();
+		
+	});
+
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
