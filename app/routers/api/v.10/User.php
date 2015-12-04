@@ -41,6 +41,11 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$password = $app->request->post('password');
 		$firstname = $app->request->post('firstname');
 		$lastname = $app->request->post('lastname');
+		
+		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
+			echo 'email, password, firstname, and lastname must be provided...';
+			return;
+		}
 
 		$user = new User(array(
 			'email' => $email,
@@ -133,10 +138,17 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 	});
 	
-	$app->post('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
+	$app->get('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;	
 		$app->response->headers->set('Content-Type', 'application/json');
 		
+		$stmt = Database::prepareAssoc("SELECT `data` FROM `Settings` WHERE userID=:userID");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+		
+		$data = $stmt->fetch();
+		
+		echo $data['data'];
 		
 	});
 		
@@ -149,6 +161,20 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 		
 		$data = $app->request()->getBody();
-				
+		
+		if(!isset($data)){
+			echo 'ERROR: No settings data provided or JSON is malformed...';
+			return;
+		}
+		
+		$stmt = Database::prepareAssoc("INSERT INTO `Settings` (userID, data) VALUES (:userID, :data) ON DUPLICATE KEY UPDATE data=:data;");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':data', $data);
+		//$stmt->debugDumpParams();
+		
+		$stmt->execute();
+		
+		echo 'Settings updated...';
 	});
+	
 });
