@@ -74,15 +74,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo json_encode(false);
 	});
 
-	$app->post('/nearbyInIt', function () use ($app){
+	$app->post('/nearbyInIt', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		$meetingID = uniqid();
-		$stmt = Database::prepareAssoc("INSERT INTO MeetingDetails `meetingID` VALUES :meetingID;");
-		$stmt->bindParam(':meetingID', $meetingID);
+		$token = uniqid();
+		$stmt = Database::prepareAssoc("INSERT INTO NearbyToken (`token`,`creatorUserID`) VALUES (:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		echo json_encode($meetingID);
-
+		echo json_encode($token);
 	});
 
 	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
