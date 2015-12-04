@@ -1,0 +1,17 @@
+{
+  "emails": [
+    "smitheric95@gmail.com",
+    "cahenk95@gmail.com"
+  ],
+  "length": "P3H",
+  "dayEnd": "09:00:00",
+  "dayStart": "17:00:00",
+  "allRequired": false,
+  "EventDetails": {
+    "startTime": "11:00:00",
+    "endTime": "12:00:00",
+    "name": "Test Meeting",
+    "creatorUserID": "999999",
+    "timeZone": "America/Chicago"
+  }
+}
