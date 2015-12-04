@@ -26,7 +26,6 @@ class GoogleCalendar extends Model{
 				'calID'
 			)
 		);
-
 	    
 		$this->client = self::makeGoogleClient($this->userID);
 		
@@ -37,11 +36,13 @@ class GoogleCalendar extends Model{
 			if($temp == NULL)
 				die("ERROR: user has not allowed easync to access their Google Calendar");
 
-			$this->client->refreshToken($temp['refresh_token']);
+			$this->client->refreshToken( $this->client->REFRESH_TOKEN_DB );
 			$token = $this->client->getAccessToken();
 			//save the token!
-			$stmt = Database::prepareAssoc("UPDATE `token` SET `CalendarTokens`=:token WHERE userID=:userID AND platformID=:platformID");
+			$stmt = Database::prepareAssoc("UPDATE `CalendarTokens` SET token=:token WHERE userID=:userID AND platformID=:platformID");
 			$stmt->bindParam(':token', $token);
+			$stmt->bindParam(':platformID', $this->calID);
+			$stmt->bindParam(':userID', $this->userID);
 			$stmt->execute();
 		}
 		
@@ -67,7 +68,8 @@ class GoogleCalendar extends Model{
 	    $calToken = self::loadTokens($USER_ID);
 
 	    if( $calToken !== false ){
-	    	$client->setAccessToken($calToken);
+	    	$client->setAccessToken($calToken['token']);
+	    	$client->REFRESH_TOKEN_DB = $calToken['refreshToken'];
 	    }
 
 	    return $client;
@@ -76,14 +78,14 @@ class GoogleCalendar extends Model{
 	private static function loadTokens($USER_ID){
 		$platID = self::PLATFORM_ID;
 
-	    $stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+	    $stmt = Database::prepareAssoc("SELECT `token`, `refreshToken` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':platformID', $platID );
 		$stmt->execute();
 		$allTokens = $stmt->fetch();
 
 		if( $allTokens !== false )
-			return $allTokens['token'];
+			return $allTokens;
 		else
 			return false;
 	}
@@ -96,13 +98,17 @@ class GoogleCalendar extends Model{
 	public static function acceptAccess($userID){
 		$client = self::makeGoogleClient($userID);
 		$client->authenticate($_GET['code']);  
-		echo "inserting token in aA()\n";
+
 		$token = $client->getAccessToken();
-		var_dump($token);
+
+		$refreshToken = json_decode($token);
+		$refreshToken = $refreshToken->refresh_token;
+
 		$platID = self::PLATFORM_ID;
 
-		$stmt = Database::prepareAssoc("INSERT INTO `CalendarTokens` (token, userID, platformID) VALUES (:token, :userID, :platformID) ON DUPLICATE KEY UPDATE token=:token");
+		$stmt = Database::prepareAssoc("INSERT INTO `CalendarTokens` (token, refreshToken, userID, platformID) VALUES (:token, :refreshToken, :userID, :platformID) ON DUPLICATE KEY UPDATE token=:token, refreshToken=:refreshToken");
 		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':refreshToken', $refreshToken);
 		$stmt->bindParam(':userID', $userID);
 		$stmt->bindParam(':platformID', $platID);
 	    $stmt->execute();

@@ -83,8 +83,9 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		    }
 	    }
 	    
-	    $test = new GoogleCalendar(array('userID' => $USER_ID));
-	   	$test->getEvents();
+	    //$test = new GoogleCalendar(array('userID' => $USER_ID));
+	   	//$test->getEvents();
+	   	$app->redirect('/');
 		
 	});
 
