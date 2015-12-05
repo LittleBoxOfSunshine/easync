@@ -26,10 +26,15 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			! load any tokens, construct any API objects
 			pull events
 			diff by all attendees - look up group scheduling algorithm 
+				get the free times of each person (sort.php)
+					(not necessary to remember event names)
+				find the max overpallping of $length
+
 				if impossibr and required
 					give failure message
 				else if not required
 					move on
+
 			diff, rank by max #tendies
 			give top options or failure if no optoins exist (store copy of results in session)
 			

@@ -122,7 +122,6 @@ class GoogleCalendar extends Model{
 		    foreach($calendarList->getItems() as $calendarListEntry){
 			    /*
 			     * problems:
-			     * recurring events give original datetime
 			     * timezone would have to be dealt with here
 			     */
 
