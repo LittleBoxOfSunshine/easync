@@ -115,27 +115,36 @@ class GoogleCalendar extends Model{
 	}
 
 
-	public function getEvents(){
+	public function getEvents($startTime, $endTime){
 		$calendarList  = $this->calendarList->calendarList->listCalendarList();
+		
+		while(true){
+		    foreach($calendarList->getItems() as $calendarListEntry){
+			    /*
+			     * problems:
+			     * recurring events give original datetime
+			     * timezone would have to be dealt with here
+			     */
 
-		while(true) {
-		    foreach($calendarList->getItems() as $calendarListEntry) {
-		      echo $calendarListEntry->getSummary()."<br>\n";
-		      // get events 
-		      $events = $this->calendarList->events->listEvents($calendarListEntry->id);
-		      foreach ($events->getItems() as $event) {
-		          echo "-----".$event->getSummary()."<br>";
-		      }
+			    //get all events
+			    $events = $this->calendarList->events->listEvents($calendarListEntry->id, array('singleEvents' => 'true', 'timeMin' => $startTime, 'timeMax' => $endTime) );
+			    foreach($events->getItems() as $event){
+			    	echo $event->getSummary();
+			    	echo "<br>";
+			        echo $event->getStart()->dateTime;
+			        echo "<br>";
+			        echo $event->getEnd()->dateTime;
+			        echo "<br>-------------<br><br>";
+			    }
 		    }
 
 		    $pageToken = $calendarList->getNextPageToken();
-
 		    if($pageToken) {
-		      $optParams = array('pageToken' => $pageToken);
-		      $calendarList = $this->calendarList->calendarList->listCalendarList($optParams);
+		        $optParams = array('pageToken' => $pageToken);
+		        $calendarList = $this->calendarList->calendarList->listEvents($optParams);
 		    } 
 		    else{
-		      break;
+		    	break;
 		    }
 		}
 	  	

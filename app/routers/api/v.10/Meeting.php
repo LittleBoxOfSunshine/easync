@@ -22,8 +22,8 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		/*
 		steps: (a lot of these will be combined/moved)
-			copy emails, prune those w/out googlecal acess
-			load any tokens, construct any API objects
+			! copy emails, prune those w/out googlecal acess
+			! load any tokens, construct any API objects
 			pull events
 			diff by all attendees - look up group scheduling algorithm 
 				if impossibr and required
@@ -38,8 +38,23 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$meetingID = $app->request->post('meetingID');
 
 		$meeting = json_decode($app->request()->getBody());
-		$emails = $meeting->emails;
 
+		$emails = $meeting->emails;
+		$length = $meeting->length;
+		$dayEnd = $meeting->dayEnd;
+		$dayStart = $meeting->dayStart;
+		$allRequired = $meeting->allRequired;
+		$startTime =  new DateTime($meeting->EventDetails->startTime);
+		$endTime = new DateTime($meeting->EventDetails->endTime);
+		$name = $meeting->EventDetails->name;
+		$creatorUserID = $meeting->EventDetails->creatorUserID;
+
+		//$startTime->setTimeZone(new DateTimeZone($meeting->EventDetails->timeZone));
+		$startTime = $startTime->format('Y-m-d\TH:i:sP');
+		//$endTime->setTimeZone(new DateTimeZone($meeting->EventDetails->timeZone));
+		$endTime = $endTime->format('Y-m-d\TH:i:sP');
+
+		$allEvents = [];
 
 		foreach($emails as $email){
 			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
@@ -52,8 +67,8 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			else{
 				$userID = $userID['userID'];
 				
-				$test = new GoogleCalendar(array('userID' => $userID));
-			   	$test->getEvents();
+				$cal = new GoogleCalendar(array('userID' => $userID));
+				$allEvents[] = $cal->getEvents($startTime, $endTime);
 			} 
 
 		}
