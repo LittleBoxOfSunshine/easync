@@ -36,12 +36,69 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$user->logout();
     });
 
+		$app->get('/getMeetings', $AUTH_MIDDLEWARE(), function () use ($app){
+			global $USER_ID;
+
+			$app->response->headers->set('Content-Type', 'application/json');
+
+			$email = User::userToEmail($USER_ID);
+			$meetings = [];
+
+			$stmt = Database::prepareAssoc("SELECT `meetingID` FROM `Meeting` WHERE `email` = :email;");
+			$stmt->bindParam(':email',$email);
+			$stmt->execute();
+
+			$mIDs = [];
+			while($row = $stmt->fetch())
+				$mIDs[] = $row['meetingID'];
+
+			Database::prepareTransaction();
+
+			$stmt = Database::prepareAssoc("SELECT * FROM `MeetingDetails` WHERE `meetingID` = :meetingID;");
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($mIDs as $meetingID)
+				$stmt->execute();
+
+			Database::commit();
+
+			do{
+				while($row = $stmt->fetch())
+					$meetings[] = $row;
+			}while($stmt->nextRowset());
+
+			Database::prepareTransaction();
+
+			$stmt = Database::prepareAssoc("SELECT email FROM `Meeting` WHERE `meetingID` = :meetingID");
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($mIDs as $meetingID)
+				$stmt->execute();
+
+			Database::commit();
+
+			do{
+				foreach($meetings as $meet){
+					$emails = $stmt->fetchAll();
+					for($i=0;$i<count($emails);$i++)
+						$emails[$i] = $emails[$i]['email'];
+					$meet['attendies'] = $emails;
+				}
+			}while($stmt->nextRowset());
+
+
+
+			echo json_encode($meetings);
+
+
+		});
+
 	$app->post('/register', function () use ($app){
 		$email = $app->request->post('email');
 		$password = $app->request->post('password');
 		$firstname = $app->request->post('firstname');
 		$lastname = $app->request->post('lastname');
-		
+
 		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
 			echo 'email, password, firstname, and lastname must be provided...';
 			return;
@@ -66,14 +123,14 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     	global $USER_ID;
 		$platformID = 'Google';
 
-    	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+    $stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':platformID', $platformID);
 		$stmt->execute();
 		$calToken = $stmt->fetch();
 
 	    if ( $calToken === false ) {
-	    	// Step 1:  The user has not authenticated - redirect them  
+	    	// Step 1:  The user has not authenticated - redirect them
 		    if (!isset($_GET['code'])) {
 		    	GoogleCalendar::requestAccess($app, $USER_ID);
 		    }
@@ -82,24 +139,24 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		    	GoogleCalendar::acceptAccess($USER_ID);
 		    }
 	    }
-	    
+
 	    $test = new GoogleCalendar(array('userID' => $USER_ID));
 	   	//$test = new GoogleCalendar;
 	   	$test->getEvents();
-		
+
 	});
 
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
+
 		$email = $app->request->get('email');
 		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();
-		
+
 		$dat = $stmt->fetch();
-		
+
 		if($dat !== false)
 			echo json_encode(true);
 		else
@@ -164,44 +221,44 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
-	
+
 	$app->get('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
-		global $USER_ID;	
+		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
+
 		$stmt = Database::prepareAssoc("SELECT `data` FROM `Settings` WHERE userID=:userID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		
+
 		$data = $stmt->fetch();
-		
+
 		echo $data['data'];
-		
+
 	});
-		
+
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
-		
+
 		if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
 		}
-		
+
 		$data = $app->request()->getBody();
-		
+
 		if(!isset($data)){
 			echo 'ERROR: No settings data provided or JSON is malformed...';
 			return;
 		}
-		
+
 		$stmt = Database::prepareAssoc("INSERT INTO `Settings` (userID, data) VALUES (:userID, :data) ON DUPLICATE KEY UPDATE data=:data;");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':data', $data);
 		//$stmt->debugDumpParams();
-		
+
 		$stmt->execute();
-		
+
 		echo 'Settings updated...';
 	});
-	
+
 });
