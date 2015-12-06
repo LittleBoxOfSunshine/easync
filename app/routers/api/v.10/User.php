@@ -36,6 +36,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$user->logout();
     });
 
+
 		$app->get('/getMeetings', $AUTH_MIDDLEWARE(), function () use ($app){
 			global $USER_ID;
 
