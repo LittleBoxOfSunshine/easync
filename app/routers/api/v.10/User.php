@@ -38,7 +38,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 
-	$app->update('/rsvp', function () use ($app){
+/*	$app->update('/rsvp', function () use ($app){
 		global $USER_ID;
 		$token = $app->request->get('token');
 		$email = User::userToEmail($USER_ID);
@@ -51,11 +51,11 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'Successfully Added to Meeting.';
 		}
 		else {
-				echo 'mySQL error.'
+				echo 'mySQL error.';
 		}
 
 	});
-
+*/
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
 		$user = new User(array('userID' => $USER_ID));
