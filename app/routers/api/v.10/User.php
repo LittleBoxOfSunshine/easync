@@ -8,11 +8,10 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/login', function () use ($app){
-
-		if($app->request->headers->get('Content-Type') != 'application/json'){
+		/*if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
-		}
+		}*/
 
 		$data = json_decode($app->request()->getBody());
 		$email = $data->email;
@@ -76,8 +75,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$userIDs = [];
 		while($row = $stmt->fetch())
 			$userIDs[] = $row['userID'];
-
-		var_dump($userIDs);
 
 
 
@@ -257,10 +254,10 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 
-		if($app->request->headers->get('Content-Type') != 'application/json'){
+		/*if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
-		}
+		}*/
 
 		$data = $app->request()->getBody();
 
