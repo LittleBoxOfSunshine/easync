@@ -1,0 +1,11 @@
+/node_modules
+/dist
+/.tmp
+/.sass-cache
+/bower_components
+/.vagrant
+/.vagrant/*/*/*
+/public
+
+.DS_STORE
+*.swp

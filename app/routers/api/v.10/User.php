@@ -15,8 +15,8 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 		$data = json_decode($app->request()->getBody());
-		$email = $data['email'];
-		$password = $data['password'];
+		$email = $data->email;
+		$password = $data->password;
 
 		if(!isset($email) || !isset($password)){
 			echo 'Email and password must be provided...';
@@ -37,6 +37,25 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
+
+	$app->update('/rsvp', function () use ($app){
+		global $USER_ID;
+		$token = $app->request->get('token');
+		$email = User::userToEmail($USER_ID);
+
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Successfully Added to Meeting.';
+		}
+		else {
+				echo 'mySQL error.'
+		}
+
+	});
+
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
 		$user = new User(array('userID' => $USER_ID));
@@ -45,66 +64,67 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 
 	$app->get('/nearbyGetAttendees', $AUTH_MIDDLEWARE(), function () use ($app){
-	global $USER_ID;
-	$auth_token = $app->request->get('auth_token');
-	$app->response->headers->set('Content-Type', 'application/json');
+		global $USER_ID;
+		$auth_token = $app->request->get('auth_token');
+		$app->response->headers->set('Content-Type', 'application/json');
 
-	$stmt = Database::prepareAssoc("SELECT `userID` FROM `Auth_Token` WHERE auth_token=:auth_token;");
-	$stmt->bindParam(':auth_token', $auth_token);
-	$stmt->execute();
-
-	$attendees = [];
-	$userIDs = [];
-	while($row = $stmt->fetch())
-		$userIDs[] = $row['userID'];
-
-	Database::prepareTransaction();
-
-	$stmt = Database::prepareAssoc("SELECT `name`,`email` FROM `User` WHERE `userID` = :userID;");
-	$stmt->bindParam(':userID', $userID);
-
-	foreach($userIDs as $userID)
+		$stmt = Database::prepareAssoc("SELECT `userID` FROM `Auth_Token` WHERE auth_token=:auth_token;");
+		$stmt->bindParam(':auth_token', $auth_token);
 		$stmt->execute();
 
-	Database::commit();
-
-	do{
+		$attendees = [];
+		$userIDs = [];
 		while($row = $stmt->fetch())
-			$attendees[] = $row;
-	}while($stmt->nextRowset());
+			$userIDs[] = $row['userID'];
 
-	echo json_encode($attendees);
-	});
-	$app->post('/register', function () use ($app){
+		Database::prepareTransaction();
 
-		if($app->request->headers->get('Content-Type') != 'application/json'){
-			echo 'ERROR: Request body must be json...';
-			return;
-		}
+		$stmt = Database::prepareAssoc("SELECT `name`,`email` FROM `User` WHERE `userID` = :userID;");
+		$stmt->bindParam(':userID', $userID);
 
-		$data = json_decode($app->request()->getBody());
-		$email = $data['email'];
-		$password = $data['password'];
-		$firstname = $data['firstname'];
-		$lastname = $data['lastname'];
+		foreach($userIDs as $userID)
+			$stmt->execute();
 
-		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
-			echo 'email, password, firstname, and lastname must be provided...';
-			return;
-		}
+		Database::commit();
 
-		$user = new User(array(
-			'email' => $email,
-			'name' => $firstname.' '.$lastname
-			), true);
+		do{
+			while($row = $stmt->fetch())
+				$attendees[] = $row;
+		}while($stmt->nextRowset());
 
-		if($user === false){
-			//handle input error here
-			echo 'user is malformed';
-		}
-		else{
-			$user->register($password);
-		}
+		echo json_encode($attendees);
+		});
+
+		$app->post('/register', function () use ($app){
+
+			/*if($app->request->headers->get('Content-Type') != 'application/json'){
+				echo 'ERROR: Request body must be json...';
+				return;
+			}*/
+
+			$data = json_decode($app->request()->getBody());
+			$email = $data->email;
+			$password = $data->password;
+			$firstname = $data->firstname;
+			$lastname = $data->lastname;
+
+			if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
+				echo 'email, password, firstname, and lastname must be provided...';
+				return;
+			}
+
+			$user = new User(array(
+				'email' => $email,
+				'name' => $firstname.' '.$lastname
+				), true);
+
+			if($user === false){
+				//handle input error here
+				echo 'user is malformed';
+			}
+			else{
+				$user->register($password);
+			}
 
     });
 
@@ -112,7 +132,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     	global $USER_ID;
 		$platformID = 'Google';
 
-    	$stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
+    $stmt = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID AND platformID=:platformID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':platformID', $platformID);
 		$stmt->execute();
