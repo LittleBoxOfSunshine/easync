@@ -8,8 +8,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/login', function () use ($app){
-		$email = $app->request->post('email');
-		$password = $app->request->post('password');
+		
+		if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}
+
+		$data = json_decode($app->request()->getBody());
+		$email = $data['email'];
+		$password = $data['password'];
 
 		if(!isset($email) || !isset($password)){
 			echo 'Email and password must be provided...';
@@ -37,10 +44,17 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/register', function () use ($app){
-		$email = $app->request->post('email');
-		$password = $app->request->post('password');
-		$firstname = $app->request->post('firstname');
-		$lastname = $app->request->post('lastname');
+		
+		if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}
+
+		$data = json_decode($app->request()->getBody());
+		$email = $data['email'];
+		$password = $data['password'];
+		$firstname = $data['firstname'];
+		$lastname = $data['lastname'];
 		
 		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
 			echo 'email, password, firstname, and lastname must be provided...';
@@ -92,18 +106,29 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
+
 		$email = $app->request->get('email');
 		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();
-		
+
 		$dat = $stmt->fetch();
-		
+
 		if($dat !== false)
 			echo json_encode(true);
 		else
 			echo json_encode(false);
+	});
+
+	$app->post('/nearbyInIt', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		$token = uniqid();
+		$stmt = Database::prepareAssoc("INSERT INTO NearbyToken (`token`,`creatorUserID`) VALUES (:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+		echo json_encode($token);
 	});
 
 	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -178,15 +203,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo $data['data'];
 		
 	});
-		
+
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
-		
+
 		if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
 		}
-		
+
 		$data = $app->request()->getBody();
 		
 		if(!isset($data)){
@@ -202,6 +227,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$stmt->execute();
 		
 		echo 'Settings updated...';
+		
 	});
 	
 });
