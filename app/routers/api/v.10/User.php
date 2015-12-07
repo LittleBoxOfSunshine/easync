@@ -37,8 +37,20 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
+	$app->post('/nearbyJoin', function () use ($app){
+		global $USER_ID;
+		$token = $app->request->get('token');
 
-	$app->update('/rsvp', function () use ($app){
+		$stmt = Database::prepareAssoc("INSERT INTO NearbyToken (`token`,`userID`) VALUES (:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $userID);
+		$stmt->execute();
+		
+		echo json_encode($token);
+	});
+
+
+	$app->post('/rsvp', function () use ($app){
 		global $USER_ID;
 		$token = $app->request->get('token');
 		$email = User::userToEmail($USER_ID);
