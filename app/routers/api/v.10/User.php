@@ -38,10 +38,9 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 
-/*	$app->update('/rsvp', function () use ($app){
+	$app->post('/rsvp', function () use ($app){
 		global $USER_ID;
 		$token = $app->request->get('token');
-		$email = User::userToEmail($USER_ID);
 
 		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
 		$stmt->bindParam(':token', $token);
@@ -55,7 +54,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
-*/
+
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
 		$user = new User(array('userID' => $USER_ID));
@@ -65,11 +64,12 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 	$app->get('/nearbyGetAttendees', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
-		$auth_token = $app->request->get('auth_token');
+		$token = $app->request->get('token');
+		$counter = 0;
 		$app->response->headers->set('Content-Type', 'application/json');
 
-		$stmt = Database::prepareAssoc("SELECT `userID` FROM `Auth_Token` WHERE auth_token=:auth_token;");
-		$stmt->bindParam(':auth_token', $auth_token);
+		$stmt = Database::prepareAssoc("SELECT `userID` FROM `NearbyAttendees` WHERE token=:token;");
+		$stmt->bindParam(':token', $token);
 		$stmt->execute();
 
 		$attendees = [];
@@ -77,22 +77,20 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$userIDs[] = $row['userID'];
 
-		Database::prepareTransaction();
+		var_dump($userIDs);
+
+
+
 
 		$stmt = Database::prepareAssoc("SELECT `name`,`email` FROM `User` WHERE `userID` = :userID;");
 		$stmt->bindParam(':userID', $userID);
 
-		foreach($userIDs as $userID)
+		foreach($userIDs as $userID) {
 			$stmt->execute();
+			$attendees[] = $stmt->fetch();
+		}
 
-		Database::commit();
-
-		do{
-			while($row = $stmt->fetch())
-				$attendees[] = $row;
-		}while($stmt->nextRowset());
-
-		echo json_encode($attendees);
+	echo json_encode($attendees);
 		});
 
 		$app->post('/register', function () use ($app){
