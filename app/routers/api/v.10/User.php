@@ -8,7 +8,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/login', function () use ($app){
-		
+
 		if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
@@ -43,8 +43,23 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$user->logout();
     });
 
+
+	$app->get('/nearbyGetAttendees', $AUTH_MIDDLEWARE(), function () use ($app){
+	global $USER_ID;
+	$auth_token = $app->request->get('auth_token');
+	
+	$stmt = Database::prepareAssoc("SELECT `userID` FROM `Auth_Token` WHERE auth_token=:auth_token;");
+	$stmt->bindParam(':auth_token', $auth_token);
+	$stmt->execute();
+
+	$data = [];
+	while($row = $stmt->fetch())
+		$data[] = $row['userID'];
+
+	echo json_encode($data);
+	});
 	$app->post('/register', function () use ($app){
-		
+
 		if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
@@ -55,7 +70,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$password = $data['password'];
 		$firstname = $data['firstname'];
 		$lastname = $data['lastname'];
-		
+
 		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
 			echo 'email, password, firstname, and lastname must be provided...';
 			return;
@@ -87,7 +102,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$calToken = $stmt->fetch();
 
 	    if ( $calToken === false ) {
-	    	// Step 1:  The user has not authenticated - redirect them  
+	    	// Step 1:  The user has not authenticated - redirect them
 		    if (!isset($_GET['code'])) {
 		    	GoogleCalendar::requestAccess($app, $USER_ID);
 		    }
@@ -96,11 +111,11 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		    	GoogleCalendar::acceptAccess($USER_ID);
 		    }
 	    }
-	    
+
 	    $test = new GoogleCalendar(array('userID' => $USER_ID));
 	   	//$test = new GoogleCalendar;
 	   	$test->getEvents();
-		
+
 	});
 
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -189,19 +204,19 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
-	
+
 	$app->get('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
-		global $USER_ID;	
+		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
+
 		$stmt = Database::prepareAssoc("SELECT `data` FROM `Settings` WHERE userID=:userID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		
+
 		$data = $stmt->fetch();
-		
+
 		echo $data['data'];
-		
+
 	});
 
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -213,21 +228,21 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 		$data = $app->request()->getBody();
-		
+
 		if(!isset($data)){
 			echo 'ERROR: No settings data provided or JSON is malformed...';
 			return;
 		}
-		
+
 		$stmt = Database::prepareAssoc("INSERT INTO `Settings` (userID, data) VALUES (:userID, :data) ON DUPLICATE KEY UPDATE data=:data;");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':data', $data);
 		//$stmt->debugDumpParams();
-		
+
 		$stmt->execute();
-		
+
 		echo 'Settings updated...';
-		
+
 	});
-	
+
 });
