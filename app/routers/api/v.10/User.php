@@ -47,16 +47,33 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->get('/nearbyGetAttendees', $AUTH_MIDDLEWARE(), function () use ($app){
 	global $USER_ID;
 	$auth_token = $app->request->get('auth_token');
-	
+	$app->response->headers->set('Content-Type', 'application/json');
+
 	$stmt = Database::prepareAssoc("SELECT `userID` FROM `Auth_Token` WHERE auth_token=:auth_token;");
 	$stmt->bindParam(':auth_token', $auth_token);
 	$stmt->execute();
 
-	$data = [];
+	$attendees = [];
+	$userIDs = [];
 	while($row = $stmt->fetch())
-		$data[] = $row['userID'];
+		$userIDs[] = $row['userID'];
 
-	echo json_encode($data);
+	Database::prepareTransaction();
+
+	$stmt = Database::prepareAssoc("SELECT `name`,`email` FROM `User` WHERE `userID` = :userID;");
+	$stmt->bindParam(':userID', $userID);
+
+	foreach($userIDs as $userID)
+		$stmt->execute();
+
+	Database::commit();
+
+	do{
+		while($row = $stmt->fetch())
+			$attendees[] = $row;
+	}while($stmt->nextRowset());
+
+	echo json_encode($attendees);
 	});
 	$app->post('/register', function () use ($app){
 
