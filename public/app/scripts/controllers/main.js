@@ -8,6 +8,6 @@
  * Controller of the easyncApp
  */
 angular.module('easyncApp')
-.controller('MainCtrl', function ($scope) {
-    console.log($scope);
+.controller('MainCtrl', function () {
+    //console.log($scope);
 });

@@ -9,7 +9,7 @@
  * Controller of the easyncApp
  */
 
-var GLOBAL_IP = "http://52.27.123.122/";
+var GLOBAL_IP = "http://localhost:6969/";
 
 angular.module('easyncApp')
   .controller('RegisterCtrl', function ($scope, $http) {
@@ -17,7 +17,8 @@ angular.module('easyncApp')
     	firstname : '',
     	lastname : '',
     	email : '',
-    	pass : ''
+    	pass : '',
+      passtwo : ''
     };
 
     this.errors = [];
@@ -46,8 +47,16 @@ angular.module('easyncApp')
       console.log(json_payload);
 
     	$http.post(GLOBAL_IP + 'api/v1.0/User/register', json_payload).success(function (data) {
-	        //window.alert('Register successful!');
           console.log(data);
+          if (data === "Account Created.") {
+            $scope.user = {
+              firstname : '',
+              lastname : '',
+              email : '',
+              pass : '',
+              passtwo : ''
+            };
+          }
       }).error(function (error) {
 	      	console.log('Register failed ' + error);
       });

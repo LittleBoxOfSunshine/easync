@@ -23,7 +23,7 @@
 			</div>
 
 			Password: <input type="password" ng-model="user.pass" required id="pass1" name="pass1"> <br>
-			Confirm Password: <input type="password" name="pass2" ng-model="passtwo" pwcheck="pass1" required> <br>
+			Confirm Password: <input type="password"  ng-model="user.passtwo" name="pass2" ng-model="passtwo" pwcheck="pass1" required> <br>
 			<div ng-show="form.pass2.$error">
 				<div ng-show="form.pass2.$error.pwcheck">Passwords must be identical</div>
 			</div>

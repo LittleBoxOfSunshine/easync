@@ -3,16 +3,17 @@
 	<div class="row text-center" id="attendees">
 		<h3> Attendees </h3>
 		<div class="col-md-4" ng-model="attendees"> 
-			Currently Selected
-				<p ng-repeat="x in attendees">
+			<p>Currently Selected</p> 
+				<p ng-repeat="x in attendees" ng-click="removefromattendees(x)">
 					{{ x|attendeesValue }}
 				</p>
 		</div>
 		<div class="col-md-4">Near Me</div>
-		<div class="col-md-4">
+		<div class="col-md-4" ng-init="loadcontacts()" ng-model="usercontacts">
 			<p>Add Contact</p>
-			<p> Sam </p>
-			<p> Jorge </p>
+			<p ng-repeat="x in usercontacts" ng-click="addcontacttoattendees(x)">
+				{{ x.name }}
+			</p>
 		</div>
 	</div>
 	<div class="row text-center" id="addattendees">
@@ -25,21 +26,31 @@
 	<div class="row text-center" id="datetimeconstraints">
 		<h3> Date and Time Constraints</h3>
 		<form name="datetimeform">
-			From <input name="fromdate" type="date"> To <input name="todate" type="date"><br>
-			After <input name="aftertime" type="time"> Before <input name="beforetime" type="time"><br>
-			Length <select name="duration">
+			From <input name="fromdate" type="date" ng-model="constraints.start_date">
+			To <input name="todate" type="date" ng-model="constraints.end_date"><br>
+			<span class="error" ng-show="constraints.start_date > constraints.end_date">
+				End date must be greater or same as start date
+			</span><br>
+			After <input name="aftertime" type="time" ng-model="constraints.start_time">
+			Before <input name="beforetime" type="time" ng-model="constraints.end_time"><br>
+			<span class="error" ng-show="constraints.start_time >= constraints.end_time">
+				End time must be greater as start time
+			</span><br>
+			Length <select name="duration" ng-model="constraints.duration">
 				<option value="15"> 15 Minutes</option>
 				<option value="30"> 30 Minutes</option>
 				<option value="45"> 45 Minutes</option>
 				<option value="60"> 1 Hour</option>
 				<option value="120"> 2 Hours</option>
 			</select>
-			<label for="required">Attendance Required</label><input type="checkbox" name="required" id="required"> 
-
+			<label for="required">Attendance Required</label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> 
 		</form>
+
+		<button class="btn btn-info" ng-show="!validateconstraintfields()" disabled>Find Possible Meeting Times</button>
+		<button class="btn btn-info" ng-show="validateconstraintfields()">Find Possible Meeting Times</button>
 	</div>
 
-	<div class="row text-center" id="possibletimes">
+	<div class="row text-center" id="possibletimes" ng-show="possibletimes_bool">
 		<h3> Possible Times</h3>
 	</div>
 </div>
