@@ -77,6 +77,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			} 
 
 		}
+		var_dump($allEvents);
 
 	});
 
