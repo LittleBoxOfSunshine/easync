@@ -8,8 +8,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/login', function () use ($app){
-		$email = $app->request->post('email');
-		$password = $app->request->post('password');
+
+		/*if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}*/
+
+		$data = json_decode($app->request()->getBody());
+		$email = $data->email;
+		$password = $data->password;
 
 		if(!isset($email) || !isset($password)){
 			echo 'Email and password must be provided...';
@@ -29,6 +36,25 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
     });
+
+
+	$app->post('/rsvp', function () use ($app){
+		global $USER_ID;
+		$token = $app->request->get('token');
+		$email = User::userToEmail($USER_ID);
+
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Successfully Added to Meeting.';
+		}
+		else {
+				echo 'mySQL error.';
+		}
+
+	});
 
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
@@ -95,10 +121,17 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 });
 
 	$app->post('/register', function () use ($app){
-		$email = $app->request->post('email');
-		$password = $app->request->post('password');
-		$firstname = $app->request->post('firstname');
-		$lastname = $app->request->post('lastname');
+
+		/*if($app->request->headers->get('Content-Type') != 'application/json'){
+			echo 'ERROR: Request body must be json...';
+			return;
+		}*/
+
+		$data = json_decode($app->request()->getBody());
+		$email = $data->email;
+		$password = $data->password;
+		$firstname = $data->firstname;
+		$lastname = $data->lastname;
 
 		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
 			echo 'email, password, firstname, and lastname must be provided...';
@@ -164,6 +197,17 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo json_encode(false);
 	});
 
+	$app->post('/nearbyInIt', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		$token = uniqid();
+		$stmt = Database::prepareAssoc("INSERT INTO NearbyToken (`token`,`creatorUserID`) VALUES (:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+		echo json_encode($token);
+	});
+
 	$app->get('/getUserDetails', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
@@ -183,6 +227,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
 
+
 		//This query should be used to convert group names to userID lists
 		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
 		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
@@ -191,6 +236,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		while($row = $stmt->fetch())
 			$data[] = $row['name'];
+
 
 		echo json_encode($data);
 
@@ -240,10 +286,10 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 
-		if($app->request->headers->get('Content-Type') != 'application/json'){
+		/*if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
-		}
+		}*/
 
 		$data = $app->request()->getBody();
 
@@ -260,6 +306,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$stmt->execute();
 
 		echo 'Settings updated...';
+
 	});
 
 });
