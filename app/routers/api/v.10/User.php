@@ -53,46 +53,46 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			while($row = $stmt->fetch())
 				$mIDs[] = $row['meetingID'];
 
-			Database::prepareTransaction();
-
 			$stmt = Database::prepareAssoc("SELECT * FROM `MeetingDetails` WHERE `meetingID` = :meetingID;");
 			$stmt->bindParam(':meetingID', $meetingID);
 
-			foreach($mIDs as $meetingID)
+			foreach($mIDs as $meetingID) {
 				$stmt->execute();
+				$meetings[] = $stmt->fetch();
+			}
 
-			Database::commit();
-
-			do{
-				while($row = $stmt->fetch())
-					$meetings[] = $row;
-			}while($stmt->nextRowset());
-
-			Database::prepareTransaction();
 
 			$stmt = Database::prepareAssoc("SELECT email FROM `Meeting` WHERE `meetingID` = :meetingID");
 			$stmt->bindParam(':meetingID', $meetingID);
 
-			foreach($mIDs as $meetingID)
+			foreach($mIDs as $meetingID) {
 				$stmt->execute();
-
-			Database::commit();
-
-			do{
+				$counter = 0;
 				foreach($meetings as $meet){
 					$emails = $stmt->fetchAll();
 					for($i=0;$i<count($emails);$i++)
 						$emails[$i] = $emails[$i]['email'];
-					$meet['attendies'] = $emails;
+					$meetings[$counter]['attendies'] = $emails;
+					$counter++;
+				}
+			}
+
+
+	/*		do{
+				$counter = 0;
+				foreach($meetings as $meet){
+					$emails = $stmt->fetchAll();
+					for($i=0;$i<count($emails);$i++)
+						$emails[$i] = $emails[$i]['email'];
+					$meet[$counter]['attendies'] = $emails;
 				}
 			}while($stmt->nextRowset());
+			*/
 
 
 
 			echo json_encode($meetings);
-
-
-		});
+});
 
 	$app->post('/register', function () use ($app){
 		$email = $app->request->post('email');
