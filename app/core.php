@@ -151,6 +151,7 @@ $app->get('/', function () use ($app){
 
 $app->response->headers->set('Access-Control-Allow-Origin', 'http://localhost:9000');
 $app->response->headers->set('Access-Control-Allow-Credentials', 'true');
+
         
 // Start the application
 $app->run();
