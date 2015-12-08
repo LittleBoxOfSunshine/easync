@@ -149,7 +149,7 @@ $app->get('/', function () use ($app){
 	echo file_get_contents(__DIR__.'/../public/index.html');
 });
 
-//$app->response->headers->set('Access-Control-Allow-Origin', 'http://localhost:9000');
+$app->response->headers->set('Access-Control-Allow-Origin', 'http://localhost:9000');
         
 // Start the application
 $app->run();
