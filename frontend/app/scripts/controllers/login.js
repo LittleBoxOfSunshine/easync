@@ -8,7 +8,7 @@
  * Controller of the easyncApp
  */
 
-var GLOBAL_IP = "http://52.27.123.122/";
+var GLOBAL_IP = "http://localhost:6969/";
 
 angular.module('easyncApp')
   .controller('LoginCtrl', function ($scope, $http, $cookies) {
@@ -28,12 +28,8 @@ angular.module('easyncApp')
     	$http({
     		url: GLOBAL_IP + 'api/v1.0/User/login',
     		method: 'POST',
-    		data: login_json/*,
-    		withCredentials: true,
-    		headers : {
-    			"Access-Control-Allow-Credentials" : "true",
-    			"Access-Control-Allow-Origin": "*"
-    		}*/
+    		data: login_json,
+            withCredentials: true
     	})
     	.then(function(response) {
     		console.log(response);
@@ -41,10 +37,6 @@ angular.module('easyncApp')
     			$scope.email = '';
     			$scope.pass = '';
     		}
-
-
-    		console.log(response.data);
-    		console.log($cookies.getAll());
     	},function(error) {
     		console.log(error);
     		$scope.pass = '';

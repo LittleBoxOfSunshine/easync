@@ -8,7 +8,7 @@
  * Controller of the easyncApp
  */
 
-var GLOBAL_IP = "http://52.27.123.122/";
+var GLOBAL_IP = "http://localhost:6969/";
 
 angular.module('easyncApp')
   .controller('NewMeetingCtrl', function ($scope, $http, $cookies) {
@@ -34,9 +34,13 @@ angular.module('easyncApp')
     };
 
     $scope.loadcontacts = function() {
-    	$http.get(GLOBAL_IP + 'api/v1.0/User/getContacts', '').success(function (data) {
+    	$http({
+            url: GLOBAL_IP + 'api/v1.0/User/getContacts',
+            method: 'GET',
+            withCredentials : true
+        }).then(function (data) {
     		console.log(data);
-    	}).error(function (error) {
+    	}, function (error) {
     		console.log(error);
     	});
     	$scope.usercontacts.push({'name': 'jorge'}, {'name': 'sam'});
