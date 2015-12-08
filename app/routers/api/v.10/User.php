@@ -51,7 +51,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'Successfully Added to Meeting.';
 		}
 		else {
-				echo 'mySQL error.'
+				echo 'mySQL error.';
 		}
 
 	});
