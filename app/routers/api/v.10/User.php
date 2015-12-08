@@ -37,15 +37,16 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
-	$app->post('/nearbyJoin', function () use ($app){
+	$app->post('/nearbyJoin', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
 		$token = $app->request->get('token');
 
-		$stmt = Database::prepareAssoc("INSERT INTO NearbyToken (`token`,`userID`) VALUES (:token, :userID);");
+		$stmt = Database::prepareAssoc("INSERT INTO NearbyAttendees (`token`,`userID`) VALUES (:token, :userID);");
 		$stmt->bindParam(':token', $token);
-		$stmt->bindParam(':userID', $userID);
+		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		
+
 		echo json_encode($token);
 	});
 
@@ -63,7 +64,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'Successfully Added to Meeting.';
 		}
 		else {
-				echo 'mySQL error.'
+				echo 'mySQL error.';
 		}
 
 	});
