@@ -38,7 +38,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 
-	$app->update('/rsvp', function () use ($app){
+	$app->post('/rsvp', function () use ($app){
 		global $USER_ID;
 		$token = $app->request->get('token');
 		$email = User::userToEmail($USER_ID);
