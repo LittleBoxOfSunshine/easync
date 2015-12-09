@@ -82,10 +82,29 @@ angular
         redirectTo: '/'
       });
   })
-  .factory('LoggedInService', function() {
+  .factory('LoggedInService', function($cookies) {
       return {
-          loggedIn: false
+        loggedIn: function() {
+          if ($cookies.get('easync_logged') === 'true') {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        set_or_refresh_cookie: function() {
+          var expire_date = new Date((new Date()).valueOf() + 1000*36);
+          $cookies.put('easync_logged', 'true', {'expires': expire_date});
+          return true;
+        }
+
       };
+      
+  }).factory('GlobalIPService', function() {
+    return {
+      //ip: "http://52.27.123.122/"
+      ip: "http://localhost:6969/"
+    };
+
   }).config(function ($httpProvider) {
   $httpProvider.defaults.headers.common = {};
   $httpProvider.defaults.headers.post = {};

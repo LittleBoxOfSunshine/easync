@@ -9,8 +9,6 @@
  * Controller of the easyncApp
  */
 
-var GLOBAL_IP = "http://localhost:6969/";
-
 angular.module('easyncApp')
   .controller('RegisterCtrl', function ($scope, $http) {
     $scope.user = {
