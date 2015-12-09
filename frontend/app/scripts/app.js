@@ -67,6 +67,11 @@ angular
         controller: 'AboutCtrl',
         controllerAs: 'about'
       })
+      .when('/settings',{
+        templateUrl: 'views/settings.html',
+        controller: 'SettingsCtrl',
+        controllerAs: 'settings'
+      })
       .when('/gbwindow',{
         templateUrl: 'views/main.html',
         controller: 'GlobalWindowCtrl',
@@ -90,7 +95,6 @@ angular
       return {
         loggedIn: function() {
           if ($cookies.get('easync_logged')) {
-            console.log(new Date());
             return true;
           } else {
             //console.log("no cooki found!");
@@ -106,7 +110,6 @@ angular
           if(this.loggedIn()) {
             $cookies.remove('easync_logged');
             $cookies.remove('slim_session');
-            console.log("cookiess removed!");
           } else {
             console.log("tried to log out, but wasn't logged in");
           }

@@ -34,7 +34,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 				echo 'Incorrect username and/or password';
 			}
 		}
-
     });
 
 
@@ -129,6 +128,22 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$email = $app->request->get('email');
 		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
 		$stmt->bindParam(':email', $email);
+		$stmt->execute();
+
+		$dat = $stmt->fetch();
+
+		if($dat !== false)
+			echo json_encode(true);
+		else
+			echo json_encode(false);
+	});
+
+	$app->get('/hasConnectedGoogleCal', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		$stmt = Database::prepareAssoc("SELECT userID from CalendarTokens WHERE userID=:userID");
+		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
 
 		$dat = $stmt->fetch();

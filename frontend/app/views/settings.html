@@ -1,0 +1,33 @@
+<div ng-controller="SettingsCtrl as settings">
+	<div class="col-md-6 contactsCol">
+		<div class="contactsList" ng-init="loadContacts()">
+			<p ng-repeat="x in contacts">
+			{{ x.name }}
+			</p>
+		</div>
+		<button class="btn"> Add Contact </button>
+	</div>
+	<div class="col-md-6 addCalCol" ng-init="checkCalendar()">
+		<button class="btn" ng-show="calConnected" disabled> Connect Google Calendar </button>
+		<button class="btn" ng-show="!calConnected" ng-click="connectCal()"> Connect Google Calendar </button>
+	</div>
+</div>
+
+<style>
+	div {
+		text-align: center;
+	}
+
+	.contactsCol {
+		background-color: darkgrey;
+		padding-top: 30px;
+		padding-bottom: 30px;
+	}
+
+	.addCalCol {
+		background-color: darkblue;
+		padding-top: 30px;
+		padding-bottom: 30px;
+	}
+
+</style>

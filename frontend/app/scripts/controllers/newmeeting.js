@@ -45,8 +45,9 @@ angular.module('easyncApp')
         }).then(function (response) {
     		//console.log(response.data);
             for (var i = 0; i < response.data.length; i++) {
-                if (response.data[i].name !== undefined && response.data[i].email !== undefined)
+                if (response.data[i].name !== undefined && response.data[i].email !== undefined) {
                     $scope.usercontacts.push({'name': response.data[i].name, 'email' : response.data[i].email});
+                }
             }
     	}, function (error) {
     		console.log(error);
