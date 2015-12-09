@@ -56,7 +56,6 @@ angular
         templateUrl: 'views/newmeeting.html',
         controller: 'NewMeetingCtrl',
         controllerAs: 'newmeeting'
-
       })
       .when('/groups', {
         templateUrl: 'views/groups.html',
@@ -67,6 +66,11 @@ angular
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl',
         controllerAs: 'about'
+      })
+      .when('/gbwindow',{
+        templateUrl: 'views/main.html',
+        controller: 'GlobalWindowCtrl',
+        controllerAs: 'windowcontrol'
       })
       .when('/techoverview',{
         templateUrl: 'views/techoverview.html',
@@ -82,10 +86,10 @@ angular
         redirectTo: '/'
       });
   })
-  .factory('LoggedInService', function($cookies) {
+  .factory('LoggedInService', function($cookies, $location) {
       return {
         loggedIn: function() {
-          if ($cookies.get('easync_logged') === 'true') {
+          if ($cookies.get('easync_logged')) {
             return true;
           } else {
             return false;
@@ -94,6 +98,16 @@ angular
         set_or_refresh_cookie: function() {
           var expire_date = new Date((new Date()).valueOf() + 1000*36);
           $cookies.put('easync_logged', 'true', {'expires': expire_date});
+          return true;
+        },
+        logout: function() {
+          if(this.loggedIn()) {
+            $cookies.remove('easync_logged');
+            $cookies.remove('slim_session');
+          } else {
+            console.log("tried to log out, but wasn't logged in");
+          }
+          $location.path('login');
           return true;
         }
 

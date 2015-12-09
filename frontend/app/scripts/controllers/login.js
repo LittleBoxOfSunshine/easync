@@ -10,7 +10,7 @@
 
 angular.module('easyncApp')
   .controller('LoginCtrl', function ($scope, $http, $cookies, GlobalIPService, LoggedInService, $location) {
-    //$scope.userLoggedIn = true;
+    $scope.userLoggedIn = false;
 
     $scope.email = '';
     $scope.pass = '';
@@ -47,7 +47,8 @@ angular.module('easyncApp')
     };
 
     $scope.check_cookies = function() {
-        if (LoggedInService.loggedIn) {
+        if (LoggedInService.loggedIn()) {
+            console.log('redirecting to dashboard');
             $location.path('');
         }
     };
