@@ -39,15 +39,18 @@ angular.module('easyncApp')
         }
 
     	$http({
-            url: GLOBAL_IP + 'api/v1.0/User/getContacts',
+            url: GLOBAL_IP + 'api/v1.0/User/getContactsInfo',
             method: 'GET',
             withCredentials : true
         }).then(function (response) {
-    		console.log(response.data);
+    		//console.log(response.data);
+            for (var i = 0; i < response.data.length; i++) {
+                if (response.data[i].name !== undefined && response.data[i].email !== undefined)
+                    $scope.usercontacts.push({'name': response.data[i].name, 'email' : response.data[i].email});
+            }
     	}, function (error) {
     		console.log(error);
     	});
-    	$scope.usercontacts.push({'name': 'jorge'}, {'name': 'sam'});
     };
 
    	//accepts the user object from contact list, removes it from contact list and adds it to attendee list

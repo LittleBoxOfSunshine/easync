@@ -181,6 +181,21 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		
 
 		echo json_encode($data);
+	});
+
+	$app->get('/getContactsInfo', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		$stmt = Database::prepareAssoc("SELECT name, email FROM User WHERE email in 
+										(SELECT contactEmail FROM Contacts WHERE userID=:userID)");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		$data = [];
+		if ($data = $stmt->fetchAll()) {
+    		echo json_encode($data);
+		}
 
 	});
 

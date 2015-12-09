@@ -90,13 +90,15 @@ angular
       return {
         loggedIn: function() {
           if ($cookies.get('easync_logged')) {
+            console.log(new Date());
             return true;
           } else {
+            //console.log("no cooki found!");
             return false;
           }
         },
         set_or_refresh_cookie: function() {
-          var expire_date = new Date((new Date()).valueOf() + 1000*36);
+          var expire_date = new Date((new Date()).valueOf() + 1000*1800);
           $cookies.put('easync_logged', 'true', {'expires': expire_date});
           return true;
         },
@@ -104,6 +106,7 @@ angular
           if(this.loggedIn()) {
             $cookies.remove('easync_logged');
             $cookies.remove('slim_session');
+            console.log("cookiess removed!");
           } else {
             console.log("tried to log out, but wasn't logged in");
           }
