@@ -42,8 +42,8 @@ angular.module('easyncApp')
             url: GLOBAL_IP + 'api/v1.0/User/getContacts',
             method: 'GET',
             withCredentials : true
-        }).then(function (data) {
-    		console.log(data);
+        }).then(function (response) {
+    		console.log(response.data);
     	}, function (error) {
     		console.log(error);
     	});
