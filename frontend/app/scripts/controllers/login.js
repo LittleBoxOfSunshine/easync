@@ -45,4 +45,10 @@ angular.module('easyncApp')
     		$scope.pass = '';
     	});
     };
+
+    $scope.check_cookies = function() {
+        if (LoggedInService.loggedIn) {
+            $location.path('');
+        }
+    };
 });

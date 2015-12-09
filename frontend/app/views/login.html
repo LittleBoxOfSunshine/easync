@@ -8,7 +8,7 @@
 </div>
 
 <div class="col-md-4">
-    <div ng-controller="LoginCtrl">
+    <div ng-init="check_cookies()" ng-controller="LoginCtrl">
       <form name="loginform" class="css-form" >
         <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
         <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>

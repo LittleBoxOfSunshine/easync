@@ -10,7 +10,7 @@
  */
 
 angular.module('easyncApp')
-  .controller('RegisterCtrl', function ($scope, $http) {
+  .controller('RegisterCtrl', function ($scope, $http, GlobalIPService, LoggedInService, $location) {
     $scope.user = {
     	firstname : '',
     	lastname : '',
@@ -44,7 +44,7 @@ angular.module('easyncApp')
     	var json_payload = JSON.stringify(payload);
       console.log(json_payload);
 
-    	$http.post(GLOBAL_IP + 'api/v1.0/User/register', json_payload).success(function (data) {
+    	$http.post(GlobalIPService.ip + 'api/v1.0/User/register', json_payload).success(function (data) {
           console.log(data);
           if (data === "Account Created.") {
             $scope.user = {
@@ -54,6 +54,11 @@ angular.module('easyncApp')
               pass : '',
               passtwo : ''
             };
+
+            //set the cookie for being logged in
+            LoggedInService.set_or_refresh_cookie();
+            //redirect back to dashboard
+            $location.path('');
           }
       }).error(function (error) {
 	      	console.log('Register failed ' + error);

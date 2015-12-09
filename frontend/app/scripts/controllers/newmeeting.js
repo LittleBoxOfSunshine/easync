@@ -11,7 +11,7 @@
 var GLOBAL_IP = "http://localhost:6969/";
 
 angular.module('easyncApp')
-  .controller('NewMeetingCtrl', function ($scope, $http, $cookies) {
+  .controller('NewMeetingCtrl', function ($scope, $http, $cookies, LoggedInService, $location) {
 
   	$scope.possibletimes_bool = false;
 
@@ -34,6 +34,10 @@ angular.module('easyncApp')
     };
 
     $scope.loadcontacts = function() {
+        if (!LoggedInService.loggedIn) {
+            $location.path('login');
+        }
+
     	$http({
             url: GLOBAL_IP + 'api/v1.0/User/getContacts',
             method: 'GET',
