@@ -116,8 +116,16 @@ class GoogleCalendar extends Model{
 
 
 	public function getEvents($startTime, $endTime){
-		$calendarList  = $this->calendarList->calendarList->listCalendarList();
+		$calendarList = $this->calendarList->calendarList->listCalendarList();
 		
+		$finalizedEvents = [];
+
+		$firstEvent = [];
+		$firstEvent['startTime'] = $startTime;
+		$firstEvent['endTime'] = $startTime;
+
+		$finalizedEvents[] = $firstEvent;
+
 		while(true){
 		    foreach($calendarList->getItems() as $calendarListEntry){
 			    /*
@@ -128,12 +136,19 @@ class GoogleCalendar extends Model{
 			    //get all events
 			    $events = $this->calendarList->events->listEvents($calendarListEntry->id, array('singleEvents' => 'true', 'timeMin' => $startTime, 'timeMax' => $endTime) );
 			    foreach($events->getItems() as $event){
-			    	echo $event->getSummary();
-			    	echo "<br>";
-			        echo $event->getStart()->dateTime;
-			        echo "<br>";
-			        echo $event->getEnd()->dateTime;
-			        echo "<br>-------------<br><br>";
+			    	$start = $event->getStart()->dateTime;
+			    	$end = $event->getEnd()->dateTime;
+
+
+			    	if($start !== NULL || $end !== NULL ){
+				    	$insertEvent = [];
+				    	//$insertEvent['summary'] = $event->getSummary();
+				    	$insertEvent['startTime'] = $start;
+				    	$insertEvent['endTime'] = $end;
+
+				    	$finalizedEvents[] = $insertEvent;
+				    }
+
 			    }
 		    }
 
@@ -146,9 +161,101 @@ class GoogleCalendar extends Model{
 		    	break;
 		    }
 		}
+
+		$lastEvent = [];
+		$lastEvent['startTime'] = $endTime;
+		$lastEvent['endTime'] = $endTime;
+
+		$finalizedEvents[] = $lastEvent;
+
+		return $finalizedEvents;
 	  	
 	}
+
+	public function invertEvents($merged){
+		$inverted = [];
+
+		for($i=0; $i<count($merged)-1; $i++){
+			$curEvent = [];
+			$curEvent['startTime'] = $merged[$i][1];
+			$curEvent['endTime'] = $merged[$i+1][0];
+
+			$inverted[] = $curEvent;
+		}
+
+		return $inverted;
+	}
+
+	public function convertToMinutes($events, $startTime){
+		$eventMinutes = [];
+		$start = new DateTime($startTime);
+		
+		foreach($events as $event){
+			$sinceStart = $start->diff( new DateTime($event['startTime']) );
+
+			$minutes = $sinceStart->days * 24 * 60;
+			$minutes += $sinceStart->h * 60;
+			$minutes += $sinceStart->i;
+
+			$event['startTime'] = $minutes;
+
+			$sinceStart = $start->diff( new DateTime($event['endTime']) );
+
+			$minutes = $sinceStart->days * 24 * 60;
+			$minutes += $sinceStart->h * 60;
+			$minutes += $sinceStart->i;
+
+			$event['endTime'] = $minutes;
+
+			$eventMinutes[] = $event;
+		}
+
+		return $eventMinutes;
+	}
+
+	public static function intcmp($a,$b) {
+		if(strtotime($a) == strtotime($b)) return 0;
+	    if(strtotime($a) > strtotime($b))return 1;
+	    if(strtotime($a) < strtotime($b))return -1;
+	}
+
+	public static function compare($a, $b){
+		$val = self::intcmp($a['startTime'], $b['startTime']);
+		if($val == 0)
+			$val = self::intcmp($a['endTime'], $b['endTime']);
+		return $val;
+	}
 	
+	public static function merge_ranges($meetings){
+		//sort by start times, break ties with end times
+		usort($meetings, 'self::compare');
+		
+		//meetings only go in mergedMeetings when we're sure they can't be merged further
+		$mergedMeetings = [];
+
+		$previousMeetingStart = $meetings[0]['startTime'];
+		$previousMeetingEnd = $meetings[0]['endTime'];
+
+		foreach( array_slice($meetings, 1) as $event => $time){
+			$currentMeetingStart = $time['startTime'];
+			$currentMeetingEnd = $time['endTime'];
+
+			//if the previous meeting can be merged with the current one
+			if( abs(strtotime($currentMeetingStart) - strtotime($previousMeetingEnd)) <= 60){
+	        	$previousMeetingEnd = max($currentMeetingEnd, $previousMeetingEnd);
+			}
+			else{
+				$mergedMeetings []= array($previousMeetingStart, $previousMeetingEnd);
+				$previousMeetingStart = $currentMeetingStart;
+				$previousMeetingEnd = $currentMeetingEnd;
+			}
+		}	
+
+		$mergedMeetings []= array($previousMeetingStart, $previousMeetingEnd);
+
+		return $mergedMeetings;
+	}
+
 }
 
 

@@ -61,6 +61,11 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		$allEvents = [];
 
+		/*
+			make sure to compensate for startTime and endtime when 
+			inverting takenTime to freeTime
+		*/
+
 		foreach($emails as $email){
 			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
 			$stmt->bindParam(':email', $email);
@@ -73,11 +78,18 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 				$userID = $userID['userID'];
 				
 				$cal = new GoogleCalendar(array('userID' => $userID));
-				$allEvents[] = $cal->getEvents($startTime, $endTime);
+				//$allEvents[] = $cal->getEvents($startTime, $endTime);
+				$mergedEvents = $cal->merge_ranges( $cal->getEvents($startTime, $endTime) );
+				$invertedEvents = $cal->invertEvents($mergedEvents);
+				$minuteEvents = $cal->convertToMinutes( $invertedEvents, $startTime );
+
+				$allEvents[] = $minuteEvents;
 			} 
 
 		}
+		echo "<pre>";
 		var_dump($allEvents);
+		echo "</pre>";
 
 	});
 
