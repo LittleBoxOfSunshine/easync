@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:weightSum="3">
+
+    <RelativeLayout
+        android:id="@+id/attendees_list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.75"
+        android:layout_gravity="left"
+        android:paddingTop="10dp"
+        android:gravity="center_horizontal">
+        <TextView
+            android:id="@+id/attendees_list_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/rectangle"
+            android:gravity="center_horizontal"
+            android:textSize="32sp"
+            android:textColor="@color/darkCharcoal"
+            android:text="Current Attendees" />
+        <ScrollView
+            android:id="@+id/attendees_list_sv"
+            android:layout_below="@id/attendees_list_label"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rectangle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/attendees_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/buttons_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.25"
+        android:layout_gravity="left"
+        android:paddingTop="5dp"
+        android:gravity="center_horizontal">
+        <Button
+            android:id="@+id/add_attendee_email_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_field"
+            android:onClick="addEmailClick"
+            android:text="Add Attendees by Email"/>
+    </RelativeLayout>
+</LinearLayout>

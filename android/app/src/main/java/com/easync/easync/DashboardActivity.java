@@ -1,5 +1,6 @@
 package com.easync.easync;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,13 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void handleNewMeetingClick(View target){
         animateClick(target);
+
+        //Start a new intent
+        Intent newMeetingIntent = new Intent(getApplicationContext(), NewMeetingActivity.class);
+
+        Log.e("Login Attempt", "Dashboard --> New Meeting");
+
+        startActivity(newMeetingIntent);
         //Do Things
     }
 

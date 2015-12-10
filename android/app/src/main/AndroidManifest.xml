@@ -29,5 +29,10 @@
             android:theme="@style/AppTheme.noTitle"
             android:parentActivityName=".DashboardActivity" >
         </activity>
+        <activity
+            android:name=".NewMeetingActivity"
+            android:label="@string/title_activity_new_meeting"
+            android:parentActivityName=".DashboardActivity" >
+        </activity>
     </application>
 </manifest>
