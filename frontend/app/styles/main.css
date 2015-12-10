@@ -1,6 +1,11 @@
 div{
   font-family: 'Raleway', sans-serif;
+}
 
+.loginregrow {
+  margin-top: 5%;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 
 #main-col-1 {
