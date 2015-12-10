@@ -94,21 +94,40 @@
 
         <!-- endbuild -->
 </body>
-<footer>
-  <a href="#/about">About Easync</a>
-  <a href="#/techoverview">Technical Overview</a>
-  <a href="#/devprocess">Development Process</a>
-</footer>
+<div id="footer">
+  <div id="footerbox">
+    <a href="#/about">About Easync</a>
+    <a href="#/techoverview">Technical Overview</a>
+    <a href="#/devprocess">Development Process</a>
+  </div>
+</div>
 </html>
 
 <style>
 .navbar-brand {
-  font-size: 40px;
+  font-size: 32px;
 }
 .navbar {
-  height:100px;
-  font-size: 30px;
-
-
+  height:50px;
+  font-size: 24px;
 }
+
+#footer {
+  width:100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+#footerbox {
+  width: 600px;
+  height: 50px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#footerbox > a {
+  margin-right: 30px;
+}
+
 </style>
