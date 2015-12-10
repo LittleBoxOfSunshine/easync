@@ -1,26 +1,26 @@
-<div class="row marketing">
+<div class="row marketing loginregrow">
 
-<div class="col-md-8 log-in-cal">
-  <time datetime="2014-09-20" class="icon">
-    <em><span class="glyphicon glyphicon-ok color" aria-hidden="true" ></span></em>
-    <strong>Log In</strong>
-  </time>
-</div>
+  <div class="col-md-8 log-in-cal">
+    <time datetime="2014-09-20" class="icon">
+      <em><span class="glyphicon glyphicon-ok color" aria-hidden="true"></span></em>
+      <strong>Log In</strong>
+    </time>
+  </div>
 
-<div class="col-md-4">
-    <div ng-init="check_cookies()" ng-controller="LoginCtrl">
-      <form name="loginform" class="css-form" >
-        <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
-        <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
-        <input type="submit" value="Log In" ng-click="login(email, pass)">
-      </form>
+  <div class="col-md-4">
+      <div ng-init="check_cookies()" ng-controller="LoginCtrl">
+        <form name="loginform" class="css-form" >
+          <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
+          <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
+          <input type="submit" value="Log In" ng-click="login(email, pass)">
+        </form>
 
-      <div id="googlesignin">
-        <p><h2> OR sign in with google </h2></p>
-        <div id="my-signin2"></div>
-        <a onclick="signout_google()">Sign out of google</a>
+        <div id="googlesignin">
+          <div id="my-signin2"></div>
+          <a onclick="signout_google()">Sign out of google</a>
+        </div>
       </div>
-    </div>
+  </div>
 </div>
 
 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
@@ -56,6 +56,7 @@
 	}
 
 	#googlesignin {
+    margin-top: 30px;
 		text-align: center;
 	}
 
@@ -73,6 +74,7 @@
     margin: 10px;
     height:30px;
   }
+
   input {
     width: 250px;
     margin:10px;

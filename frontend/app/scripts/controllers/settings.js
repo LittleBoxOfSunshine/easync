@@ -34,8 +34,7 @@ angular.module('easyncApp')
 		$http({
 			url: GlobalIPService.ip + 'api/v1.0/User/hasConnectedGoogleCal',
 			method: 'GET',
-			withCredentials: true,
-
+			withCredentials: true
 		}).then(function (response) {
 			console.log(response.data);
 			if (response.data === true) {
