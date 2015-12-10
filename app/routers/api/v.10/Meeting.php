@@ -91,15 +91,67 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			} 
 
 		}
-		echo "<pre>";
-		var_dump($allEvents);
-		echo "</pre>";
-	/*
-		$output= array(
-			array('startTime' => , 'endTime' => 840),
-			array('startTime' => 9910, 'endTime' => 3660)
+
+		//$meetingTimes = diffin($allEvents)
+
+		$meetingTimes = array(
+			array(
+				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com', 'newtest@gmail.com'),
+				'startTime' => '0',
+				'endTime' => '480'
+			),
+			array(
+				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com'),
+				'startTime' => '991',
+				'endTime' => '3360'
+			)
 		);
-	*/
+
+		//make sure everyone can attend
+		if($allRequired){
+			if(count($emails) != count($meetingTimes[0]['people'])){
+				echo "A meeting time is not possible for all members.";
+				return;
+			}
+		}
+
+		//convert to non 0 indexed and change email to names
+		$finalMeetings = [];
+
+		$start = new DateTime($startTime);
+
+		foreach($meetingTimes as $meet) {
+			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+			$newTime = date("D, M d g:i A", strtotime($newTime));
+			
+			$meet['startTime'] = $newTime;
+
+			$newTime = $start->add(new DateInterval('PT' . $meet['endTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+			$newTime = date("D, M d g:i A", strtotime($newTime));
+
+			$meet['endTime'] = $newTime;
+
+			$newPeople = [];
+
+			foreach($meet['people'] as $person){
+				$stmt = Database::prepareAssoc("SELECT `name` FROM `User` WHERE email=:person");
+				$stmt->bindParam(':person', $person);
+				$stmt->execute();
+
+				$newPeople[] = $stmt->fetch()['name'];
+			}
+
+			$meet['people'] = $newPeople;
+
+			$finalMeetings[] = $meet;
+		}
+
+		return json_encode($finalMeetings);
+		
 	});
 
 	//if exists, update rather than insert
