@@ -25,37 +25,30 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 
 		if($stmt->fetch()){
-			echo 'in if';
-			$stmt = Database::prepareAssoc("SELECT `googleID` FROM User WHERE `email` = `:email`;");
+			$stmt = Database::prepareAssoc("SELECT googleID FROM User WHERE email=:email;");
 			$stmt->bindParam(':email', $email);
 			$stmt->execute();
-			if($stmt->fetch())
-				echo 'Already Used Google Sign In.';
-			else{
+			//var_dump($stmt->fetch());
+			$anger = $stmt->fetch();
+			if(is_null($anger["googleID"])){
 				$stmt = Database::prepareAssoc("UPDATE User SET `googleID` = :google_ID WHERE `email` = :email;");
 				$stmt->bindParam(':google_ID', $google_ID);
 				$stmt->bindParam(':email', $email);
 				$stmt->execute();
+				echo 'Inserted tokenID';
+			}
+			else{
+				echo 'Already Used Google Sign In.';
 			}
 		}
 
 		else {
-			echo 'in else';
 			$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `googleID`)
 				VALUES(:email, :name, :google_ID);");
 			$stmt->bindParam(':email', $email);
 			$stmt->bindParam(':name', $fullName);
 			$stmt->bindParam(':google_ID', $google_ID);
 			$stmt->execute();
-		}
-
-
-		if(isset($_SESSION['auth_token']))
-			$user->revokeAuthToken($_SESSION['auth_token']);
-
-		else {
-			$_SESSION['auth_token'] = $this->createAuthToken();
-		}
 
 		if($stmt->errorCode() === '00000'){
 			echo 'Account Created.';
@@ -65,6 +58,15 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 		else{
 			echo 'A MySQL error has occurred.';
+		}
+	}
+
+
+		if(isset($_SESSION['auth_token']))
+			$user->revokeAuthToken($_SESSION['auth_token']);
+
+		else {
+			$_SESSION['auth_token'] = $this->createAuthToken();
 		}
 	});
 
