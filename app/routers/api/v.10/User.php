@@ -211,7 +211,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		if ($data = $stmt->fetchAll()) {
     		echo json_encode($data);
 		}
-
 	});
 
 	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){

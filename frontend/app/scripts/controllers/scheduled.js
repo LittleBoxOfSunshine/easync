@@ -8,11 +8,15 @@
  * Controller of the home page 
  */
 angular.module('easyncApp')
-.controller('ScheduledCtrl', function ($scope, $http) {
-    console.log($scope);
-    $http.get("http://52.27.123.122/api/v1.0/User/getMeetings")
+.controller('ScheduledCtrl', function ($scope, $http, GlobalIPService) {
+    
+    $scope.loadMeetings = function () {
+    	$http.get(GlobalIPService.ip + "api/v1.0/User/getMeetings")
     	.then(function (response) {
-    		console.log(response.data.meeting); //figure out what to put here eventually
-
+    		console.log(response.data); //figure out what to put here eventually
+    	}, function (error) {
+    		console.log(error);
     	});
+    };
+    
 });

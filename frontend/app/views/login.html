@@ -60,6 +60,21 @@
       // The ID token you need to pass to your backend:
       var id_token = googleUser.getAuthResponse().id_token;
       console.log("ID Token: " + id_token);
+
+      console.log(profile.getName().split(' ')[0], profile.getName().split(' ')[1]);
+
+      var data = {
+        'google_ID' : profile.getId(),
+        'firstname' : profile.getName().split(' ')[0],
+        'lastname' : profile.getName().split(' ')[1],
+        'email' : profile.getEmail()
+      };
+
+      var json_data = JSON.stringify(data);
+
+      $.post('http://localhost:6969/api/v1.0/User/googlesignin', function (data) {
+        console.log(data);
+      });
     };
 </script>
 

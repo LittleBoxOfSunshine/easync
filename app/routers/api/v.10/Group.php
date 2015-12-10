@@ -46,5 +46,22 @@ $app->group('/api/v1.0/Group', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo 'A MySQL error has occurred.';
 		}
 	});
+
+	$app->get('/getGroups', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		//$stmt = Database::prepareAssoc("SELECT userID FROM `Group` WHERE groupID=(SELECT groupID FROM GroupDetails WHERE creatorUserID=:userID);");
+		$stmt = Database::prepareAssoc("SELECT User.name, email, g.name FROM (SELECT userID, name FROM `Group` LEFT JOIN GroupDetails ON `Group`.`groupID`=GroupDetails.groupID WHERE `Group`.groupID in (SELECT groupID FROM `Group` WHERE userID=:userID)) as g JOIN User on User.userID=g.userID WHERE g.userID != :userID;");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		$data = [];
+		if ($data = $stmt->fetchAll()) {
+    		echo json_encode($data);
+		}
+
+	});
 	
 });

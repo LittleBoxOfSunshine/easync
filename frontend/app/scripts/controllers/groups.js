@@ -9,7 +9,18 @@
  */
 
 angular.module('easyncApp')
-  .controller('GroupsCtrl', function ($scope, $http) {
-    console.log($scope);
-    console.log($http);
+  .controller('GroupsCtrl', function ($scope, $http, GlobalIPService) {
+    
+    $scope.loadGroups = function() {
+    	$http({
+    		method:'GET',
+    		url: GlobalIPService.ip + 'api/v1.0/Group/getGroups',
+  			withCredentials: true
+    	}).then(function (response) {
+    		console.log(response.data);
+    	}, function (error) {
+    		console.log(error);
+    	});
+    };
+
 });
