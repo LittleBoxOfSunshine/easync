@@ -34,7 +34,8 @@ angular.module('easyncApp')
 		$http({
 			url: GlobalIPService.ip + 'api/v1.0/User/hasConnectedGoogleCal',
 			method: 'GET',
-			withCredentials: true
+			withCredentials: true,
+
 		}).then(function (response) {
 			console.log(response.data);
 			if (response.data === true) {
@@ -46,12 +47,14 @@ angular.module('easyncApp')
 	};
 
 	$scope.connectCal = function() {
-		$http({
+		/*$http({
 			url: GlobalIPService.ip + 'api/v1.0/User/addGoogleCal',
-			method: 'GET',
-			withCredentials: true
-		}).then(function (response) {
-			console.log(response.data);
+			method: 'JSONP',
+			withCredentials: true,
+			dataType: 'jsonp'
+		})*/
+		$http.jsonp(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal')
+		.then(function (response) {
 		}, function (error) {
 			console.log("error connecting google cal", error);
 		});
