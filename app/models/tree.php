@@ -18,8 +18,8 @@ class IntervalObject{
 			$this->people[] = $person;
 	}
 
-	public function getTop(&$x, array & $ret=array()){
-		$people = array_merge($people, $this->people);
+	public function getTop(&$x, array & $ret=array(), array & $people=array()){
+		$this->people = array_merge($people, $this->people);
 
 		if($this->depth > 0){
 
@@ -29,7 +29,7 @@ class IntervalObject{
 			}
 		}
 		else{
-			$ref[] = $people;
+			$ret[] = $people;
 		}	
 
 	}
@@ -101,7 +101,7 @@ class CalIntervalDiff{
 
 	private $intervalObjects = [];
 
-	public function __construct(&$events, $rangeLowerBound, $rangeUpperBound, $workdayLowerBound = 0, $workdayUpperBound = 24, $topSlots = 5, $length){
+	public function __construct(&$events, $rangeLowerBound, $rangeUpperBound, $workdayLowerBound = 0, $workdayUpperBound = 24, $length, $topSlots = 5){
 		/*
 		 * convert json workday to minutes
 		 */
@@ -138,7 +138,8 @@ class CalIntervalDiff{
 
 	public function getTop($x){
 		$ret = [];
-		array_slice( $this->root->getTop($x,$ret), 0, 5 );
+		$this->root->getTop($x,$ret);
+		array_slice($ret, 0, 5 );
 	}
 
 }

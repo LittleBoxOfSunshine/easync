@@ -54,10 +54,14 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$name = $meeting->EventDetails->name;
 		$creatorUserID = $meeting->EventDetails->creatorUserID;
 
-		//$startTime->setTimeZone(new DateTimeZone($meeting->EventDetails->timeZone));
+
 		$startTime = $startTime->format('Y-m-d\TH:i:sP');
-		//$endTime->setTimeZone(new DateTimeZone($meeting->EventDetails->timeZone));
+		$startTime = substr($startTime, 0, -6);
+		$startTime = $startTime . "-06:00";
+
 		$endTime = $endTime->format('Y-m-d\TH:i:sP');
+		$endTime = substr($endTime, 0, -6);
+		$endTime = $endTime . "-06:00";
 
 		$allEvents = [];
 
@@ -90,13 +94,26 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo "<pre>";
 		var_dump($allEvents);
 		echo "</pre>";
-
+	/*
+		$output= array(
+			array('startTime' => , 'endTime' => 840),
+			array('startTime' => 9910, 'endTime' => 3660)
+		);
+	*/
 	});
 
 	//if exists, update rather than insert
 	$app->post('/finalMeeting', $AUTH_MIDDLEWARE(), function () use ($app){
+		
+		//input: index of time option chosen
+		$input = 4;
+
+		$output = array(
+
+		);
+
 		/*
-		input: index of time option chosen
+		
 		output: success/failure msgs
 
 		steps:

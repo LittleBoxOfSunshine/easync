@@ -147,6 +147,9 @@ class GoogleCalendar extends Model{
 				    	$insertEvent['endTime'] = $end;
 
 				    	$finalizedEvents[] = $insertEvent;
+				    	//echo "<br><pre>";
+				    	//var_dump($insertEvent);
+				    	//echo "</pre><br>";
 				    }
 
 			    }
