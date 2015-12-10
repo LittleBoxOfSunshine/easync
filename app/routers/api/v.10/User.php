@@ -7,6 +7,69 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo "This is the home function.";
     });
 
+	$app->post('/googleSignIn', function () use ($app) {
+
+		$data = json_decode($app->request()->getBody());
+
+		$email = $data->email;
+		$firstname = $data->firstname;
+		$lastname = $data->lastname;
+		$fullName = $firstname.' '.$lastname;
+		$google_ID = $data->google_ID;
+
+		$user = new User(array('email' => $email));
+
+		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
+
+
+		if($stmt->fetch()){
+			echo 'in if';
+			$stmt = Database::prepareAssoc("SELECT `googleID` FROM User WHERE `email` = `:email`;");
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+			if($stmt->fetch())
+				echo 'Already Used Google Sign In.';
+			else{
+				$stmt = Database::prepareAssoc("UPDATE User SET `googleID` = :google_ID WHERE `email` = :email;");
+				$stmt->bindParam(':google_ID', $google_ID);
+				$stmt->bindParam(':email', $email);
+				$stmt->execute();
+			}
+		}
+
+		else {
+			echo 'in else';
+			$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `googleID`)
+				VALUES(:email, :name, :google_ID);");
+			$stmt->bindParam(':email', $email);
+			$stmt->bindParam(':name', $fullName);
+			$stmt->bindParam(':google_ID', $google_ID);
+			$stmt->execute();
+		}
+
+
+		if(isset($_SESSION['auth_token']))
+			$user->revokeAuthToken($_SESSION['auth_token']);
+
+		else {
+			$_SESSION['auth_token'] = $this->createAuthToken();
+		}
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Account Created.';
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'ERROR: This email is already registered...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
+		}
+	});
+
+
+
 	$app->post('/login', function () use ($app){
 
 		/*if($app->request->headers->get('Content-Type') != 'application/json'){
@@ -169,7 +232,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
 
-		
+
 		//This query should be used to convert group names to userID lists
 		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
 		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
@@ -178,7 +241,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		while($row = $stmt->fetch())
 			$data[] = $row['name'];
-		
+
 
 		echo json_encode($data);
 
