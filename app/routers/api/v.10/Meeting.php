@@ -43,10 +43,9 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		//json or form request?
 
-		$userEmail = $app->request->post('email');
-
 		$meeting = json_decode($app->request()->getBody());
 
+		//required for calendar diffing
 		$emails = $meeting->emails;
 		$length = $meeting->length;
 		$dayEnd = $meeting->dayEnd;
@@ -54,8 +53,15 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$allRequired = $meeting->allRequired;
 		$startTime =  new DateTime($meeting->EventDetails->startTime);
 		$endTime = new DateTime($meeting->EventDetails->endTime);
-		$name = $meeting->EventDetails->name;
-		$creatorUserID = $meeting->EventDetails->creatorUserID;
+		
+		//not required - passed as json encoded cookie
+		$meetingDetails = [];
+		$meetingDetails['description'] = $meeting->EventDetails->description;
+		$meetingDetails['creatorEmail'] = $meeting->EventDetails->creatorEmail;
+		$meetingDetails['location'] = $meeting->EventDetails->location;
+		$meetingDetails['attachments'] = $meeting->EventDetails->attachments;
+
+		$_SESSION['meetingDetails'] = $meetingDetails;
 
 
 		$startTime = $startTime->format('Y-m-d\TH:i:sP');
@@ -137,7 +143,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 		$_SESSION['meetings'] = $sessionMeetings;
-		$_SESSION['email'] = $userEmail;
 
 		//convert to non 0 indexed and change email to names
 		$finalMeetings = [];
@@ -173,7 +178,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$finalMeetings[] = $meet;
 		}
 
-		return json_encode($finalMeetings);
+		echo json_encode( $finalMeetings );
 		
 	});
 
@@ -183,6 +188,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		* change email cookie to all json 
 		* should contain stuff for meetingDetails like location, etc.
 		*/
+		$app->response->headers->set('Content-Type', 'application/json');
 
 		if( isset($_SESSION['meetings']) ){
 			//load meeting details from session using index (time range) given as input	
@@ -191,30 +197,27 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			if($index === NULL)
 				die("Index was not sent.");
 
-			if( isset($_SESSION['email']) ){
-				$creatorUserEmail = $_SESSION['email'];
-				$meetings = $_SESSION['meetings'];
+			$meetingDetails = $_SESSION['meetingDetails'];
+			$description = $meetingDetails['description'];
+			$creatorEmail = $meetingDetails['creatorEmail'];
+			$location = $meetingDetails['location'];
+			$attachments = $meetingDetails['attachments'];
 
-				$creatorUserID = User::emailToUser($creatorUserEmail);
-				
-				/*
-				see User::getMeetings on how to get attendies
-				*/
+			//holds attendees and start/end times
+			$meeting = $_SESSION['meetings']; 
 
-
-				foreach($meetings['people'] as $email){
-				}
-
-			}
-			else
-				die("Email was not sent");
-
-
+			$creatorUserID = User::emailToUser($creatorEmail);
+			
+			/*
+			//insert into meetingDetails then meeting
+			$stmt = Database::prepareAssoc("INSERT INTO `MeetingDetails` (userID, data) VALUES (:userID, :data) ON DUPLICATE KEY UPDATE data=:data;");
+			$stmt->bindParam(':userID', $USER_ID);
+			$stmt->bindParam(':data', $data);				
+			$stmt->execute();
 
 
-			echo "<pre>";
-			var_dump($meetings[$index]);
-			echo "</pre>";
+			foreach($meetings['people'] as $email){}
+			*/
 		}
 
 		else{

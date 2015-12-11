@@ -10,8 +10,9 @@
   "EventDetails": {
     "startTime": "2015-12-01 05:00:00",
     "endTime": "2015-12-04 06:00:00",
-    "name": "Test Meeting",
-    "creatorUserID": "999999",
-    "timeZone": "America/Chicago"
+    "description": "Test Meeting",
+    "creatorEmail": "smitheric95@gmail.com",
+    "location": "Dallas, TX",
+    "attachments": "Meeting.pdf"
   }
 }
