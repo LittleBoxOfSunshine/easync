@@ -115,10 +115,32 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			}
 		}
 
+		//store info in a session
+		$start = new DateTime($startTime);
+
+		$sessionMeetings = [];
+
+		foreach($meetingTimes as $meet) {
+			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+			
+			$meet['startTime'] = $newTime;
+
+			$newTime = $start->add(new DateInterval('PT' . $meet['endTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+
+			$meet['endTime'] = $newTime;
+
+			$sessionMeetings[] = $meet;
+		}
+
+		var_dump($sessionMeetings);
+		
+
 		//convert to non 0 indexed and change email to names
 		$finalMeetings = [];
-
-		$start = new DateTime($startTime);
 
 		foreach($meetingTimes as $meet) {
 			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
