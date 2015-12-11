@@ -10,7 +10,8 @@
   "EventDetails": {
     "startTime": "2015-12-01 05:00:00",
     "endTime": "2015-12-04 06:00:00",
-    "description": "Test Meeting",
+    "name": "Test Name",
+    "description": "Test Description",
     "creatorEmail": "smitheric95@gmail.com",
     "location": "Dallas, TX",
     "attachments": "Meeting.pdf"
