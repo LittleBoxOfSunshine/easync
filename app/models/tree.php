@@ -231,24 +231,15 @@ class CalIntervalDiff{
 			$this->root = new IntervalObject($rangeLowerBound, $rangeUpperBound, 'ROOT');
 			
 			self::$length = $length;
-			
-			//var_dump($events);
-            //$c = 0;
 
 			foreach($events as $email => $intervals) {
-                //$c2 = 0;
 				foreach($intervals as $interval){
-                    //echo $interval['endTime'].' - '.$interval['startTime'].' = '.($interval['endTime'] - $interval['startTime']).'\n';
                     if( ($interval['startTime'] % 1440) < $workdayLowerBound ){
-                        //echo "trimming start \n";
                         $interval['startTime'] = 1440*floor($interval['startTime']/1440) + $workdayLowerBound;
-                        //echo $interval['startTime']."\n";
                     }
 
                     if( ($interval['endTime'] % 1440) > $workdayUpperBound ){
-                        //echo "trimming end \n";
                         $interval['endTime'] = 1440*floor($interval['endTime']/1440) + $workdayUpperBound;
-                        //echo $interval['endTime']."\n";
                     }
 
 					if( $interval['endTime'] - $interval['startTime'] < $length)
@@ -256,32 +247,19 @@ class CalIntervalDiff{
 	
 					$this->root->insertInterval($email, $interval['startTime'], $interval['endTime']);
 
-                   // if($c > 2 && $c2 <= 2)
-					  //  var_dump($this->root);
-                    //$c2++;
-					//echo '-------------------------------------';
 				}
 
-
-//                if($c==2)
-  //                  die();
-    //            else
-                   // $c++;
-				//echo 'NEXT PERSON +++++++++++++++++';
 			}
 		}
 
 	}
 
 	public function getTop($x){
-        var_dump($this->root);
-        echo "-------------------------------------\n";
 
 		$ret = [];
 		$this->root->getTop($x,$ret);
 
         return $ret;
-		//return array_slice( $ret, 0, 5 );
 	}
 	
 	public static function getLength(){
