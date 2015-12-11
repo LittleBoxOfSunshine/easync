@@ -62,6 +62,64 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$user->logout();
     });
 
+
+		$app->get('/getMeetings', $AUTH_MIDDLEWARE(), function () use ($app){
+			global $USER_ID;
+
+			$app->response->headers->set('Content-Type', 'application/json');
+
+			$email = User::userToEmail($USER_ID);
+			$meetings = [];
+
+			$stmt = Database::prepareAssoc("SELECT `meetingID` FROM `Meeting` WHERE `email` = :email;");
+			$stmt->bindParam(':email',$email);
+			$stmt->execute();
+
+			$mIDs = [];
+			while($row = $stmt->fetch())
+				$mIDs[] = $row['meetingID'];
+
+			$stmt = Database::prepareAssoc("SELECT * FROM `MeetingDetails` WHERE `meetingID` = :meetingID;");
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($mIDs as $meetingID) {
+				$stmt->execute();
+				$meetings[] = $stmt->fetch();
+			}
+
+
+			$stmt = Database::prepareAssoc("SELECT email FROM `Meeting` WHERE `meetingID` = :meetingID");
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($mIDs as $meetingID) {
+				$stmt->execute();
+				$counter = 0;
+				foreach($meetings as $meet){
+					$emails = $stmt->fetchAll();
+					for($i=0;$i<count($emails);$i++)
+						$emails[$i] = $emails[$i]['email'];
+					$meetings[$counter]['attendies'] = $emails;
+					$counter++;
+				}
+			}
+
+
+	/*		do{
+				$counter = 0;
+				foreach($meetings as $meet){
+					$emails = $stmt->fetchAll();
+					for($i=0;$i<count($emails);$i++)
+						$emails[$i] = $emails[$i]['email'];
+					$meet[$counter]['attendies'] = $emails;
+				}
+			}while($stmt->nextRowset());
+			*/
+
+
+
+			echo json_encode($meetings);
+});
+
 	$app->post('/register', function () use ($app){
 
 		/*if($app->request->headers->get('Content-Type') != 'application/json'){
@@ -169,7 +227,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
 
-		
+
 		//This query should be used to convert group names to userID lists
 		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
 		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
@@ -178,7 +236,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		while($row = $stmt->fetch())
 			$data[] = $row['name'];
-		
+
 
 		echo json_encode($data);
 
