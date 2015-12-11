@@ -43,10 +43,9 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		//json or form request?
 
-		$userEmail = $app->request->post('email');
-
 		$meeting = json_decode($app->request()->getBody());
 
+		//required for calendar diffing
 		$emails = $meeting->emails;
 		$length = $meeting->length;
 		$dayEnd = $meeting->dayEnd;
@@ -54,8 +53,16 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$allRequired = $meeting->allRequired;
 		$startTime =  new DateTime($meeting->EventDetails->startTime);
 		$endTime = new DateTime($meeting->EventDetails->endTime);
-		$name = $meeting->EventDetails->name;
-		$creatorUserID = $meeting->EventDetails->creatorUserID;
+		
+		//not required - passed as json encoded cookie
+		$meetingDetails = [];
+		$meetingDetails['name'] = $meeting->EventDetails->name;
+		$meetingDetails['description'] = $meeting->EventDetails->description;
+		$meetingDetails['creatorEmail'] = $meeting->EventDetails->creatorEmail;
+		$meetingDetails['location'] = $meeting->EventDetails->location;
+		$meetingDetails['attachments'] = $meeting->EventDetails->attachments;
+
+		$_SESSION['meetingDetails'] = $meetingDetails;
 
 
 		$startTime = $startTime->format('Y-m-d\TH:i:sP');
@@ -137,7 +144,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 		$_SESSION['meetings'] = $sessionMeetings;
-		$_SESSION['email'] = $userEmail;
 
 		//convert to non 0 indexed and change email to names
 		$finalMeetings = [];
@@ -173,7 +179,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$finalMeetings[] = $meet;
 		}
 
-		return json_encode($finalMeetings);
+		echo json_encode( $finalMeetings );
 		
 	});
 
@@ -186,44 +192,80 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		if( isset($_SESSION['meetings']) ){
 			//load meeting details from session using index (time range) given as input	
-			$index = $app->request->post('index');
+			$index = json_decode($app->request()->getBody());
 
 			if($index === NULL)
-				die("Index was not sent.");
+				die("Index was not sent in json.");
 
-			if( isset($_SESSION['email']) ){
-				$creatorUserEmail = $_SESSION['email'];
-				$meetings = $_SESSION['meetings'];
+			$index = $index->index;
 
-				$creatorUserID = User::emailToUser($creatorUserEmail);
-				
-				/*
-				see User::getMeetings on how to get attendies
-				*/
+			$meetingDetails = $_SESSION['meetingDetails'];
+			$name = $meetingDetails['name'];
+			$description = $meetingDetails['description'];
+			$creatorEmail = $meetingDetails['creatorEmail'];
+			$location = $meetingDetails['location'];
+			$attachments = $meetingDetails['attachments'];
 
+			$creationTime = date('Y-m-d H:i:s');
 
-				foreach($meetings['people'] as $email){
-				}
+			//holds attendees and start/end times
+			$meeting = $_SESSION['meetings'][$index];
+			/*
+			echo "<br><pre>Meeting: ";
+			var_dump($meeting);
+			echo "</pre><br>";
+			*/
+			$creatorUserID = User::emailToUser($creatorEmail);
+			
+			
+			//insert into meetingDetails then meeting
+			$stmt = Database::prepareAssoc("INSERT INTO `MeetingDetails` (location, startTime, creationTime, endTime, name, description, creatorUserID, attachments)
+				VALUES (:location, :startTime, :creationTime, :endTime, :name, :description, :creatorUserID, :attachments);");
+			$stmt->bindParam(':location', $location);	
+			$stmt->bindParam(':startTime', $meeting['startTime']);
+			$stmt->bindParam(':creationTime', $creationTime);
+			$stmt->bindParam(':endTime', $meeting['endTime']);
+			$stmt->bindParam(':name', $name);			
+			$stmt->bindParam(':description', $description);
+			$stmt->bindParam(':creatorUserID', $creatorUserID);
+			$stmt->bindParam(':attachments', $attachments);
+			$stmt->execute();
 
+			$meetingID = Database::lastInsertId();
+
+			$stmt = Database::prepareAssoc("SELECT `name` FROM `User` WHERE email=:email");
+			$stmt->bindParam(':email', $creatorEmail);
+			$stmt->execute();
+
+			$creatorName = $stmt->fetch();			
+			$creatorName = $creatorName['name'];
+
+			$stmt = Database::prepareAssoc("INSERT INTO `Meeting` (`email`, `meetingID`) VALUES(:email, :meetingID);");
+			$stmt->bindParam(':email', $email);
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($meeting['people'] as $email){
+				$stmt->execute();
+
+				$message = '<html><body>' . $creatorName . ' has invited you to join their meeting<br>';
+				$message .= "<a href='easync.com/api/v1.0/Meeting/rsvp'>Click here</a>" . ' to RSVP.<br>';
+				$message .= "Sincerely, your friends at Easync.";
+				$message .= '</body></html>';
+
+				$subject = "Easync: invitation from ". $creatorName;
+
+				$headers = "From: bot@easync.com";
+				// send email
+				mail($email,$subject,$message, $headers);
 			}
-			else
-				die("Email was not sent");
 
-
-
-
-			echo "<pre>";
-			var_dump($meetings[$index]);
-			echo "</pre>";
+			echo "Your meeting has been scheduled.";
+			
 		}
 
 		else{
 			die('No meetings cookie was set.. planMeeting was never called?');
 		}
-
-		$output = array(
-
-		);
 
 		/*
 		
