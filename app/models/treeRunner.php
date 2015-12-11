@@ -14,6 +14,7 @@ $chris = array(
 	array('startTime' => 3750, 'endTime' => 4380)
 );*/
 
+/*
 $eric = array(
 	array('startTime' => 0*60, 'endTime' => 2*60),
 	array('startTime' => 12*60, 'endTime' => 15*60),
@@ -66,3 +67,4 @@ $tree = new CalIntervalDiff($events, 0, 24*60*8, 9*60, 17*60, 3*60);
 var_dump($tree->getTop(5));
 
 
+*/
