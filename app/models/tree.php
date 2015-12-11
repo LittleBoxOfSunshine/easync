@@ -247,11 +247,15 @@ class CalIntervalDiff{
 	public function getTop($x){
 		$ret = [];
 		$this->root->getTop($x,$ret);
+<<<<<<< HEAD
 		return array_slice( $ret, 0, 5 );
 	}
 	
 	public static function getLength(){
 		return self::$length;
+=======
+		array_slice($ret, 0, 5 );
+>>>>>>> b9194aa338dbcf78da7655c79334cde6603d3ec7
 	}
 }
 

@@ -1,16 +1,16 @@
 <?php
-require 'tree.php';
+require_once 'tree.php';
 
 /*
 $eric = array(
 	array('startTime' => 0, 'endTime' => 840),
-	array('startTime' =>9910, 'endTime' => 3660),
+	array('startTime' => 9910, 'endTime' => 3660),
 	array('startTime' => 3750, 'endTime' => 4380)
 );
 
 $chris = array(
 	array('startTime' => 0, 'endTime' => 840),
-	array('startTime' =>9910, 'endTime' => 3660),
+	array('startTime' => 9910, 'endTime' => 3660),
 	array('startTime' => 3750, 'endTime' => 4380)
 );*/
 
@@ -54,8 +54,9 @@ $events['cahenk95@gmail.com'] = $chris;
 $events['jaycetheace@gmail.com'] = $jayce;
 $events['bob@gmail.com'] = $bob;
 
-$tree = new CalIntervalDiff($events, 0, 24*60*7, 9*60, 17*60, 3*60);
+//$tree = new CalIntervalDiff($events, 0, 24*60*7, 9*60, 17*60, 3*60);
 
-var_dump($tree->getTop(5));
+//var_dump($tree->getTop(5));
+
 
 ?>

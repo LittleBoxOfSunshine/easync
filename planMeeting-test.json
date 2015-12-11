@@ -8,8 +8,8 @@
   "dayStart": "17:00:00",
   "allRequired": false,
   "EventDetails": {
-    "startTime": "2015-12-01 11:00:00",
-    "endTime": "2015-12-04 12:00:00",
+    "startTime": "2015-12-01 05:00:00",
+    "endTime": "2015-12-04 06:00:00",
     "name": "Test Meeting",
     "creatorUserID": "999999",
     "timeZone": "America/Chicago"
