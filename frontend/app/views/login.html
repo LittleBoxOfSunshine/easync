@@ -9,10 +9,10 @@
 
 <div class="col-md-4">
     <div ng-controller="LoginCtrl">
-      <form name="loginform" class="css-form">
-        Email: <input type="email" ng-model="email"><br>
-        Password: <input type="password" ng-model="pass"><br>
-        <input type="submit" value="Log In">
+      <form name="loginform" class="css-form" >
+        <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
+        <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
+        <input type="submit" value="Log In" id="btn">
       </form>
 
       <div id="googlesignin">
@@ -63,5 +63,15 @@
 		width: 250px;
 		margin: 0 auto;
 	}
+  #emLog, #passLog{
+    width:250px;
+    margin: 10px;
+    height:30px;
+  }
+  #btn {
+    width: 250px;
+    margin: 10px;
+    height:30px;
+  }
 
 </style>
