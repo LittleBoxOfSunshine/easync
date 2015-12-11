@@ -54,10 +54,14 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$name = $meeting->EventDetails->name;
 		$creatorUserID = $meeting->EventDetails->creatorUserID;
 
-		//$startTime->setTimeZone(new DateTimeZone($meeting->EventDetails->timeZone));
+
 		$startTime = $startTime->format('Y-m-d\TH:i:sP');
-		//$endTime->setTimeZone(new DateTimeZone($meeting->EventDetails->timeZone));
+		$startTime = substr($startTime, 0, -6);
+		$startTime = $startTime . "-06:00";
+
 		$endTime = $endTime->format('Y-m-d\TH:i:sP');
+		$endTime = substr($endTime, 0, -6);
+		$endTime = $endTime . "-06:00";
 
 		$allEvents = [];
 
@@ -83,16 +87,103 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			} 
 
 		}
-		echo "<pre>";
-		var_dump($allEvents);
-		echo "</pre>";
 
+		//$meetingTimes = diffin($allEvents)
+
+		$meetingTimes = array(
+			array(
+				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com', 'newtest@gmail.com'),
+				'startTime' => '0',
+				'endTime' => '480'
+			),
+			array(
+				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com'),
+				'startTime' => '991',
+				'endTime' => '3360'
+			)
+		);
+
+		//make sure everyone can attend
+		if($allRequired){
+			if(count($emails) != count($meetingTimes[0]['people'])){
+				echo "A meeting time is not possible for all members.";
+				return;
+			}
+		}
+
+		//store info in a session
+		$start = new DateTime($startTime);
+
+		$sessionMeetings = [];
+
+		foreach($meetingTimes as $meet) {
+			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+			
+			$meet['startTime'] = $newTime;
+
+			$newTime = $start->add(new DateInterval('PT' . $meet['endTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+
+			$meet['endTime'] = $newTime;
+
+			$sessionMeetings[] = $meet;
+		}
+
+		var_dump($sessionMeetings);
+		
+
+		//convert to non 0 indexed and change email to names
+		$finalMeetings = [];
+
+		foreach($meetingTimes as $meet) {
+			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+			$newTime = date("D, M d g:i A", strtotime($newTime));
+			
+			$meet['startTime'] = $newTime;
+
+			$newTime = $start->add(new DateInterval('PT' . $meet['endTime'] . 'M'));
+			$newTime = $newTime->format('Y-m-d\TH:i:sP');
+			$newTime = substr($newTime, 0, -6);
+			$newTime = date("D, M d g:i A", strtotime($newTime));
+
+			$meet['endTime'] = $newTime;
+
+			$newPeople = [];
+
+			foreach($meet['people'] as $person){
+				$stmt = Database::prepareAssoc("SELECT `name` FROM `User` WHERE email=:person");
+				$stmt->bindParam(':person', $person);
+				$stmt->execute();
+
+				$newPeople[] = $stmt->fetch()['name'];
+			}
+
+			$meet['people'] = $newPeople;
+
+			$finalMeetings[] = $meet;
+		}
+
+		return json_encode($finalMeetings);
+		
 	});
 
 	//if exists, update rather than insert
 	$app->post('/finalMeeting', $AUTH_MIDDLEWARE(), function () use ($app){
+		
+		//input: index of time option chosen
+		$input = 4;
+
+		$output = array(
+
+		);
+
 		/*
-		input: index of time option chosen
+		
 		output: success/failure msgs
 
 		steps:
