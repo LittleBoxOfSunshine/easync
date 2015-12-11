@@ -7,8 +7,72 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo "This is the home function.";
     });
 
+	$app->post('/googleSignIn', function () use ($app) {
+
+		$data = json_decode($app->request()->getBody());
+
+		$email = $data->email;
+		$firstname = $data->firstname;
+		$lastname = $data->lastname;
+		$fullName = $firstname.' '.$lastname;
+		$google_ID = $data->google_ID;
+
+		$user = new User(array('email' => $email));
+
+		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
+		$stmt->bindParam(':email', $email);
+		$stmt->execute();
+
+
+		if($stmt->fetch()){
+			$stmt = Database::prepareAssoc("SELECT googleID FROM User WHERE email=:email;");
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+			//var_dump($stmt->fetch());
+			$anger = $stmt->fetch();
+			if(is_null($anger["googleID"])){
+				$stmt = Database::prepareAssoc("UPDATE User SET `googleID` = :google_ID WHERE `email` = :email;");
+				$stmt->bindParam(':google_ID', $google_ID);
+				$stmt->bindParam(':email', $email);
+				$stmt->execute();
+				echo 'Inserted tokenID';
+			}
+			else{
+				echo 'Already Used Google Sign In.';
+			}
+		}
+
+		else {
+			$stmt = Database::prepareAssoc("INSERT INTO User (`email`, `name`, `googleID`)
+				VALUES(:email, :name, :google_ID);");
+			$stmt->bindParam(':email', $email);
+			$stmt->bindParam(':name', $fullName);
+			$stmt->bindParam(':google_ID', $google_ID);
+			$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Account Created.';
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'ERROR: This email is already registered...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
+		}
+	}
+
+
+		if(isset($_SESSION['auth_token']))
+			$user->revokeAuthToken($_SESSION['auth_token']);
+
+		else {
+			$_SESSION['auth_token'] = $this->createAuthToken();
+		}
+	});
+
+
+
 	$app->post('/login', function () use ($app){
-		
 		/*if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
@@ -37,42 +101,159 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
     });
 
+	$app->post('/nearbyJoin', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+		$token = $app->request->get('token');
+
+		$stmt = Database::prepareAssoc("INSERT INTO NearbyAttendees (`token`,`userID`) VALUES (:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		echo json_encode($token);
+	});
+
+
+	$app->post('/rsvp', function () use ($app){
+		global $USER_ID;
+		$token = $app->request->get('token');
+
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Successfully Added to Meeting.';
+		}
+		else {
+				echo 'mySQL error.';
+		}
+
+	});
+
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
 		global $USER_ID;
 		$user = new User(array('userID' => $USER_ID));
 		$user->logout();
     });
 
-	$app->post('/register', function () use ($app){
-		
-		/*if($app->request->headers->get('Content-Type') != 'application/json'){
-			echo 'ERROR: Request body must be json...';
-			return;
-		}*/
+		$app->get('/getMeetings', $AUTH_MIDDLEWARE(), function () use ($app){
+			global $USER_ID;
 
-		$data = json_decode($app->request()->getBody());
-		$email = $data->email;
-		$password = $data->password;
-		$firstname = $data->firstname;
-		$lastname = $data->lastname;
-		
-		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
-			echo 'email, password, firstname, and lastname must be provided...';
-			return;
+			$app->response->headers->set('Content-Type', 'application/json');
+
+			$email = User::userToEmail($USER_ID);
+			$meetings = [];
+
+			$stmt = Database::prepareAssoc("SELECT `meetingID` FROM `Meeting` WHERE `email` = :email;");
+			$stmt->bindParam(':email',$email);
+			$stmt->execute();
+
+			$mIDs = [];
+			while($row = $stmt->fetch())
+				$mIDs[] = $row['meetingID'];
+
+			$stmt = Database::prepareAssoc("SELECT * FROM `MeetingDetails` WHERE `meetingID` = :meetingID;");
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($mIDs as $meetingID) {
+				$stmt->execute();
+				$meetings[] = $stmt->fetch();
+			}
+
+
+			$stmt = Database::prepareAssoc("SELECT email FROM `Meeting` WHERE `meetingID` = :meetingID");
+			$stmt->bindParam(':meetingID', $meetingID);
+
+			foreach($mIDs as $meetingID) {
+				$stmt->execute();
+				$counter = 0;
+				foreach($meetings as $meet){
+					$emails = $stmt->fetchAll();
+					for($i=0;$i<count($emails);$i++)
+						$emails[$i] = $emails[$i]['email'];
+					$meetings[$counter]['attendies'] = $emails;
+					$counter++;
+				}
+			}
+
+
+	/*		do{
+				$counter = 0;
+				foreach($meetings as $meet){
+					$emails = $stmt->fetchAll();
+					for($i=0;$i<count($emails);$i++)
+						$emails[$i] = $emails[$i]['email'];
+					$meet[$counter]['attendies'] = $emails;
+				}
+			}while($stmt->nextRowset());
+			*/
+
+
+
+			echo json_encode($meetings);
+});
+
+	$app->get('/nearbyGetAttendees', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$token = $app->request->get('token');
+		$counter = 0;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		$stmt = Database::prepareAssoc("SELECT `userID` FROM `NearbyAttendees` WHERE token=:token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->execute();
+
+		$attendees = [];
+		$userIDs = [];
+		while($row = $stmt->fetch())
+			$userIDs[] = $row['userID'];
+
+
+
+
+		$stmt = Database::prepareAssoc("SELECT `name`,`email` FROM `User` WHERE `userID` = :userID;");
+		$stmt->bindParam(':userID', $userID);
+
+		foreach($userIDs as $userID) {
+			$stmt->execute();
+			$attendees[] = $stmt->fetch();
 		}
 
-		$user = new User(array(
-			'email' => $email,
-			'name' => $firstname.' '.$lastname
-			), true);
+	echo json_encode($attendees);
+		});
 
-		if($user === false){
-			//handle input error here
-			echo 'user is malformed';
-		}
-		else{
-			$user->register($password);
-		}
+		$app->post('/register', function () use ($app){
+
+			/*if($app->request->headers->get('Content-Type') != 'application/json'){
+				echo 'ERROR: Request body must be json...';
+				return;
+			}*/
+
+			$data = json_decode($app->request()->getBody());
+			$email = $data->email;
+			$password = $data->password;
+			$firstname = $data->firstname;
+			$lastname = $data->lastname;
+
+			if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
+				echo 'email, password, firstname, and lastname must be provided...';
+				return;
+			}
+
+			$user = new User(array(
+				'email' => $email,
+				'name' => $firstname.' '.$lastname
+				), true);
+
+			if($user === false){
+				//handle input error here
+				echo 'user is malformed';
+			}
+			else{
+				$user->register($password);
+			}
 
     });
 
@@ -87,7 +268,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$calToken = $stmt->fetch();
 
 	    if ( $calToken === false ) {
-	    	// Step 1:  The user has not authenticated - redirect them  
+	    	// Step 1:  The user has not authenticated - redirect them
 		    if (!isset($_GET['code'])) {
 		    	GoogleCalendar::requestAccess($app, $USER_ID);
 		    }
@@ -96,11 +277,9 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		    	GoogleCalendar::acceptAccess($USER_ID);
 		    }
 	    }
-	    
-	    //$test = new GoogleCalendar(array('userID' => $USER_ID));
-	   	//$test->getEvents();
+
 	   	$app->redirect('/');
-		
+
 	});
 
 	$app->get('/exists', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -150,6 +329,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
 
+
 		//This query should be used to convert group names to userID lists
 		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
 		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
@@ -158,6 +338,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		while($row = $stmt->fetch())
 			$data[] = $row['name'];
+
 
 		echo json_encode($data);
 
@@ -189,19 +370,19 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
-	
+
 	$app->get('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
-		global $USER_ID;	
+		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
-		
+
 		$stmt = Database::prepareAssoc("SELECT `data` FROM `Settings` WHERE userID=:userID");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
-		
+
 		$data = $stmt->fetch();
-		
+
 		echo $data['data'];
-		
+
 	});
 
 	$app->post('/updateSettings', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -213,21 +394,21 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		}*/
 
 		$data = $app->request()->getBody();
-		
+
 		if(!isset($data)){
 			echo 'ERROR: No settings data provided or JSON is malformed...';
 			return;
 		}
-		
+
 		$stmt = Database::prepareAssoc("INSERT INTO `Settings` (userID, data) VALUES (:userID, :data) ON DUPLICATE KEY UPDATE data=:data;");
 		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->bindParam(':data', $data);
 		//$stmt->debugDumpParams();
-		
+
 		$stmt->execute();
-		
+
 		echo 'Settings updated...';
-		
+
 	});
-	
+
 });
