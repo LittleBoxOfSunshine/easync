@@ -19,7 +19,9 @@ $eric = array(
 	array('startTime' => 12*60, 'endTime' => 15*60),
 	array('startTime' => 35*60, 'endTime' => 38*60),
 	array('startTime' => 81*60, 'endTime' => 84*60),
-	array('startTime' => 129*60, 'endTime' => 132*60)
+	array('startTime' => 129*60, 'endTime' => 132*60),
+	array('startTime' => 178*60, 'endTime' => 181*60),
+	array('startTime' => 182*60, 'endTime' => 185*60)
 );
 
 $chris = array(
@@ -28,7 +30,9 @@ $chris = array(
 	array('startTime' => 60*60, 'endTime' => 65*60),
 	array('startTime' => 85*60, 'endTime' => 88*60),
 	array('startTime' => 105*60, 'endTime' => 110*60),
-	array('startTime' => 153*60, 'endTime' => 156.5*60)
+	array('startTime' => 153*60, 'endTime' => 156.5*60),
+	array('startTime' => 178*60, 'endTime' => 181*60),
+	array('startTime' => 182*60, 'endTime' => 185*60)
 );
 
 $jayce = array(
@@ -36,7 +40,9 @@ $jayce = array(
 	array('startTime' => 14*60, 'endTime' => 17*60),
 	array('startTime' => 60*60, 'endTime' => 63*60),
 	array('startTime' => 107*60, 'endTime' => 112*60),
-	array('startTime' => 157*60, 'endTime' => 161*60)
+	array('startTime' => 157*60, 'endTime' => 161*60),
+	array('startTime' => 178*60, 'endTime' => 181*60),
+	array('startTime' => 182*60, 'endTime' => 185*60)
 );
 
 $bob = array(
@@ -44,7 +50,8 @@ $bob = array(
 	array('startTime' => 35*60, 'endTime' => 40*60),
 	array('startTime' => 81*60, 'endTime' => 88*60),
 	array('startTime' => 129*60, 'endTime' => 132*60),
-	array('startTime' => 153.5*60, 'endTime' => 160*60)
+	array('startTime' => 153.5*60, 'endTime' => 160*60),
+	array('startTime' => 178*60, 'endTime' => 181*60)
 );
 
 $events = [];
@@ -54,9 +61,8 @@ $events['cahenk95@gmail.com'] = $chris;
 $events['jaycetheace@gmail.com'] = $jayce;
 $events['bob@gmail.com'] = $bob;
 
-//$tree = new CalIntervalDiff($events, 0, 24*60*7, 9*60, 17*60, 3*60);
+$tree = new CalIntervalDiff($events, 0, 24*60*8, 9*60, 17*60, 3*60);
 
-//var_dump($tree->getTop(5));
+var_dump($tree->getTop(5));
 
 
-?>

@@ -36,6 +36,7 @@ class GoogleCalendar extends Model{
 			if($temp == NULL)
 				die("ERROR: user has not allowed easync to access their Google Calendar");
 
+			/** @noinspection PhpUndefinedFieldInspection */
 			$this->client->refreshToken( $this->client->REFRESH_TOKEN_DB );
 			$token = $this->client->getAccessToken();
 			//save the token!
