@@ -8,7 +8,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
     });
 
 	$app->post('/login', function () use ($app){
-
 		/*if($app->request->headers->get('Content-Type') != 'application/json'){
 			echo 'ERROR: Request body must be json...';
 			return;
@@ -41,7 +40,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	$app->post('/rsvp', function () use ($app){
 		global $USER_ID;
 		$token = $app->request->get('token');
-		$email = User::userToEmail($USER_ID);
 
 		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
 		$stmt->bindParam(':token', $token);
@@ -62,36 +60,66 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$user->logout();
     });
 
-	$app->post('/register', function () use ($app){
 
-		/*if($app->request->headers->get('Content-Type') != 'application/json'){
-			echo 'ERROR: Request body must be json...';
-			return;
-		}*/
+	$app->get('/nearbyGetAttendees', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$token = $app->request->get('token');
+		$counter = 0;
+		$app->response->headers->set('Content-Type', 'application/json');
 
-		$data = json_decode($app->request()->getBody());
-		$email = $data->email;
-		$password = $data->password;
-		$firstname = $data->firstname;
-		$lastname = $data->lastname;
+		$stmt = Database::prepareAssoc("SELECT `userID` FROM `NearbyAttendees` WHERE token=:token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->execute();
 
-		if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
-			echo 'email, password, firstname, and lastname must be provided...';
-			return;
+		$attendees = [];
+		$userIDs = [];
+		while($row = $stmt->fetch())
+			$userIDs[] = $row['userID'];
+
+
+
+
+		$stmt = Database::prepareAssoc("SELECT `name`,`email` FROM `User` WHERE `userID` = :userID;");
+		$stmt->bindParam(':userID', $userID);
+
+		foreach($userIDs as $userID) {
+			$stmt->execute();
+			$attendees[] = $stmt->fetch();
 		}
 
-		$user = new User(array(
-			'email' => $email,
-			'name' => $firstname.' '.$lastname
-			), true);
+	echo json_encode($attendees);
+		});
 
-		if($user === false){
-			//handle input error here
-			echo 'user is malformed';
-		}
-		else{
-			$user->register($password);
-		}
+		$app->post('/register', function () use ($app){
+
+			/*if($app->request->headers->get('Content-Type') != 'application/json'){
+				echo 'ERROR: Request body must be json...';
+				return;
+			}*/
+
+			$data = json_decode($app->request()->getBody());
+			$email = $data->email;
+			$password = $data->password;
+			$firstname = $data->firstname;
+			$lastname = $data->lastname;
+
+			if(!isset($email) || !isset($password) || !isset($firstname) || !isset($lastname)){
+				echo 'email, password, firstname, and lastname must be provided...';
+				return;
+			}
+
+			$user = new User(array(
+				'email' => $email,
+				'name' => $firstname.' '.$lastname
+				), true);
+
+			if($user === false){
+				//handle input error here
+				echo 'user is malformed';
+			}
+			else{
+				$user->register($password);
+			}
 
     });
 
@@ -169,7 +197,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		while($row = $stmt->fetch())
 			$data[] = $row['contactEmail'];
 
-		
+
 		//This query should be used to convert group names to userID lists
 		//$stmt = Database::prepareAssoc("SELECT DISTINCT(u.email) FROM `User` u, `GroupDetails` gd, `Group` g WHERE gd.creatorUserID = :userID AND u.userID != :userID");
 		$stmt = Database::prepareAssoc("SELECT name FROM `GroupDetails` WHERE creatorUserID=:userID");
@@ -178,7 +206,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		while($row = $stmt->fetch())
 			$data[] = $row['name'];
-		
+
 
 		echo json_encode($data);
 
