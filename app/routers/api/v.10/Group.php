@@ -63,5 +63,54 @@ $app->group('/api/v1.0/Group', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
+
+	$app->post('/addContactToGroup', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		//get new name, new email and group to be added to
+		$data = json_decode($app->request()->getBody());
+		$email = $data->email;
+		$name = $data->name;
+		$groupname = $data->groupName;
+
+		if(!isset($email) || !isset($name) || !isset($groupname)) {
+			echo 'email, name, and groupname must be provided...';
+			return;
+		}
+
+		//get the group number using group name
+		$stmt = Database::prepareAssoc("SELECT groupID FROM `GroupDetails` WHERE name=:gname;");
+		$stmt->bindParam(':gname', $groupname);
+		$stmt->execute();
+
+		$g_number = $stmt->fetch();
+		//convert group id to string
+		$g_string = $g_number["groupID"];
+
+
+		//get user id
+		$stmt_one = Database::prepareAssoc("SELECT userID FROM `User` WHERE email=:email;");
+		$stmt_one->bindParam(':email', $email);
+		$stmt_one->execute();
+
+		$u_number = $stmt_one->fetch();
+		$u_string = $u_number["userID"];
+
+		//insert person into group
+		$stmt_two = Database::prepareAssoc("INSERT INTO `Group` (`groupID`, `userID`) VALUES (:groupID, :userID);");
+		$stmt_two->bindParam(':userID', $u_string);
+		$stmt_two->bindParam(':groupID', $g_string);
+		$stmt_two->execute();
+
+		if($stmt_two->errorCode() === '00000'){
+			echo json_encode('Person Added to Group');
+			return;
+		} else {
+			echo json_encode('A MySQL error has occurred.');
+			return;
+		}
+
+	});
 	
 });

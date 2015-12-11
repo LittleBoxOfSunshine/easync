@@ -1,13 +1,75 @@
-<div class="row" ng-controller="GroupsCtrl as groups">
-    <div class="col-md-6" ng-init="loadGroups()">
-        <h2>Groups</h2>
-        <!--poop-->
-        <!--swag-->
-        <div ng-repeat="(key, value) in groups">
-            <h4>{{ key }}</h4>
-            <ul class="group-members-list">
-                <li ng-repeat="x in value"> {{ x.name }}</li>
-            </ul>
-        </div>
+<div class="row row-centered" ng-controller="GroupsCtrl as groups">
+    <h2>Groups</h2>
+    <div class="col-md-3 col-centered" ng-init="loadGroups()">
+        <table class="table table-hover" id="grouplisttable">
+            <thead>
+                <tr>
+                    <th>Group Name</th>
+                    <th>Number of Members</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)">
+                    <td> {{ key }} </td>
+                    <td> {{ value.length }} </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+
+    <div class="col-md-5 col-centered" ng-show="selectedgroup.length > 0">
+        <h3> {{ groupname }} 
+            <a ng-show="!newRow" ng-click="addrow()"><span class="glyphicon glyphicon-plus pull-right"> </span></a>
+            <a ng-show="newRow" ng-click="saverow(newName, newEmail)"><span class="glyphicon glyphicon-floppy-save pull-right"></span></a> 
+        </h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th> Name </th>
+                    <th> Email </th>
+                </tr>
+            </thead>
+            <tbody id="groupDetails">
+                <tr ng-repeat="person in selectedgroup">
+                    <td> {{ person.name }} </td>
+                    <td> {{ person.email }} </td>
+                </tr>
+                <tr ng-show="newRow == true">
+                    <td><input class="form-control input-sm" ng-model="newName"></td>
+                    <td><input class="form-control input-sm" ng-model="newEmail"></td>
+                </tr>
+
+            </tbody> 
+        </table>
+
+    </div>
+
 </div>
+
+<style>
+    h2 {
+        text-align: center;
+    }
+
+    th {
+        font-weight: bold;
+    }
+
+    #grouplisttable td {
+        text-align: center;
+    }
+
+    .row-centered {
+        text-align:center;
+    }
+
+    .col-centered {
+        vertical-align: top;
+        display:inline-block;
+        float:none;
+        text-align:left;
+        margin-right:-4px;
+    }
+
+
+</style>
