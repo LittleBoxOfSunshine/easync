@@ -1,13 +1,13 @@
 <div class="row" ng-controller="GroupsCtrl as groups">
-    <div class="col-md-6">
+    <div class="col-md-6" ng-init="loadGroups()">
         <h2>Groups</h2>
         <!--poop-->
         <!--swag-->
-        <h4>Group 1</h4>
-        <ul class="group-members-list" ng-init="loadGroups()">
-            <li>John McCain</li>
-            <li>John Carmack</li>
-            <li>John Stamos</li>
-        </ul>
+        <div ng-repeat="(key, value) in groups">
+            <h4>{{ key }}</h4>
+            <ul class="group-members-list">
+                <li ng-repeat="x in value"> {{ x.name }}</li>
+            </ul>
+        </div>
     </div>
 </div>
