@@ -33,7 +33,7 @@ angular.module('easyncApp')
     		//console.log(response);
     		if (response.data === 'Login successful') {
     			$scope.email = '';
-    			$scope.pass = ''
+    			$scope.pass = '';
 
                 //set the cookie for being logged in
                 LoggedInService.set_or_refresh_cookie(email);

@@ -102,4 +102,22 @@ angular.module('easyncApp')
 			}); 
 		}
 	};
+
+	$scope.removeContact = function (user) {
+		$http({
+			method: 'GET',
+			url: GlobalIPService.ip + 'api/v1.0/User/removeContact',
+			withCredentials: true,
+			params: {'email' : user.email}
+		}).then(function(response) {
+			console.log(response.data);
+			if (response.data === 'Contact Removed') {
+				$scope.contacts = $scope.contacts.filter(function (element) {
+					return element.email !== user.email;
+				});
+			}
+		}, function (error) {
+			console.log(error);
+		});
+	};
 });

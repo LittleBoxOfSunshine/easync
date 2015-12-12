@@ -476,4 +476,20 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 	});
 
+	$app->get('/removeContact', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+
+		$email = $app->request->get('email');
+		$stmt = Database::prepareAssoc("DELETE FROM Contacts WHERE contactEmail=:email AND userID=:userID;");
+		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Contact Removed';
+		} else {
+			echo 'A MySQL error has occurred.';
+		}
+	});
+
 });

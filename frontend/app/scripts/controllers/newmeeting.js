@@ -223,7 +223,6 @@ angular.module('easyncApp')
         }, function (error) {
             console.log(error);
         });
-
     };
 
 }).filter('attendeesValue', function() { 

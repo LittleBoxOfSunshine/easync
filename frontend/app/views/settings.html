@@ -7,9 +7,18 @@
 <div class="row loginregrow" ng-controller="SettingsCtrl as settings">
 	<div class="col-md-6 contactsCol">
 		<div class="contactsList" ng-init="loadContacts()">
-			<p ng-repeat="x in contacts">
-			{{ x.name }}
-			</p>
+			<table class="table table-hover" id="contactsTable">
+				<thead>
+					<tr>
+						<th>Contacts</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="x in contacts" ng-click="removeContact(x)">
+						<td>{{ x.name }}</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 		<div ng-show="addContact">
 			<input class="form-control input-sm add-contact" placeholder="email" ng-keypress="handleNewContact($event)" ng-model="newContact">
@@ -26,5 +35,16 @@
 .name{
 	text-align:left;
 	color:#1B998B;
+}
+
+#contactsTable th {
+	text-align: center;
+}
+
+.contactList > table {
+	margin-right: auto;
+	margin-left: auto;
+	width: 300px;
+	margin-bottom: 40px;
 }
 </style>
