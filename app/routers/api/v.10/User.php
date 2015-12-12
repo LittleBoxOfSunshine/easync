@@ -255,6 +255,8 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 				$user->register($password);
 			}
 
+			$app->redirect('/api/v1.0/User/addGoogleCal');
+
     });
 
     $app->get('/addGoogleCal', $AUTH_MIDDLEWARE(), function () use ($app){

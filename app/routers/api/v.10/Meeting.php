@@ -281,20 +281,10 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$stmt->bindParam(':email', $email);
 			$stmt->bindParam(':meetingID', $meetingID);
 
-			foreach($meeting['people'] as $email){
+			foreach($meeting['people'] as $email)
 				$stmt->execute();
 
-				$message = '<html><body>' . $creatorName . ' has invited you to join their meeting<br>';
-				$message .= "<a href='easync.com/api/v1.0/Meeting/rsvp'>Click here</a>" . ' to RSVP.<br>';
-				$message .= "Sincerely, your friends at Easync.";
-				$message .= '</body></html>';
-
-				$subject = "Easync: invitation from ". $creatorName;
-
-				$headers = "From: bot@easync.com";
-				// send email
-				mail($email,$subject,$message, $headers);
-			}
+			User::sendConfEmails($meeting['people'], $meetingID);
 
 			echo "Your meeting has been scheduled.";
 			
