@@ -30,7 +30,7 @@ angular.module('easyncApp')
             withCredentials: true
     	})
     	.then(function(response) {
-    		console.log(response);
+    		//console.log(response);
     		if (response.data === 'Login successful') {
     			$scope.email = '';
     			$scope.pass = '';

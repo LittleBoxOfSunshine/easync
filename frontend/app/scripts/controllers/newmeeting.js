@@ -8,16 +8,18 @@
  * Controller of the easyncApp
  */
 
-var GLOBAL_IP = "http://localhost:6969/";
+
 
 angular.module('easyncApp')
-  .controller('NewMeetingCtrl', function ($scope, $http, $cookies, LoggedInService, $location) {
+  .controller('NewMeetingCtrl', function ($scope, $http, $cookies, LoggedInService, GlobalIPService, $location) {
 
   	$scope.possibletimes_bool = false;
 
     $scope.attendees = [{'email': 'swilkinsonhunter@gmail.com'}];
 
     $scope.usercontacts = [];
+
+    $scope.groups = [];
 
     $scope.constraints = {
     	start_time : new Date(),
@@ -39,7 +41,7 @@ angular.module('easyncApp')
         }
 
     	$http({
-            url: GLOBAL_IP + 'api/v1.0/User/getContactsInfo',
+            url: GlobalIPService.ip + 'api/v1.0/User/getContactsInfo',
             method: 'GET',
             withCredentials : true
         }).then(function (response) {
@@ -64,8 +66,14 @@ angular.module('easyncApp')
 
     //removes people from attendees list, adds them back to contacts list if needed
     $scope.removefromattendees = function(user) {
-    	//if the user is a contact
-    	if (user.name !== undefined) {
+        //if the user is a group
+    	if (user.groupname !== undefined) {
+            $scope.groups.push(user);
+            $scope.attendees = $scope.attendees.filter(function (element) {
+                return element.groupname !== user.groupname;
+            });
+        }
+    	if (user.name !== undefined) { //if the user is a contact
     		$scope.usercontacts.push(user);
     		$scope.attendees = $scope.attendees.filter(function (element) {
     			return element.name !== user.name;
@@ -88,6 +96,38 @@ angular.module('easyncApp')
     		return true;
     	}
     };
+
+    $scope.loadgroups = function() {
+        $http({
+            url: GlobalIPService.ip + 'api/v1.0/Group/getGroupNames',
+            method: 'GET',
+            withCredentials: true
+        }).then(function (response) {
+            response.data.forEach(function(element, index, array) {
+                $scope.groups.push({'groupname': element.name});
+            });
+        }, function (error) {
+            console.log(error);
+        });
+    };
+
+    $scope.addgrouptoattendees = function(group) {
+        $scope.attendees.push(group);
+        $scope.groups = $scope.groups.filter(function (element) {
+            return group.groupname !== element.groupname;
+        });
+    };
+
+    $scope.findmeetingtimes = function(constraints, attendees) {
+        var request_obj = {
+            emails : [],
+            eventdetails: {}
+        };
+
+        attendees.forEach(function(element, index, array) {
+            console.log(element);
+        })
+    }
 
 }).filter('attendeesValue', function() { 
 	return function(input) {

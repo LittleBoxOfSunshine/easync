@@ -1,6 +1,6 @@
 <div class="row">
-	<h1><marquee>Scheduled Meetings</marquee></h1>		
-		<table id="scheduledMeetings">
+	<h1>Scheduled Meetings</h1>		
+		<table id="scheduledMeetings" ng-init="loadMeetings()">
 		<tr ng-repeat="x in meetings">
 			<td>{{x.name}}</td>
 			<td>{{x.location}}</td>	
@@ -8,5 +8,10 @@
 			<td>{{x.attendees}}</td>
 		</tr>
 	</table>
-
 </div>	
+
+<style>
+	h1 {
+		text-align: center;
+	}
+</style>

@@ -8,15 +8,15 @@
   </div>
 
   <div class="col-md-4">
-      <div ng-init="check_cookies()" ng-controller="LoginCtrl">
-        <form name="loginform" class="css-form" >
+      <div ng-init="check_cookies()" ng-controller="LoginCtrl" id="loginformscol">
+        <form name="loginform" class="css-form" id="loginform">
           <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
           <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
           <input type="submit" value="Log In" ng-click="login(email, pass)">
         </form>
 
         <div id="googlesignin">
-          <div id="my-signin2"></div>
+          <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
           <a onclick="signout_google()">Sign out of google</a>
         </div>
       </div>
@@ -25,7 +25,7 @@
 
 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 <script>
-    function onSuccess(googleUser) {
+    /*function onSuccess(googleUser) {
       console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
     }
     function onFailure(error) {
@@ -41,13 +41,41 @@
         'onsuccess': onSuccess,
         'onfailure': onFailure
       });
-    }
+    }*/
     function signout_google() {
     	var auth2 = gapi.auth2.getAuthInstance();
     	auth2.signOut().then(function () {
       		console.log('User signed out.');
     	});
   	}
+
+    function onSignIn(googleUser) {
+      // Useful data for your client-side scripts:
+      var profile = googleUser.getBasicProfile();
+      console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+      console.log("Name: " + profile.getName());
+      console.log("Image URL: " + profile.getImageUrl());
+      console.log("Email: " + profile.getEmail());
+
+      // The ID token you need to pass to your backend:
+      var id_token = googleUser.getAuthResponse().id_token;
+      console.log("ID Token: " + id_token);
+
+      console.log(profile.getName().split(' ')[0], profile.getName().split(' ')[1]);
+
+      var data = {
+        'google_ID' : profile.getId(),
+        'firstname' : profile.getName().split(' ')[0],
+        'lastname' : profile.getName().split(' ')[1],
+        'email' : profile.getEmail()
+      };
+
+      var json_data = JSON.stringify(data);
+
+      $.post('http://localhost:6969/api/v1.0/User/googlesignin', function (data) {
+        console.log(data);
+      });
+    };
 </script>
 
 <style>
@@ -77,8 +105,18 @@
 
   input {
     width: 250px;
-    margin:10px;
+    margin-left: auto;
+    margin-right: auto;
     height:30px;
+  }
+
+  #loginformscol div {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #loginform {
+    text-align: center;
   }
 
 </style>

@@ -1,11 +1,15 @@
-<div ng-controller="SettingsCtrl as settings">
+<div class="row loginregrow" ng-controller="SettingsCtrl as settings">
 	<div class="col-md-6 contactsCol">
 		<div class="contactsList" ng-init="loadContacts()">
 			<p ng-repeat="x in contacts">
 			{{ x.name }}
 			</p>
 		</div>
-		<button class="btn"> Add Contact </button>
+		<div ng-show="addContact">
+			<input class="form-control input-sm add-contact" placeholder="email" ng-keypress="handleNewContact($event)" ng-model="newContact">
+		</div>
+		<div class="alert alert-danger" ng-show="newContactError" role="alert"><strong>Error:</strong> email not registered with Easync</div>
+		<button class="btn" ng-click="toggleAddContact()"> Add Contact </button>
 	</div>
 	<div class="col-md-6 addCalCol" ng-init="checkCalendar()">
 		<button class="btn" ng-show="calConnected" disabled> Connect Google Calendar </button>
@@ -30,6 +34,19 @@
 		padding-top: 30px;
 		padding-bottom: 30px;
 		height:250px;
+	}
+
+	.add-contact {
+		margin-right: auto;
+		margin-left: auto;
+		width: 200px;
+		margin-bottom: 10px;
+	}
+
+	.alert-danger {
+		width:300px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 </style>
