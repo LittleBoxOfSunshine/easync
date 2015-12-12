@@ -116,7 +116,19 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		$length = $minutes;
 
-		$tree = new CalIntervalDiff($allEvents, $startTime, $endTime, $dayStart, $dayEnd, $length);
+		$sT = substr($startTime, -14, 8);
+		$sT = explode(':', $sT);
+		$minutes = $sT[0] * 60;
+		$minutes += $sT[1];
+		$sT = $minutes;
+
+		$eT = substr($endTime, -14, 8);
+		$eT = explode(':', $eT);
+		$minutes = $eT[0] * 60;
+		$minutes += $eT[1];
+		$eT = $minutes;
+
+		$tree = new CalIntervalDiff($allEvents, $sT, $eT, $dayStart, $dayEnd, $length);
 
 		$meetingTimes = $tree->getTop(5);
 /*
