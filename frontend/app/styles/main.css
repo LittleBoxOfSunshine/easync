@@ -6,6 +6,61 @@ div{
   font-family: 'Raleway', sans-serif;
 }
 
+/*groups */
+  h2 {
+    text-align: center;
+    font-weight: 300;
+    color:#1B998B;
+    padding-top: 50px;
+  }
+    th, td, h3 {
+        font-weight: bold;
+        color:#4C5B5C;
+    }
+
+
+    #grouplisttable td {
+        text-align: center;
+    }
+
+    .row-centered {
+        text-align:center;
+    }
+
+    .col-centered {
+        vertical-align: top;
+        display:inline-block;
+        float:none;
+        text-align:left;
+        margin-right:-4px;
+    }
+/*end groups*/
+/* Settings*/
+  .contactsCol {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    height:250px;
+  }
+
+  .addCalCol {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    height:250px;
+  }
+
+  .add-contact {
+    margin-right: auto;
+    margin-left: auto;
+    width: 200px;
+    margin-bottom: 10px;
+  }
+
+  .alert-danger {
+    width:300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* end settings */
 .loginregrow {
   margin-top: 5%;
   margin-left: 6%;

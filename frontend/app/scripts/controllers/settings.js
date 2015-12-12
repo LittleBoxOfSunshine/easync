@@ -16,6 +16,21 @@ angular.module('easyncApp')
 	$scope.addContact = false;
 	$scope.newContactError = false;
 
+	 $scope.loadUser = function() {
+    	$http({
+    		method:'GET',
+    		url: GlobalIPService.ip + 'api/v1.0/Group/getUsers',
+  			withCredentials: true
+    	}).then(function (response) {
+    		for (var i in response.data) {
+    			var name = response.data[i].name;
+    			console.log(name);
+    		}
+    	}, function (error) {
+    		console.log(error);
+    	});
+    };
+
 	$scope.loadContacts = function() {
 		$http({
 			url: GlobalIPService.ip + 'api/v1.0/User/getContactsInfo',

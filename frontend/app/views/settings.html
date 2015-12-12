@@ -1,3 +1,9 @@
+<div class="userName" ng-init="getUserDetails()">
+	<h1 class="name">A name is going to go here</h1>
+	<h1 class="name" ng-repeat="user in user">{{user.name}}</h1>
+
+</div>
+
 <div class="row loginregrow" ng-controller="SettingsCtrl as settings">
 	<div class="col-md-6 contactsCol">
 		<div class="contactsList" ng-init="loadContacts()">
@@ -16,37 +22,9 @@
 		<button class="btn" ng-show="!calConnected" ng-click="connectCal()"> Connect Google Calendar </button>
 	</div>
 </div>
-
 <style>
-	div {
-		text-align: center;
-	}
-
-	.contactsCol {
-		background-color: darkgrey;
-		padding-top: 30px;
-		padding-bottom: 30px;
-		height:250px;
-	}
-
-	.addCalCol {
-		background-color: darkblue;
-		padding-top: 30px;
-		padding-bottom: 30px;
-		height:250px;
-	}
-
-	.add-contact {
-		margin-right: auto;
-		margin-left: auto;
-		width: 200px;
-		margin-bottom: 10px;
-	}
-
-	.alert-danger {
-		width:300px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
+.name{
+	text-align:left;
+	color:#1B998B;
+}
 </style>
