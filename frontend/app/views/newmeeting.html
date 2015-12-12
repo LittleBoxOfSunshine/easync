@@ -4,7 +4,13 @@
 		<h3> Attendees </h3>
 		<div class="col-md-3" ng-model="attendees"> 
 			<p>Currently Selected</p> 
-				<p ng-repeat="x in attendees" ng-click="removefromattendees(x)">
+				<p ng-repeat="x in attendees.emails" ng-click="removefromattendees(x)">
+					{{ x|attendeesValue }}
+				</p>
+				<p ng-repeat="x in attendees.users" ng-click="removefromattendees(x)">
+					{{ x|attendeesValue }}
+				</p>
+				<p ng-repeat="x in attendees.groups" ng-click="removefromattendees(x)">
 					{{ x|attendeesValue }}
 				</p>
 		</div>

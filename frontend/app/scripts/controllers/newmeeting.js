@@ -15,7 +15,7 @@ angular.module('easyncApp')
 
   	$scope.possibletimes_bool = false;
 
-    $scope.attendees = [{'email': 'swilkinsonhunter@gmail.com'}];
+    $scope.attendees = {'emails' : [], 'users' : [], 'groups' : []};
 
     $scope.usercontacts = [];
 
@@ -31,8 +31,8 @@ angular.module('easyncApp')
     };
     
     $scope.addemailattendee = function(email) {
-    	$scope.attendees.push({'email': email});
-    	$scope.attendeeemail = "";
+    	$scope.attendees.emails.push({'email': email});
+    	$scope.attendeeemail = ""; 
     };
 
     $scope.loadcontacts = function() {
@@ -58,7 +58,7 @@ angular.module('easyncApp')
 
    	//accepts the user object from contact list, removes it from contact list and adds it to attendee list
     $scope.addcontacttoattendees = function(user) {
-    	$scope.attendees.push({'name': user.name});
+    	$scope.attendees.users.push(user);
     	$scope.usercontacts = $scope.usercontacts.filter(function (element) {
     		return user.name !== element.name;
     	});
@@ -69,17 +69,17 @@ angular.module('easyncApp')
         //if the user is a group
     	if (user.groupname !== undefined) {
             $scope.groups.push(user);
-            $scope.attendees = $scope.attendees.filter(function (element) {
+            $scope.attendees.groups = $scope.attendees.groups.filter(function (element) {
                 return element.groupname !== user.groupname;
             });
         }
     	if (user.name !== undefined) { //if the user is a contact
     		$scope.usercontacts.push(user);
-    		$scope.attendees = $scope.attendees.filter(function (element) {
+    		$scope.attendees.users = $scope.attendees.users.filter(function (element) {
     			return element.name !== user.name;
     		});
     	} else if (user.email !== undefined) {
-    		$scope.attendees = $scope.attendees.filter(function (element) {
+    		$scope.attendees.emails = $scope.attendees.emails.filter(function (element) {
     			return element.email !== user.email;
     		});
     	}
@@ -112,7 +112,7 @@ angular.module('easyncApp')
     };
 
     $scope.addgrouptoattendees = function(group) {
-        $scope.attendees.push(group);
+        $scope.attendees.groups.push(group);
         $scope.groups = $scope.groups.filter(function (element) {
             return group.groupname !== element.groupname;
         });
@@ -124,14 +124,55 @@ angular.module('easyncApp')
             eventdetails: {}
         };
 
-        attendees.forEach(function(element, index, array) {
-            console.log(element);
-        })
-    }
+        var handleDuration = function (time_minutes) {
+            var sec_num = parseInt(time_minutes*60, 10);
+
+            var hours = Math.floor(sec_num/3600);
+            var minutes = Math.floor((sec_num - (hours*3600))/60);
+            var seconds = Math.floor(sec_num - (hours*3600) - (minutes*60));
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            var time    = hours+':'+minutes+':'+seconds;
+            return time;
+        };
+
+        //set duration key
+        var time_string = handleDuration(constraints.duration);
+        request_obj['length'] = time_string;
+        console.log(request_obj);
+
+        //add the attendees to the email array
+        attendees.emails.forEach(function(element, index, array) { //for emails
+            request_obj.emails.push(element.email);
+        });
+        attendees.users.forEach(function(element, index, array) { //for users
+            request_obj.emails.push(element.email);
+        });
+        //for groups
+        var groupnames = attendees.groups.map(function (val) { return val.groupname; });
+        $http({
+            method: 'POST',
+            url: GlobalIPService.ip + 'api/v1.0/Group/getGroupContents',
+            withCredentials: true,
+            data : JSON.stringify(groupnames)
+        }).then(function (response) {
+            console.log(response.data);
+        }, function(error) {
+            console.log(error);
+        });
+    };
 
 }).filter('attendeesValue', function() { 
 	return function(input) {
-		return input[Object.keys(input)[0]];
+        if (input.groupname !== undefined) {
+		  return input.groupname;
+        } else if (input.name !== undefined) {
+          return input.name;
+        } else {
+          return input.email;
+        }
 	}; //used to get either the email or name of the attendees for the newmeeting page
 	//need this because attendees object can either have 'email' or 'name' key depending
 	//on how it was added to the list 
