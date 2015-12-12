@@ -39,7 +39,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			give top options or failure if no optoins exist (store copy of results in session)
 			
 		*/
-		$app->response->headers->set('Content-Type', 'application/json');
+		//$app->response->headers->set('Content-Type', 'application/json');
 
 		//json or form request?
 
