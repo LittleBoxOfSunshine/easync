@@ -13,6 +13,8 @@ angular.module('easyncApp')
 .controller('SettingsCtrl', function ($scope, $http, GlobalIPService) {
 	$scope.contacts = [];
 	$scope.calConnected = false;
+	$scope.addContact = false;
+	$scope.newContactError = false;
 
 	$scope.loadContacts = function() {
 		$http({
@@ -36,7 +38,6 @@ angular.module('easyncApp')
 			method: 'GET',
 			withCredentials: true
 		}).then(function (response) {
-			console.log(response.data);
 			if (response.data === true) {
 				$scope.calConnected = true;
 			}
@@ -57,5 +58,35 @@ angular.module('easyncApp')
 		}, function (error) {
 			console.log("error connecting google cal", error);
 		});
+	};
+
+	$scope.toggleAddContact = function () {
+		if ($scope.addContact) {
+			$scope.addContact = false;
+		} else {
+			$scope.addContact = true;
+		}
+	};
+
+	$scope.handleNewContact = function ($event) {
+		$scope.newContactError = false;
+		if ($event.keyCode === 13) {
+			var newContactEmail = $scope.newContact;
+			$http({
+				method: 'POST',
+				url: GlobalIPService.ip + 'api/v1.0/User/addContactsCheckEmail',
+				data: JSON.stringify({'email': newContactEmail}),
+				withCredentials: true
+			}).then(function (response) {
+				if (response.data.name !== undefined) {
+					$scope.contacts.push({'name': response.data.name, 'email': response.data.email});
+					$scope.newContact = '';
+				} else if (response.data == 'no user found for email') {
+					$scope.newContactError = true;
+				}
+			}, function (error) {
+				console.log(error);
+			}); 
+		}
 	};
 });

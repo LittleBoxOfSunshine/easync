@@ -240,6 +240,40 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 	});
 
+	$app->post('/addContactsCheckEmail', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$contacts = json_decode($app->request()->getBody());
+		$contact = $contacts->email;
+
+
+		$stmt_one = Database::prepareAssoc("SELECT name, email FROM User WHERE email=:email;");
+		$stmt_one->bindParam(':email', $contact);
+		$stmt_one->execute();
+
+		$dat = $stmt_one->fetch();
+		if ($dat == false) {
+			echo 'no user found for email';
+			return;
+		}
+
+		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, :contactEmail);");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':contactEmail', $contact);
+
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo json_encode($dat);
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'WARNING: These contacts already exist...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
+		}
+
+	});
+
 	$app->get('/getSettings', $AUTH_MIDDLEWARE(), function() use ($app){
 		global $USER_ID;
 		$app->response->headers->set('Content-Type', 'application/json');
