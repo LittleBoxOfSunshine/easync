@@ -67,7 +67,8 @@
         'google_ID' : profile.getId(),
         'firstname' : profile.getName().split(' ')[0],
         'lastname' : profile.getName().split(' ')[1],
-        'email' : profile.getEmail()
+        'email' : profile.getEmail(),
+        'google_token' : id_token
       };
 
       var json_data = JSON.stringify(data);
