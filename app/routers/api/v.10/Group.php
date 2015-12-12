@@ -130,17 +130,21 @@ $app->group('/api/v1.0/Group', function() use ($app, $AUTH_MIDDLEWARE) {
 		$app->response->headers->set('Content-Type', 'application/json');
 		$groups = json_decode($app->request()->getBody());
 
-		//Database::beginTransaction();
+		Database::beginTransaction();
 
 		$stmt = Database::prepareAssoc("SELECT email FROM User WHERE userID in (SELECT userID FROM `Group` WHERE groupID = (SELECT groupID FROM GroupDetails WHERE name=:groupName));");
 		$stmt->bindParam(':groupName', $group);
 
-		foreach($groups as $group)
+		$data = array();
+		foreach($groups as $group) {
 			$stmt->execute();
+			$fetch = $stmt->fetchall();
+			$data = array_merge($data, $fetch);
+		}
 
-		//Database::commit();
+		Database::commit();
 
-		echo json_encode($stmt->fetchall());
+		echo json_encode($data);
 	});
 	
 

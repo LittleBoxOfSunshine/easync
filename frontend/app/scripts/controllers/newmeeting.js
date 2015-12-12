@@ -45,7 +45,6 @@ angular.module('easyncApp')
             method: 'GET',
             withCredentials : true
         }).then(function (response) {
-    		//console.log(response.data);
             for (var i = 0; i < response.data.length; i++) {
                 if (response.data[i].name !== undefined && response.data[i].email !== undefined) {
                     $scope.usercontacts.push({'name': response.data[i].name, 'email' : response.data[i].email});
@@ -138,10 +137,37 @@ angular.module('easyncApp')
             return time;
         };
 
+        var handleTimeOfDay = function (date_obj) {
+            var hours = date_obj.getHours();
+            var minutes = date_obj.getMinutes();
+            var seconds = date_obj.getSeconds();
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            var time    = hours+':'+minutes+':'+seconds;
+            return time;
+        };
+
+        var handleDate = function (date_obj, beginning_of_day) {
+            var year = date_obj.getFullYear();
+            var date = date_obj.getDate();
+            var month = date_obj.getMonth() + 1; //returns 0-11
+
+            if (year   < 10) {year   = "0"+year;}month
+            if (month < 10) {month = "0"+month;}
+            if (date < 10) {date = "0"+date;}
+            var final_date    = year+'-'+month+'-'+date;
+            if (beginning_of_day)
+                return final_date + ' 00:00:00';
+            else
+                return final_date + ' 23:59:59';
+
+        }
+
         //set duration key
         var time_string = handleDuration(constraints.duration);
         request_obj['length'] = time_string;
-        console.log(request_obj);
 
         //add the attendees to the email array
         attendees.emails.forEach(function(element, index, array) { //for emails
@@ -158,10 +184,28 @@ angular.module('easyncApp')
             withCredentials: true,
             data : JSON.stringify(groupnames)
         }).then(function (response) {
-            console.log(response.data);
+            response.data.forEach(function (element, index, array) {
+                request_obj.emails.push(element.email);
+            })
         }, function(error) {
             console.log(error);
         });
+
+        //set allrequired flag
+        request_obj.allRequired = constraints.required;
+
+        //set start and end times
+        request_obj.dayStart = handleTimeOfDay(constraints.start_time);
+        request_obj.dayEnd = handleTimeOfDay(constraints.end_time);
+
+        //set start and end dates
+        request_obj.eventdetails.startTime = handleDate(constraints.start_date, true);
+        request_obj.eventdetails.endTime = handleDate(constraints.end_date, false);
+
+        console.log(request_obj);
+
+
+
     };
 
 }).filter('attendeesValue', function() { 
