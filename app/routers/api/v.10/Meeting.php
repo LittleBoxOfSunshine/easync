@@ -279,11 +279,22 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			echo successs/failure
 		*/
 	});	
-	
-	$app->post('/rsvp', $AUTH_MIDDLEWARE(), function() use ($app){
-		$rsvpToken = $app->request->post('rsvpToken');
-		
-		// modify attendie entry to acception
-		
+
+	$app->post('/rsvp', $AUTH_MIDDLEWARE(), function () use ($app){
+		global $USER_ID;
+		$token = $app->request->post('token');
+
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Successfully Added to Meeting.';
+		}
+		else {
+			echo 'mySQL error.';
+		}
+
 	});
+
 });
