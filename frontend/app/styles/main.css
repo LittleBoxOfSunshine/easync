@@ -126,6 +126,7 @@ p {
     font-size: 1em;
     font-family: 'Raleway', sans-serif;
     margin-left:-20px;
+    color:#212121;
 
 }
 .main-icon{
@@ -176,7 +177,6 @@ ul.img-list li {
 }
 
 span.text-content {
-  color: white;
   cursor: pointer;
   display: table-cell;
   height: 150px;
@@ -194,7 +194,6 @@ span.text-content span {
 }
 
 span.text-content {
-  color: #F9F9F9;
   cursor: pointer;
   display: table;
   height: 220px;
