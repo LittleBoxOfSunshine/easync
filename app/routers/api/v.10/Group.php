@@ -112,5 +112,18 @@ $app->group('/api/v1.0/Group', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 	});
+
+	$app->get('/getGroupNames', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		//get the groups
+		$stmt = Database::prepareAssoc("SELECT name FROM GroupDetails WHERE groupID in (SELECT groupID FROM `Group` WHERE userID=:userID);");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		echo json_encode($stmt->fetchall());
+	});
 	
+
 });

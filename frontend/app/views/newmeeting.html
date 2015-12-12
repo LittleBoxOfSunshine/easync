@@ -2,17 +2,23 @@
 	<h1>Schedule a New Meeting</h1>
 	<div class="row text-center" id="attendees">
 		<h3> Attendees </h3>
-		<div class="col-md-4" ng-model="attendees"> 
+		<div class="col-md-3" ng-model="attendees"> 
 			<p>Currently Selected</p> 
 				<p ng-repeat="x in attendees" ng-click="removefromattendees(x)">
 					{{ x|attendeesValue }}
 				</p>
 		</div>
-		<div class="col-md-4">Near Me</div>
-		<div class="col-md-4" ng-init="loadcontacts()" ng-model="usercontacts">
+		<div class="col-md-3">Near Me</div>
+		<div class="col-md-3" ng-init="loadcontacts()" ng-model="usercontacts">
 			<p>Add Contact</p>
 			<p ng-repeat="x in usercontacts" ng-click="addcontacttoattendees(x)">
 				{{ x.name }}
+			</p>
+		</div>
+		<div class="col-md-3" ng-model="usercontacts" ng-init="loadgroups()">
+			<p>Add Group</p>
+			<p ng-repeat="x in groups" ng-click="addgrouptoattendees(x)">
+				{{ x.groupname }}
 			</p>
 		</div>
 	</div>

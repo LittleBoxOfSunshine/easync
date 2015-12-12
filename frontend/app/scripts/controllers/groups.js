@@ -72,7 +72,7 @@ angular.module('easyncApp')
     	};
 
     	if (newContact !== undefined) {
-    		var data = {'name': newContact["name"], 'email': newContact["email"], 'groupName': $scope.groupname};
+    		var data = {'name': newContact.name, 'email': newContact.email, 'groupName': $scope.groupname};
     		var json_data = JSON.stringify(data);
     		handleSuccessFindingUser(json_data);
     	} else if (newName !== '' && newEmail !== '') {
