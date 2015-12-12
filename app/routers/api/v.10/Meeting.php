@@ -93,13 +93,34 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 				$invertedEvents = $cal->invertEvents($mergedEvents);
 				$minuteEvents = $cal->convertToMinutes( $invertedEvents, $startTime );
 
-				$allEvents[] = $minuteEvents;
+				$allEvents[$email] = $minuteEvents;
 			} 
 
 		}
 
-		//$meetingTimes = diffin($allEvents)
+		$start = explode(':', $dayStart);
+		$minutes = $start[0] * 60;
+		$minutes += $start[1];
 
+		$dayStart = $minutes;
+
+		$end = explode(':', $dayEnd);
+		$minutes = $end[0] * 60;
+		$minutes += $end[1];
+
+		$dayEnd = $minutes;
+
+		$length = explode(':', $length);
+		$minutes = $length[0] * 60;
+		$minutes += $length[1];
+
+		$length = $minutes;
+
+		$tree = new CalIntervalDiff($allEvents, 0, 9999999999, $dayStart, $dayEnd, $length);
+
+		$meetingTimes = $tree->getTop(5);
+
+	/*		
 		$meetingTimes = array(
 			array(
 				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com', 'newtest@gmail.com'),
@@ -112,6 +133,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 				'endTime' => '3360'
 			)
 		);
+	*/
 
 		//make sure everyone can attend
 		if($allRequired){

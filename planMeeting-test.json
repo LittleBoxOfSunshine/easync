@@ -4,8 +4,8 @@
     "cahenk95@gmail.com"
   ],
   "length": "P3H",
-  "dayEnd": "09:00:00",
-  "dayStart": "17:00:00",
+  "dayStart": "09:00:00",
+  "dayEnd": "17:00:00",
   "allRequired": false,
   "EventDetails": {
     "startTime": "2015-12-01 05:00:00",
