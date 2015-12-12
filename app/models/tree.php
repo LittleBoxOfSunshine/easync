@@ -232,6 +232,15 @@ class CalIntervalDiff{
 			
 			self::$length = $length;
 
+            echo json_encode($rangeLowerBound);
+
+            foreach($events as $email => $intervals) {
+                for($j = 0; $j < count($events[$email]); $j++) {
+                    $events[$email][$j]['startTime'] -= $rangeLowerBound;
+                    $events[$email][$j]['endTime'] -= $rangeLowerBound;
+                }
+            }
+
 			foreach($events as $email => $intervals) {
                 $a = new ArrayIterator($intervals);
 				foreach($a as $interval){
@@ -250,32 +259,39 @@ class CalIntervalDiff{
                         $interval['endTime'] = 1440*floor($interval['endTime']/1440) + $workdayUpperBound;
                     }
 
+                    echo json_encode($interval);
+
 					if( $interval['endTime'] - $interval['startTime'] < $length) {
                         continue;
                     }
 
                     if( $interval['endTime'] - $interval['startTime'] < 1440 ) {
-                        echo "Inserting: $email -> ";
-                        echo json_encode($interval);
+                       // echo "Inserting: $email -> ";
+                       // echo json_encode($interval);
                         $this->root->insertInterval($email, $interval['startTime'], $interval['endTime']);
                     }
                     else{
+                        echo "INVALID RANGE => ".json_encode($interval);
+                        /*
                         while($interval['endTime'] - $interval['startTime'] >= 1440) {
                             $a->append(array('startTime' => $interval['startTime'],
                                 'endTime' => floor($interval['startTime']/1440) + $workdayUpperBound));
                             $interval['startTime'] += 1440*(floor($interval['startTime']/1440)+1);
-                            echo "Appending: $email -> ";
-                            echo json_encode($interval);
+                        //    echo "Appending: $email -> ";
+                        //    echo json_encode($interval);
                         }
                         $a->append(array('startTime' => $interval['startTime'], 'endTime' => $interval['endTime']));
-                        echo "Appending: $email -> ";
-                        echo json_encode($interval);
+                       // echo "Appending: $email -> ";
+                       // echo json_encode($interval);
                         //print_r($a);
+                        */
                     }
 
 				}
 
 			}
+
+            echo json_encode($events);
 		}
 
 	}
@@ -284,6 +300,11 @@ class CalIntervalDiff{
 
 		$ret = [];
 		$this->root->getTop($x,$ret);
+
+        for($i=0; $i<count($ret); $i++){
+            $ret[$i]['startTime'] += $this->rangeLowerBound;
+            $ret[$i]['endTime'] += $this->rangeLowerBound;
+        }
 
         return $ret;
 	}
