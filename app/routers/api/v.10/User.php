@@ -117,10 +117,12 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 	$app->post('/rsvp', function () use ($app){
 		global $USER_ID;
-		$token = $app->request->get('token');
+		$token = $app->request->post('token');
+		$attending = $app->request->post('attending');
 
-		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp = 'True' WHERE :token = token;");
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp=:attending  WHERE token=:token;");
 		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':attending', $attending);
 		$stmt->execute();
 
 		if($stmt->errorCode() === '00000'){
