@@ -3,12 +3,14 @@
 <ul class="img-list">
   <li class="round-button">
     <a ng-href="#/newmeeting">
-    <span class="glyphicon glyphicon-plus main-icon"></span><span class="text-content"><p>New Meeting</p></span></span>
+    <span class="glyphicon glyphicon-plus main-icon"></span>
+    <span class="text-content"><p>New Meeting</p></span></span>
     </a>
   </li>
   <li class="round-button">
-    <a ng-href="#/scheduled">
-     <span class="glyphicon glyphicon-calendar main-icon"></span><span class="text-content"><p>Scheduled</p></span>
+    <a ng-href="#/scheduled" ng-mouseOver="">
+     <span class="glyphicon glyphicon-calendar main-icon"></span>
+     <span class="text-content"><p>Scheduled</p></span>
     </a>
   </li>
   <li class="round-button">
@@ -34,5 +36,23 @@ y.each(function(){
 
 </script>
 
+<style>
+.main-icon {
+  opacity:1;
+  z-index: 9999;
 
+}
+.main-icon:hover {
+   opacity:0
+}
+.main-icon {
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+   opacity:1;
+  z-index: 9999;
+}
+
+</style>
 
