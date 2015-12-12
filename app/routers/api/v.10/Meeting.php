@@ -119,8 +119,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$tree = new CalIntervalDiff($allEvents, 0, 9999999999, $dayStart, $dayEnd, $length);
 
 		$meetingTimes = $tree->getTop(5);
-
-	/*		
+/*
 		$meetingTimes = array(
 			array(
 				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com', 'newtest@gmail.com'),
@@ -129,11 +128,11 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			),
 			array(
 				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com'),
-				'startTime' => '991',
+				'startTime' => '481',
 				'endTime' => '3360'
 			)
 		);
-	*/
+*/	
 
 		//make sure everyone can attend
 		if($allRequired){
@@ -147,15 +146,18 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		//sessionMeetings contains same info as finalMeetings with the same indexes
 		//but its information is in a different format for the database
 
-		$start = new DateTime($startTime);
-
 		$sessionMeetings = [];
 
+
 		foreach($meetingTimes as $meet) {
+			$start = new DateTime($startTime);
+
 			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
 			$newTime = $newTime->format('Y-m-d H:i:s');
 
 			$meet['startTime'] = $newTime;
+
+			$start = new DateTime($startTime);
 
 			$newTime = $start->add(new DateInterval('PT' . $meet['endTime'] . 'M'));
 			$newTime = $newTime->format('Y-m-d H:i:s');
@@ -165,18 +167,23 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$sessionMeetings[] = $meet;
 		}
 
+
 		$_SESSION['meetings'] = $sessionMeetings;
 
 		//convert to non 0 indexed and change email to names
 		$finalMeetings = [];
 
 		foreach($meetingTimes as $meet) {
+			$start = new DateTime($startTime);
+
 			$newTime = $start->add(new DateInterval('PT' . $meet['startTime'] . 'M'));
 			$newTime = $newTime->format('Y-m-d\TH:i:sP');
 			$newTime = substr($newTime, 0, -6);
 			$newTime = date("D, M d g:i A", strtotime($newTime));
 			
 			$meet['startTime'] = $newTime;
+
+			$start = new DateTime($startTime);
 
 			$newTime = $start->add(new DateInterval('PT' . $meet['endTime'] . 'M'));
 			$newTime = $newTime->format('Y-m-d\TH:i:sP');
@@ -232,11 +239,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 			//holds attendees and start/end times
 			$meeting = $_SESSION['meetings'][$index];
-			/*
-			echo "<br><pre>Meeting: ";
-			var_dump($meeting);
-			echo "</pre><br>";
-			*/
+
 			$creatorUserID = User::emailToUser($creatorEmail);
 			
 			
