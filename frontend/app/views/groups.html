@@ -8,7 +8,7 @@
                     <th>Number of Members</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="hoverTable">
                 <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)">
                     <td> {{ key }} </td>
                     <td> {{ value.length }} </td>
@@ -55,29 +55,7 @@
 </div>
 
 <style>
-    h2 {
-        text-align: center;
-    }
-
-    th {
-        font-weight: bold;
-    }
-
-    #grouplisttable td {
-        text-align: center;
-    }
-
-    .row-centered {
-        text-align:center;
-    }
-
-    .col-centered {
-        vertical-align: top;
-        display:inline-block;
-        float:none;
-        text-align:left;
-        margin-right:-4px;
-    }
+ 
 
 
 </style>

@@ -15,17 +15,15 @@ angular.module('easyncApp')
 	$scope.calConnected = false;
 	$scope.addContact = false;
 	$scope.newContactError = false;
-
+	$scope.name ='';
 	 $scope.loadUser = function() {
     	$http({
     		method:'GET',
-    		url: GlobalIPService.ip + 'api/v1.0/Group/getUsers',
+    		url: GlobalIPService.ip + 'api/v1.0/User/getUserDetails',
   			withCredentials: true
     	}).then(function (response) {
-    		for (var i in response.data) {
-    			var name = response.data[i].name;
-    			console.log(name);
-    		}
+    			$scope.name = response.data.name;
+
     	}, function (error) {
     		console.log(error);
     	});
