@@ -249,7 +249,7 @@ class CalIntervalDiff{
                 $a = new ArrayIterator($intervals);
 				foreach($a as $interval){
 
-                    echo json_encode("BEFORE -> ").json_encode($interval)."\n";
+                   // echo json_encode("BEFORE -> ").json_encode($interval)."\n";
 
                     if( ($interval['startTime'] % 1440) > $workdayUpperBound){
                         $interval['startTime'] = 1440*(floor($interval['startTime']/1440)+1) + $workdayLowerBound;
@@ -262,24 +262,29 @@ class CalIntervalDiff{
                       //  $interval['endTime'] = 1440*(floor($interval['startTime']/1440)-1) + $workdayLowerBound;
                     //}
                     //else
-					if( ($interval['endTime'] % 1440) > $workdayUpperBound ){
+                    if( ($interval['endTime'] % 1440) > $workdayUpperBound ){
                         $interval['endTime'] = 1440*floor($interval['endTime']/1440) + $workdayUpperBound;
                     }
 
-                    echo json_encode("AFTER -> ").json_encode($interval)."\n";
+                    //echo json_encode("AFTER -> ").json_encode($interval)."\n";
 
 					if( $interval['endTime'] - $interval['startTime'] < $length) {
-                        echo json_encode("INVALID RANGE => ").json_encode($interval)."\n";
+                       // echo json_encode("INVALID RANGE => ").json_encode($interval)."\n";
                         continue;
                     }
 
 					// instead of more than a day apart, divide by 1440 and see if the day matches
-					if($interval['startTime']/1440 < $interval['endTime']/1440){
+					if(floor($interval['startTime']/1440) < floor($interval['endTime']/1440)){
                         //$c = 0;
 						do {
-                            var_dump($interval);
+                          //  var_dump($interval);
+                            $tempEnd = 1440*floor($interval['startTime']/1440) + $workdayUpperBound;
+
+                            if($tempEnd > $interval['endTime'])
+                                $tempEnd = $interval['endTime'];
+
                             $a->append(array('startTime' => $interval['startTime'],
-                                'endTime' => 1440*floor($interval['startTime']/1440) + $workdayUpperBound));
+                                'endTime' => $tempEnd));
 
                             $interval['startTime'] = 1440*(floor($interval['startTime']/1440)+1) + $workdayLowerBound;
 
@@ -294,6 +299,12 @@ class CalIntervalDiff{
 						// insert the final range
 						$a->append(array('startTime' => $interval['startTime'], 'endTime' => $interval['endTime']));
 					}
+                    else{
+                       // echo json_encode("Inserting: $email -> ")."\n";
+                       // echo json_encode($interval)."\n";
+                        $this->root->insertInterval($email, $interval['startTime'], $interval['endTime']);
+                    }
+
 
                 /*
                     if( $interval['endTime'] - $interval['startTime'] < 1440 ) {
@@ -318,7 +329,7 @@ class CalIntervalDiff{
 
 	public function getTop($x){
 
-        var_dump($this->root);
+       // var_dump($this->root);
 
 		$ret = [];
 		$this->root->getTop($x,$ret);
