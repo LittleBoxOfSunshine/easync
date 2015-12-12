@@ -109,6 +109,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$minutes += $end[1];
 
 		$dayEnd = $minutes;
+        echo json_encode($allEvents);
 
 		$length = explode(':', $length);
 		$minutes = $length[0] * 60;
@@ -116,7 +117,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		$length = $minutes;
 
-		$tree = new CalIntervalDiff($allEvents, 0, 9999999999, $dayStart, $dayEnd, $length);
+		$tree = new CalIntervalDiff($allEvents, 0, 1E9, $dayStart, $dayEnd, $length);
 
 		$meetingTimes = $tree->getTop(5);
 

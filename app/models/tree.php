@@ -233,19 +233,45 @@ class CalIntervalDiff{
 			self::$length = $length;
 
 			foreach($events as $email => $intervals) {
-				foreach($intervals as $interval){
-                    if( ($interval['startTime'] % 1440) < $workdayLowerBound ){
+                $a = new ArrayIterator($intervals);
+				foreach($a as $interval){
+
+                    if( ($interval['startTime'] % 1440) > $workdayUpperBound){
+                        $interval['startTime'] = 1440*(floor($interval['startTime']/1440)+1) + $workdayLowerBound;
+                    }
+                    else if( ($interval['startTime'] % 1440) < $workdayLowerBound ){
                         $interval['startTime'] = 1440*floor($interval['startTime']/1440) + $workdayLowerBound;
                     }
 
-                    if( ($interval['endTime'] % 1440) > $workdayUpperBound ){
+                    if( ($interval['endTime'] % 1440) < $workdayLowerBound){
+                        $interval['endTime'] = 1440*(floor($interval['startTime']/1440)-1) + $workdayLowerBound;
+                    }
+                    else if( ($interval['endTime'] % 1440) > $workdayUpperBound ){
                         $interval['endTime'] = 1440*floor($interval['endTime']/1440) + $workdayUpperBound;
                     }
 
-					if( $interval['endTime'] - $interval['startTime'] < $length)
-						continue;
-	
-					$this->root->insertInterval($email, $interval['startTime'], $interval['endTime']);
+					if( $interval['endTime'] - $interval['startTime'] < $length) {
+                        continue;
+                    }
+
+                    if( $interval['endTime'] - $interval['startTime'] < 1440 ) {
+                        echo "Inserting: $email -> ";
+                        echo json_encode($interval);
+                        $this->root->insertInterval($email, $interval['startTime'], $interval['endTime']);
+                    }
+                    else{
+                        while($interval['endTime'] - $interval['startTime'] >= 1440) {
+                            $a->append(array('startTime' => $interval['startTime'],
+                                'endTime' => floor($interval['startTime']/1440) + $workdayUpperBound));
+                            $interval['startTime'] += 1440*(floor($interval['startTime']/1440)+1);
+                            echo "Appending: $email -> ";
+                            echo json_encode($interval);
+                        }
+                        $a->append(array('startTime' => $interval['startTime'], 'endTime' => $interval['endTime']));
+                        echo "Appending: $email -> ";
+                        echo json_encode($interval);
+                        //print_r($a);
+                    }
 
 				}
 
