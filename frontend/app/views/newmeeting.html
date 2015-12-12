@@ -52,8 +52,8 @@
 			<label for="required">Attendance Required</label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> 
 		</form>
 
-		<button class="btn btn-info" ng-show="!validateconstraintfields()" disabled>Find Possible Meeting Times</button>
-		<button class="btn btn-info" ng-show="validateconstraintfields()">Find Possible Meeting Times</button>
+		<button class="btn btn-info" ng-show="validateconstraintfields() === false" disabled>Find Possible Meeting Times</button>
+		<button class="btn btn-info" ng-show="validateconstraintfields() === true" ng-click="findmeetingtimes(constraints, attendees)">Find Possible Meeting Times</button>
 	</div>
 
 	<div class="row text-center" id="possibletimes" ng-show="possibletimes_bool">

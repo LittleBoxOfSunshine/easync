@@ -118,6 +118,17 @@ angular.module('easyncApp')
         });
     };
 
+    $scope.findmeetingtimes = function(constraints, attendees) {
+        var request_obj = {
+            emails : [],
+            eventdetails: {}
+        };
+
+        attendees.forEach(function(element, index, array) {
+            console.log(element);
+        })
+    }
+
 }).filter('attendeesValue', function() { 
 	return function(input) {
 		return input[Object.keys(input)[0]];
