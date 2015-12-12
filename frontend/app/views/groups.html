@@ -20,7 +20,7 @@
     <div class="col-md-5 col-centered" ng-show="selectedgroup.length > 0">
         <h3> {{ groupname }} 
             <a ng-show="!newRow" ng-click="addrow()"><span class="glyphicon glyphicon-plus pull-right"> </span></a>
-            <a ng-show="newRow" ng-click="saverow(newName, newEmail)"><span class="glyphicon glyphicon-floppy-save pull-right"></span></a> 
+            <a ng-show="newRow" ng-click="saverow(newName, newEmail, newContact)"><span class="glyphicon glyphicon-floppy-save pull-right"></span></a> 
         </h3>
         <table class="table table-hover">
             <thead>
@@ -37,6 +37,14 @@
                 <tr ng-show="newRow == true">
                     <td><input class="form-control input-sm" ng-model="newName"></td>
                     <td><input class="form-control input-sm" ng-model="newEmail"></td>
+                </tr>
+                <tr ng-show="newRow == true" ng-init=loadcontacts()>
+                    <td>or add a contact</td>
+                    <td>
+                        <select class="form-control" ng-model="newContact">
+                            <option ng-repeat="person in contacts" value="{{ person }}"> {{ person.name }} </option>
+                        </select>
+                    </td>
                 </tr>
 
             </tbody> 
