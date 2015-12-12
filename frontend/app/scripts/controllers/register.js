@@ -56,7 +56,7 @@ angular.module('easyncApp')
             };
 
             //set the cookie for being logged in
-            LoggedInService.set_or_refresh_cookie();
+            LoggedInService.set_or_refresh_cookie(user.email);
             //redirect back to dashboard
             $location.path('');
           }

@@ -27,7 +27,10 @@ angular.module('easyncApp')
     	start_date : new Date(),
     	end_date : new Date(),
     	duration: 0,
-    	required : false
+    	required : false,
+        title: '',
+        location: '',
+        description: ''
     };
     
     $scope.addemailattendee = function(email) {
@@ -91,7 +94,9 @@ angular.module('easyncApp')
     		return false;
     	} else if ($scope.constraints.duration === 0) {
     		return false;
-    	} else {
+    	} else if ($scope.constraints.title === '' || $scope.constraints.title === 'Meeting Name'){
+            return false;
+        } else {
     		return true;
     	}
     };
@@ -154,20 +159,21 @@ angular.module('easyncApp')
             var date = date_obj.getDate();
             var month = date_obj.getMonth() + 1; //returns 0-11
 
-            if (year   < 10) {year   = "0"+year;}month
+            if (year   < 10) {year   = "0"+year;}
             if (month < 10) {month = "0"+month;}
             if (date < 10) {date = "0"+date;}
             var final_date    = year+'-'+month+'-'+date;
-            if (beginning_of_day)
+            if (beginning_of_day) {
                 return final_date + ' 00:00:00';
-            else
+            } else {
                 return final_date + ' 23:59:59';
+            }
 
-        }
+        };
 
         //set duration key
         var time_string = handleDuration(constraints.duration);
-        request_obj['length'] = time_string;
+        request_obj.length = time_string;
 
         //add the attendees to the email array
         attendees.emails.forEach(function(element, index, array) { //for emails
@@ -202,9 +208,21 @@ angular.module('easyncApp')
         request_obj.eventdetails.startTime = handleDate(constraints.start_date, true);
         request_obj.eventdetails.endTime = handleDate(constraints.end_date, false);
 
+        //set creator email cookie
+        request_obj.eventdetails.creatorEmail = $cookies.get('easync_email');
+
         console.log(request_obj);
 
-
+        $http({
+            method: 'POST',
+            url: GlobalIPService.ip + 'api/v1.0/Meeting/planMeeting',
+            withCredentials: true,
+            data: JSON.stringify(request_obj)
+        }).then(function (response) {
+            console.log(response.data);
+        }, function (error) {
+            console.log(error);
+        });
 
     };
 

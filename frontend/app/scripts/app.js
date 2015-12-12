@@ -92,13 +92,15 @@ angular
           if ($cookies.get('easync_logged')) {
             return true;
           } else {
-            //console.log("no cooki found!");
             return false;
           }
         },
-        set_or_refresh_cookie: function() {
+        set_or_refresh_cookie: function(email) {
           var expire_date = new Date((new Date()).valueOf() + 1000*1800);
           $cookies.put('easync_logged', 'true', {'expires': expire_date});
+          if (typeof(email) !== undefined) {
+            $cookies.put('easync_email', email, {'expires': expire_date});
+          }
           return true;
         },
         logout: function() {
