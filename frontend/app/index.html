@@ -30,15 +30,15 @@
         <div class="navbar navbar-default" role="navigation">
           <div class="container">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#/">easync</a>
+              <a class="navbar-brand" href="#/" style="color:#F9F9F9">easync</a>
             </div>
             <div ng-controller="GlobalWindowCtrl as windowcontrol"> 
               <div class="collapse navbar-collapse" id="js-navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                  <li class="pull-right" ng-show="!userLoggedIn()"><a ng-href="#/login">Log In</a></li>
-                  <li class="pull-right" ng-show="!userLoggedIn()"><a ng-href="#/register">Register</a></li>
-                  <li class="pull-right" ng-show="userLoggedIn()" ng-click="logOut()"><a>Log Out</a></li>
-                  <li class="pull-right" ng-show="userLoggedIn()"><a ng-href="#/settings">Settings</a></li>
+                  <li class="pull-right header-tag" ng-show="!userLoggedIn()"><a ng-href="#/login" class="header-tag" style="color:#F9F9F9">Log In</a></li>
+                  <li class="pull-right header-tag" ng-show="!userLoggedIn()"><a ng-href="#/register" class="header-tag" style="color:#F9F9F9">Register</a></li>
+                  <li class="pull-right header-tag" ng-show="userLoggedIn()" ng-click="logOut()"><a class="header-tag" style="color:#F9F9F9">Log Out</a></li>
+                  <li class="pull-right header-tag" ng-show="userLoggedIn()"><a ng-href="#/settings"><span class="glyphicon glyphicon-cog header-tag"></span></a></li>
                 </ul>
               </div>
             </div>
@@ -109,51 +109,3 @@
         <script src="scripts/controllers/groups.js"></script>
 
         <!-- endbuild -->
-
-<style>
-.navbar-brand {
-  font-size: 32px;
-}
-.navbar {
-  height:50px;
-  font-size: 24px;
-  margin-bottom: 0px;
-}
-
-.wrapper {
-  min-height:100%;
-  position:relative;
-}
-
-.content {
-  padding-bottom:60px; /* Height of the footer element */
-}
-
-#footerbox {
-  margin: 0 auto;
-  text-align: center;
-  padding-top: 12px;
-}
-
-#footerbox > a {
-  color:azure;
-  margin-right:30px;
-}
-
-html, body {
-  margin:0;
-  padding:0;
-  height:100%;
-}
-
-.footer {
-  background-color: darkblue;
-  opacity: .85;
-  width:100%;
-  height:50px;
-  position:absolute;
-  bottom:0;
-  left:0;
-}
-
-</style>

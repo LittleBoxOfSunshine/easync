@@ -47,11 +47,6 @@ angular
         controller: 'ScheduledCtrl',
         controllerAs: 'scheduled'
       })
-      .when('/home', {
-        templateUrl: 'views/home.html',
-        controller: 'HomeCtrl',
-        controllerAs: 'home'
-      })
       .when('/newmeeting', {
         templateUrl: 'views/newmeeting.html',
         controller: 'NewMeetingCtrl',
