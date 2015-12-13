@@ -71,14 +71,14 @@ class User extends Model implements CRUD{
 		foreach($emailArray as $to){
 			$accept = '
 				<form action="'.WEB_ROOT.'/api/v1.0/User/rsvp" method="POST">
-				 	<input type="hidden" name="token" value='.self::makeRsvpToken($to);.'/>
+				 	<input type="hidden" name="token" value='.self::makeRsvpToken($to).'/>
 					<input type="hidden" name="attending" value="true"/>
 					<input type="submit" value="Accept"/>
 				</form>
 			';
 			$decline = '
 				<form action="'.WEB_ROOT.'/api/v1.0/User/rsvp" method="POST">
-					<input type="hidden" name="token" value='.self::makeRsvpToken($to);.'/>
+					<input type="hidden" name="token" value='.self::makeRsvpToken($to).'/>
 					<input type="hidden" name="attending" value="false"/>
 					<input type="submit" value="Decline"/>
 				</form>
