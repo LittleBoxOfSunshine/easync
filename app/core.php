@@ -147,7 +147,7 @@ foreach($routers as $router){
 
 // Define index route
 $app->get('/', function () use ($app){
-	echo file_get_contents(__DIR__.'/../public/app/index.html');
+	echo file_get_contents(__DIR__.'/../public/index.html');
 });
 
 $app->response->headers->set('Access-Control-Allow-Origin', 'http://localhost:9000');
