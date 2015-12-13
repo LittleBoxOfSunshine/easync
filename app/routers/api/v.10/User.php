@@ -16,6 +16,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$lastname = $data->lastname;
 		$fullName = $firstname.' '.$lastname;
 		$google_ID = $data->google_ID;
+		$google_token = $data->google_token;
 
 		$user = new User(array('email' => $email));
 
@@ -23,12 +24,20 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();
 
+		try{
+			$response = file_get_contents("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=$google_token");
+			$response = json_decode($response);
+		}
+		catch(Exception $e){
+			echo 'Error with Google token';
+			return;
+		}
+
 
 		if($stmt->fetch()){
 			$stmt = Database::prepareAssoc("SELECT googleID FROM User WHERE email=:email;");
 			$stmt->bindParam(':email', $email);
 			$stmt->execute();
-			//var_dump($stmt->fetch());
 			$anger = $stmt->fetch();
 			if(is_null($anger["googleID"])){
 				$stmt = Database::prepareAssoc("UPDATE User SET `googleID` = :google_ID WHERE `email` = :email;");
@@ -61,11 +70,13 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	    }
 
 
-		if(isset($_SESSION['auth_token']))
+		if(isset($_SESSION['auth_token'])){
 			$user->revokeAuthToken($_SESSION['auth_token']);
+			$_SESSION['auth_token'] = $user->createAuthToken();
+		}
 
 		else {
-			$_SESSION['auth_token'] = $this->createAuthToken();
+			$_SESSION['auth_token'] = $user->createAuthToken();
 		}
 	});
 
@@ -108,6 +119,25 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$stmt->execute();
 
 		echo json_encode($token);
+	});
+
+	$app->post('/rsvp', function () use ($app){
+		global $USER_ID;
+		$token = $app->request->post('token');
+		$attending = $app->request->post('attending');
+
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET rsvp=:attending  WHERE token=:token;");
+		$stmt->bindParam(':token', $token);
+		$stmt->bindParam(':attending', $attending);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Successfully Added to Meeting.';
+		}
+		else {
+				echo 'mySQL error.';
+		}
+
 	});
 
 	$app->delete('/logout', $AUTH_MIDDLEWARE(), function () use ($app){
