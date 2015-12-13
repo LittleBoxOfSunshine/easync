@@ -185,7 +185,6 @@ angular.module('easyncApp')
 
         //set creator email cookie
         request_obj.EventDetails.creatorEmail = $cookies.get('easync_email');
-        request_obj.emails.push($cookies.get('easync_email'));
 
         //set title, description, location
         request_obj.EventDetails.name = constraints.title;
@@ -209,6 +208,9 @@ angular.module('easyncApp')
             response.data.forEach(function (element, index, array) {
                 request_obj.emails.push(element.email);
             });
+
+            //add creator email to emails array
+            request_obj.emails.push($cookies.get('easync_email'));
 
             //remove duplicate emails
             var before_trim = request_obj.emails.length;
