@@ -2,6 +2,10 @@
 
 $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 	
+	/*
+	 * Eric Smith
+	 */
+
 	//for giving list of meeting possibilities
 	$app->post('/planMeeting', $AUTH_MIDDLEWARE(), function () use ($app){
 
@@ -24,9 +28,10 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$meetingDetails['location'] = $meeting->EventDetails->location;
 		$meetingDetails['attachments'] = $meeting->EventDetails->attachments;
 
+		//set cookie for finalizeMeeting
 		$_SESSION['meetingDetails'] = $meetingDetails;
 
-
+		//compensate for timezone
 		$startTime = $startTime->format('Y-m-d\TH:i:sP');
 		$startTime = substr($startTime, 0, -6);
 		$startTime = $startTime . "-06:00";
@@ -35,7 +40,14 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$endTime = substr($endTime, 0, -6);
 		$endTime = $endTime . "-06:00";
 
+		
 		$allEvents = [];
+
+		/*
+		 * Foreach user with a valid account,
+		 * merge their events - turn them into free times
+		 * add to allEvents
+		 */
 
 		foreach($emails as $email){
 			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
@@ -55,6 +67,9 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			} 
 
 		}
+
+		//convert json parameters to minutes
+		//first rule of computer science: repeat yourself
 
 		$start = explode(':', $dayStart);
 		$minutes = $start[0] * 60;
@@ -86,8 +101,8 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$minutes += $eT[1];
 		$eT = $minutes;
 
+		//get the top 5 times to meet
 		$tree = new CalIntervalDiff($allEvents, $sT, $eT, $dayStart, $dayEnd, $length);
-
 		$meetingTimes = $tree->getTop(5);
 
 		//make sure everyone can attend
@@ -101,7 +116,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		//store info (sessionMeetings) in a session 
 		//sessionMeetings contains same info as finalMeetings with the same indexes
 		//but its information is in a different format for the database
-
 		$sessionMeetings = [];
 
 
@@ -123,7 +137,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$sessionMeetings[] = $meet;
 		}
 
-
+		//cookie sent to finalizeMeetings
 		$_SESSION['meetings'] = $sessionMeetings;
 
 		//convert to non 0 indexed and change email to names
@@ -167,15 +181,17 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		echo json_encode( $finalMeetings );
 		
 	});
+	
+	/*
+	 * Eric Smith
+	 */
 
-	//if exists, update rather than insert
+	//creates the meeting from the chosen index given in planMeeting
+	//must run after planMeeting
 	$app->post('/finalizeMeeting', $AUTH_MIDDLEWARE(), function () use ($app){
-		/*
-		* change email cookie to all json 
-		* should contain stuff for meetingDetails like location, etc.
-		*/
 
 		if( isset($_SESSION['meetings']) ){
+
 			//load meeting details from session using index (time range) given as input	
 			$index = json_decode($app->request()->getBody());
 
@@ -200,8 +216,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 			$creatorUserID = User::emailToUser($creatorEmail);
 			
-			
-			//insert into meetingDetails then meeting
+			//insertthe meeting into the db
 			$stmt = Database::prepareAssoc("INSERT INTO `MeetingDetails` (location, startTime, creationTime, endTime, name, description, creatorUserID, attachments)
 				VALUES (:location, :startTime, :creationTime, :endTime, :name, :description, :creatorUserID, :attachments);");
 			$stmt->bindParam(':location', $location);	
@@ -214,6 +229,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$stmt->bindParam(':attachments', $attachments);
 			$stmt->execute();
 
+
 			$meetingID = Database::lastInsertId();
 
 			$stmt = Database::prepareAssoc("SELECT `name` FROM `User` WHERE email=:email");
@@ -223,6 +239,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$creatorName = $stmt->fetch();			
 			$creatorName = $creatorName['name'];
 
+			//foreach email, add a row in the database containing the meetingID
 			$stmt = Database::prepareAssoc("INSERT INTO `Meeting` (`email`, `meetingID`) VALUES(:email, :meetingID);");
 			$stmt->bindParam(':email', $email);
 			$stmt->bindParam(':meetingID', $meetingID);
@@ -231,6 +248,34 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 				$stmt->execute();
 
 			User::sendConfEmails($meeting['people'], $meetingID);
+
+			//foreach email - selected user id if they exist
+			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+
+			foreach($meeting['people'] as $email){
+				$stmt->execute();
+				$id = $stmt->fetch();
+				$id = $id['userID'];
+
+				//for those user ids, check to see if their calendartoken != NULL
+				//if it's not, create a GoogleCalendar event
+				if($id != NULL){
+					$stmt2 = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID");
+					$stmt2->bindParam(':userID', $id);
+					$stmt2->execute();
+
+					$token = $stmt2->fetch();
+					$token = $token['token'];
+
+					if($token != NULL){
+						$cal = new GoogleCalendar(array('userID' => $id));
+						$cal->createEvent($email, $meeting['startTime'], $meeting['endTime'], $meetingDetails);
+					}
+
+				}
+			}
 
 			echo "Your meeting has been scheduled.";
 			

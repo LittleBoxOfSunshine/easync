@@ -1,5 +1,7 @@
 <?php
-
+/*
+ * Eric Smith
+ */
 require_once(__DIR__.'/../lib/Model.php');
 require __DIR__ . '/../../vendor/autoload.php';
 class GoogleCalendar extends Model{
@@ -36,10 +38,10 @@ class GoogleCalendar extends Model{
 			if($temp == NULL)
 				die("ERROR: user has not allowed easync to access their Google Calendar");
 
-			/** @noinspection PhpUndefinedFieldInspection */
 			$this->client->refreshToken( $this->client->REFRESH_TOKEN_DB );
 			$token = $this->client->getAccessToken();
-			//save the token!
+
+			//save the token
 			$stmt = Database::prepareAssoc("UPDATE `CalendarTokens` SET token=:token WHERE userID=:userID AND platformID=:platformID");
 			$stmt->bindParam(':token', $token);
 			$stmt->bindParam(':platformID', $this->calID);
@@ -58,8 +60,7 @@ class GoogleCalendar extends Model{
 	    $client->setClientId(self::CLIENT_ID);
 	    $client->setClientSecret(self::CLIENT_SECRET);
 	    $client->setRedirectUri(self::REDIRECT_URI);
-	    $client->setAccessType('offline');   // Gets us our refreshtoken
-	    //$client->setApprovalPrompt('force');
+	    $client->setAccessType('offline');   //Gets us our refreshtoken
 
 	    $client->setScopes(array('https://www.googleapis.com/auth/calendar'));
 
@@ -116,7 +117,36 @@ class GoogleCalendar extends Model{
 	    $stmt->execute();
 	}
 
+	public function createEvent($email, $startTime, $endTime, $meetingDetails){
+		$start = new DateTime($startTime);
+		$start = $start->format('Y-m-d\TH:i:sP');
+		$start = substr($start, 0, -6);
+		$start = $start . "-06:00";
 
+		$end = new DateTime($endTime);
+		$end = $end->format('Y-m-d\TH:i:sP');
+		$end = substr($end, 0, -6);
+		$end = $end . "-06:00";
+
+		$event = new Google_Service_Calendar_Event(array(
+		  'summary' => $meetingDetails['name'],
+		  'location' => $meetingDetails['location'],
+		  'description' => $meetingDetails['description'],
+		  'start' => array(
+		    'dateTime' => $start,
+		    'timeZone' => 'America/Chicago',
+		  ),
+		  'end' => array(
+		    'dateTime' => $end,
+		    'timeZone' => 'America/Chicago',
+		  )
+		));
+	
+
+		$this->calendarList->events->insert($email, $event);
+	}
+
+	//get events from Google Calendar within time restrictions
 	public function getEvents($startTime, $endTime){
 		$calendarList = $this->calendarList->calendarList->listCalendarList();
 		
@@ -130,11 +160,6 @@ class GoogleCalendar extends Model{
 
 		while(true){
 		    foreach($calendarList->getItems() as $calendarListEntry){
-			    /*
-			     * problems:
-			     * timezone would have to be dealt with here
-			     */
-
 			    //get all events
 			    $events = $this->calendarList->events->listEvents($calendarListEntry->id, array('singleEvents' => 'true', 'timeMin' => $startTime, 'timeMax' => $endTime) );
 			    foreach($events->getItems() as $event){
@@ -144,14 +169,10 @@ class GoogleCalendar extends Model{
 
 			    	if($start !== NULL || $end !== NULL ){
 				    	$insertEvent = [];
-				    	//$insertEvent['summary'] = $event->getSummary();
 				    	$insertEvent['startTime'] = $start;
 				    	$insertEvent['endTime'] = $end;
 
 				    	$finalizedEvents[] = $insertEvent;
-				    	//echo "<br><pre>";
-				    	//var_dump($insertEvent);
-				    	//echo "</pre><br>";
 				    }
 
 			    }
@@ -177,6 +198,7 @@ class GoogleCalendar extends Model{
 	  	
 	}
 
+	//change merged events to free times
 	public function invertEvents($merged){
 		$inverted = [];
 
@@ -191,6 +213,8 @@ class GoogleCalendar extends Model{
 		return $inverted;
 	}
 
+	//convert events to minutes based off the startTime
+	//startTime = 0, one hour later = 60
 	public function convertToMinutes($events, $startTime){
 		$eventMinutes = [];
 		$start = new DateTime($startTime);
@@ -230,7 +254,9 @@ class GoogleCalendar extends Model{
 			$val = self::intcmp($a['endTime'], $b['endTime']);
 		return $val;
 	}
-	
+
+
+	//combine overlapping events
 	public static function merge_ranges($meetings){
 		//sort by start times, break ties with end times
 		usort($meetings, 'self::compare');
@@ -246,7 +272,7 @@ class GoogleCalendar extends Model{
 			$currentMeetingEnd = $time['endTime'];
 
 			//if the previous meeting can be merged with the current one
-			if( abs(strtotime($currentMeetingStart) - strtotime($previousMeetingEnd)) <= 60){
+			if( abs(strtotime($currentMeetingStart) - strtotime($previousMeetingEnd)) <= 60 ){
 	        	$previousMeetingEnd = max($currentMeetingEnd, $previousMeetingEnd);
 			}
 			else{

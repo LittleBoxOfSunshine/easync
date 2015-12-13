@@ -337,7 +337,9 @@ class CalIntervalDiff{
 
         for($i=0; $i<count($ret); $i++){
             $ret[$i]['startTime'] -= $this->rangeLowerBound;
-            $ret[$i]['endTime'] -= $this->rangeLowerBound;
+            //$ret[$i]['endTime'] -= $this->rangeLowerBound;
+			//This sets to earliest range since choosing range isn't in the UI
+			$ret[$i]['endTime'] = $ret[$i]['startTime'] + self::getLength();
         }
 
 		usort($ret, 'self::compareDepth');
