@@ -3,15 +3,17 @@
     "smitheric95@gmail.com",
     "cahenk95@gmail.com"
   ],
-  "length": "P3H",
-  "dayEnd": "09:00:00",
-  "dayStart": "17:00:00",
+  "length": "03:00:00",
+  "dayStart": "09:00:00",
+  "dayEnd": "17:00:00",
   "allRequired": false,
   "EventDetails": {
-    "startTime": "11:00:00",
-    "endTime": "12:00:00",
-    "name": "Test Meeting",
-    "creatorUserID": "999999",
-    "timeZone": "America/Chicago"
+    "startTime": "2015-12-01 05:00:00",
+    "endTime": "2015-12-04 06:00:00",
+    "name": "Test Name",
+    "description": "Test Description",
+    "creatorEmail": "smitheric95@gmail.com",
+    "location": "Dallas, TX",
+    "attachments": "Meeting.pdf"
   }
 }
