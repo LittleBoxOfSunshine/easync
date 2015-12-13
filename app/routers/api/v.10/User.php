@@ -16,6 +16,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$lastname = $data->lastname;
 		$fullName = $firstname.' '.$lastname;
 		$google_ID = $data->google_ID;
+		$google_token = $data->google_token;
 
 		$user = new User(array('email' => $email));
 
@@ -23,12 +24,20 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();
 
+		try{
+			$response = file_get_contents("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=$google_token");
+			$response = json_decode($response);
+		}
+		catch(Exception $e){
+			echo 'Error with Google token';
+			return;
+		}
+
 
 		if($stmt->fetch()){
 			$stmt = Database::prepareAssoc("SELECT googleID FROM User WHERE email=:email;");
 			$stmt->bindParam(':email', $email);
 			$stmt->execute();
-			//var_dump($stmt->fetch());
 			$anger = $stmt->fetch();
 			if(is_null($anger["googleID"])){
 				$stmt = Database::prepareAssoc("UPDATE User SET `googleID` = :google_ID WHERE `email` = :email;");
@@ -62,11 +71,13 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 	}
 
 
-		if(isset($_SESSION['auth_token']))
+		if(isset($_SESSION['auth_token'])){
 			$user->revokeAuthToken($_SESSION['auth_token']);
+			$_SESSION['auth_token'] = $user->createAuthToken();
+		}
 
 		else {
-			$_SESSION['auth_token'] = $this->createAuthToken();
+			$_SESSION['auth_token'] = $user->createAuthToken();
 		}
 	});
 
