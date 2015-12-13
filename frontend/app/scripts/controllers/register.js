@@ -81,6 +81,8 @@ angular.module('easyncApp')
               console.log(error);
             });
 
+          } else {
+            console.log("error creating account");
           }
       }).error(function (error) {
 	      	console.log('Register failed ' + error);

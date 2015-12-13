@@ -185,6 +185,7 @@ angular.module('easyncApp')
 
         //set creator email cookie
         request_obj.EventDetails.creatorEmail = $cookies.get('easync_email');
+        request_obj.emails.push($cookies.get('easync_email'));
 
         //set title, description, location
         request_obj.EventDetails.name = constraints.title;

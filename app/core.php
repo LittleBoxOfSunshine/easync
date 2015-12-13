@@ -58,7 +58,8 @@ $AUTH_MIDDLEWARE = function () use ($app){
         $stmt = Database::prepareAssoc("SELECT userID FROM `Auth_Token` WHERE `auth_token`=:authToken");
 
         $error403 = function () use ($app){
-            $app->halt(403, 'ERROR: You must be authenticated to use this api route...');
+            var_dump($_SESSION);
+            $app->halt(403, var_export($_SESSION, true).'ERROR: You must be authenticated to use this api route...');
         };
 
         if(!isset($_SESSION['auth_token']))

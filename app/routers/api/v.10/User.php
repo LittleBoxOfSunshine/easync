@@ -47,7 +47,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 				echo 'Inserted tokenID';
 			}
 			else{
-				echo 'Already Used Google Sign In.';
+				echo json_encode('Already Used Google Sign In.');
 			}
 		}
 
@@ -59,25 +59,23 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			$stmt->execute();
 
 		    if($stmt->errorCode() === '00000'){
-			    echo 'Account Created.';
+			    echo json_encode('Account Created.');
 		    }
 		    else if($stmt->errorCode() === '23000'){
-			    echo 'ERROR: This email is already registered...';
+			    echo json_encode('ERROR: This email is already registered...');
 		    }
 		    else{
-			    echo 'A MySQL error has occurred.';
+			    echo json_encode('A MySQL error has occurred.');
 		    }
 	    }
 
+	    $uID = Database::lastInsertId();
 
 		if(isset($_SESSION['auth_token'])){
 			$user->revokeAuthToken($_SESSION['auth_token']);
-			$_SESSION['auth_token'] = $user->createAuthToken();
 		}
 
-		else {
-			$_SESSION['auth_token'] = $user->createAuthToken();
-		}
+		$_SESSION['auth_token'] = $user->createAuthToken($uID);
 	});
 
 	$app->post('/login', function () use ($app){
