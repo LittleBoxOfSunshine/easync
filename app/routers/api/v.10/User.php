@@ -241,7 +241,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		    }
 	    }
 
-	   	$app->redirect('/');
+	   	$app->redirect('/settings');
 
 	});
 

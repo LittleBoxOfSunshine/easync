@@ -10,7 +10,7 @@
 
 
 angular.module('easyncApp')
-.controller('SettingsCtrl', function ($scope, $http, GlobalIPService) {
+.controller('SettingsCtrl', function ($scope, $http, GlobalIPService, $location, $window) {
 	$scope.contacts = [];
 	$scope.calConnected = false;
 	$scope.addContact = false;
@@ -66,11 +66,13 @@ angular.module('easyncApp')
 			withCredentials: true,
 			dataType: 'jsonp'
 		})*/
-		$http.jsonp(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal')
+		/*$http.jsonp(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal')
 		.then(function (response) {
 		}, function (error) {
 			console.log("error connecting google cal", error);
-		});
+		});*/
+
+		$window.location.href(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal');
 	};
 
 	$scope.toggleAddContact = function () {
@@ -94,7 +96,7 @@ angular.module('easyncApp')
 				if (response.data.name !== undefined) {
 					$scope.contacts.push({'name': response.data.name, 'email': response.data.email});
 					$scope.newContact = '';
-				} else if (response.data == 'no user found for email') {
+				} else if (response.data === 'no user found for email') {
 					$scope.newContactError = true;
 				}
 			}, function (error) {

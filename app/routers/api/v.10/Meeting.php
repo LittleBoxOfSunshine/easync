@@ -75,7 +75,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		$allEvents = [];
 
-
 		foreach($emails as $email){
 			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
 			$stmt->bindParam(':email', $email);

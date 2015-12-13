@@ -30,7 +30,8 @@ angular.module('easyncApp')
     	required : false,
         title: '',
         location: '',
-        description: ''
+        description: '',
+        attachment: ''
     };
     
     $scope.addemailattendee = function(email) {
@@ -125,7 +126,7 @@ angular.module('easyncApp')
     $scope.findmeetingtimes = function(constraints, attendees) {
         var request_obj = {
             emails : [],
-            eventdetails: {}
+            EventDetails: {}
         };
 
         var handleDuration = function (time_minutes) {
@@ -171,32 +172,6 @@ angular.module('easyncApp')
 
         };
 
-        //set duration key
-        var time_string = handleDuration(constraints.duration);
-        request_obj.length = time_string;
-
-        //add the attendees to the email array
-        attendees.emails.forEach(function(element, index, array) { //for emails
-            request_obj.emails.push(element.email);
-        });
-        attendees.users.forEach(function(element, index, array) { //for users
-            request_obj.emails.push(element.email);
-        });
-        //for groups
-        var groupnames = attendees.groups.map(function (val) { return val.groupname; });
-        $http({
-            method: 'POST',
-            url: GlobalIPService.ip + 'api/v1.0/Group/getGroupContents',
-            withCredentials: true,
-            data : JSON.stringify(groupnames)
-        }).then(function (response) {
-            response.data.forEach(function (element, index, array) {
-                request_obj.emails.push(element.email);
-            })
-        }, function(error) {
-            console.log(error);
-        });
-
         //set allrequired flag
         request_obj.allRequired = constraints.required;
 
@@ -205,22 +180,64 @@ angular.module('easyncApp')
         request_obj.dayEnd = handleTimeOfDay(constraints.end_time);
 
         //set start and end dates
-        request_obj.eventdetails.startTime = handleDate(constraints.start_date, true);
-        request_obj.eventdetails.endTime = handleDate(constraints.end_date, false);
+        request_obj.EventDetails.startTime = handleDate(constraints.start_date, true);
+        request_obj.EventDetails.endTime = handleDate(constraints.end_date, false);
 
         //set creator email cookie
-        request_obj.eventdetails.creatorEmail = $cookies.get('easync_email');
+        request_obj.EventDetails.creatorEmail = $cookies.get('easync_email');
 
-        console.log(request_obj);
+        //set title, description, location
+        request_obj.EventDetails.name = constraints.title;
+        request_obj.EventDetails.description = constraints.description;
+        request_obj.EventDetails.location = constraints.location;
+        request_obj.EventDetails.attachments = constraints.attachment;
 
+        //set duration key
+        var time_string = handleDuration(constraints.duration);
+        request_obj.length = time_string;
+        //add the attendees to the email array
+        attendees.emails.forEach(function(element, index, array) { //for emails
+            request_obj.emails.push(element.email);
+        });
+        attendees.users.forEach(function(element, index, array) { //for users
+            request_obj.emails.push(element.email);
+        });
+
+
+        var scheduleMeeting = function(response) {
+            response.data.forEach(function (element, index, array) {
+                request_obj.emails.push(element.email);
+            });
+
+            //remove duplicate emails
+            var before_trim = request_obj.emails.length;
+            request_obj.emails = request_obj.emails.filter(function (value, index, element) {
+                return element.indexOf(value) === index;
+            });
+            console.log('emails trimmed from ' + before_trim + ' to ' + request_obj.emails.length + ' email addresses');
+
+            console.log(request_obj);
+
+            $http({
+                method: 'POST',
+                url: GlobalIPService.ip + 'api/v1.0/Meeting/planMeeting',
+                withCredentials: true,
+                data: JSON.stringify(request_obj)
+            }).then(function (response) {
+                console.log(response.data);
+            }, function (error) {
+                console.log(error);
+            });
+        }
+
+        //for groups
+        var groupnames = attendees.groups.map(function (val) { return val.groupname; });
         $http({
             method: 'POST',
-            url: GlobalIPService.ip + 'api/v1.0/Meeting/planMeeting',
+            url: GlobalIPService.ip + 'api/v1.0/Group/getGroupContents',
             withCredentials: true,
-            data: JSON.stringify(request_obj)
-        }).then(function (response) {
-            console.log(response.data);
-        }, function (error) {
+            data : JSON.stringify(groupnames)
+        }).then(scheduleMeeting, function(error) {
             console.log(error);
         });
     };
