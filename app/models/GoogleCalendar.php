@@ -116,6 +116,35 @@ class GoogleCalendar extends Model{
 	    $stmt->execute();
 	}
 
+	public function createEvent($email, $startTime, $endTime, $meetingDetails){
+		$start = new DateTime($startTime);
+		$start = $start->format('Y-m-d\TH:i:sP');
+		$start = substr($start, 0, -6);
+		$start = $start . "-06:00";
+
+		$end = new DateTime($endTime);
+		$end = $end->format('Y-m-d\TH:i:sP');
+		$end = substr($end, 0, -6);
+		$end = $end . "-06:00";
+
+		$event = new Google_Service_Calendar_Event(array(
+		  'summary' => $meetingDetails['name'],
+		  'location' => $meetingDetails['location'],
+		  'description' => $meetingDetails['description'],
+		  'start' => array(
+		    'dateTime' => $start,
+		    'timeZone' => 'America/Chicago',
+		  ),
+		  'end' => array(
+		    'dateTime' => $end,
+		    'timeZone' => 'America/Chicago',
+		  )
+		));
+	
+
+		$this->calendarList->events->insert($email, $event);
+	}
+
 	//get events from Google Calendar within time restrictions
 	public function getEvents($startTime, $endTime){
 		$calendarList = $this->calendarList->calendarList->listCalendarList();

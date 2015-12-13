@@ -246,6 +246,34 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 
 			User::sendConfEmails($meeting['people'], $meetingID);
 
+			//foreach email - selected user id if they exist
+			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
+			$stmt->bindParam(':email', $email);
+			$stmt->execute();
+
+			foreach($meeting['people'] as $email){
+				$stmt->execute();
+				$id = $stmt->fetch();
+				$id = $id['userID'];
+
+				//for those user ids, check to see if their calendartoken != NULL
+				//if it's not, create a GoogleCalendar event
+				if($id != NULL){
+					$stmt2 = Database::prepareAssoc("SELECT `token` FROM `CalendarTokens` WHERE userID=:userID");
+					$stmt2->bindParam(':userID', $id);
+					$stmt2->execute();
+
+					$token = $stmt2->fetch();
+					$token = $token['token'];
+
+					if($token != NULL){
+						$cal = new GoogleCalendar(array('userID' => $id));
+						$cal->createEvent($email, $meeting['startTime'], $meeting['endTime'], $meetingDetails);
+					}
+
+				}
+			}
+
 			echo "Your meeting has been scheduled.";
 			
 		}
