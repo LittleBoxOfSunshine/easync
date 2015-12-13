@@ -36,15 +36,16 @@
 	</div>
 
 	<div class="row text-center" id="datetimeconstraints">
-		<h3> Date and Time Constraints</h3>
 		<form name="datetimeform">
-			From <input name="fromdate" type="date" ng-model="constraints.start_date">
-			To <input name="todate" type="date" ng-model="constraints.end_date"><br>
-			<span class="error" ng-show="constraints.start_date > constraints.end_date">
+			Dates<br>
+			 <input name="fromdate" type="date" ng-model="constraints.start_date" v>
+			      <input name="todate" type="date" ng-model="constraints.end_date"><br>
+				<span class="error" ng-show="constraints.start_date > constraints.end_date">
 				End date must be greater or same as start date
 			</span><br>
-			After <input name="aftertime" type="time" ng-model="constraints.start_time">
-			Before <input name="beforetime" type="time" ng-model="constraints.end_time"><br>
+			Times<br>
+			 <input name="aftertime" type="time" ng-model="constraints.start_time" value="08:30:00" step="600">
+			 <input name="beforetime" type="time" ng-model="constraints.end_time" vvalue="08:30:00" step="600"><br>
 			<span class="error" ng-show="constraints.start_time >= constraints.end_time">
 				End time must be greater as start time
 			</span><br>
@@ -54,8 +55,8 @@
 				<option value="45"> 45 Minutes</option>
 				<option value="60"> 1 Hour</option>
 				<option value="120"> 2 Hours</option>
-			</select>
-			<label for="required">Attendance Required</label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> <br>
+			</select> <br>
+			<label for="required">Attendance Required </label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> <br>
 
 			<input type="text" ng-model="constraints.title" placeholder="Meeting Name">
 			<input type="text" ng-model="constraints.location" placeholder="Meeting Location"><br>
@@ -106,18 +107,6 @@ function toggleEmailField() {
 	}
 
 
-	#attendees, #addattendees {
-		background-color: lightblue;
-	}
-
-	#datetimeconstraints {
-		background-color: lightgreen;
-	}
-
-	#possibletimes {
-		background-color: lightblue;
-	}
-
 	#addbyemailslide {
 		display: none;
 	}
@@ -139,5 +128,8 @@ function toggleEmailField() {
 		margin-top: 20px;
 		margin-left: auto;
 		margin-right: auto;
+	}
+	label {
+		padding-right:5px;
 	}
 </style>

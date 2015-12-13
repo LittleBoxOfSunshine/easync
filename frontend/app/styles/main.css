@@ -21,11 +21,11 @@ a:hover {
     border-collapse:collapse; 
   }
   /* Define the default color for all the table rows */
-  .hoverTable #godHelpMe{
+  tbody > tr{
     background: #F9F9F9;
   }
   /* Define the hover highlight color for the table row */
-    .hoverTable  #godHelpMe:hover {
+     tbody > tr:hover {
           background: #FF5252;
           background-color: #FF5252;
     }
@@ -140,7 +140,7 @@ p {
     border: 10px solid #FF5252;
     border-radius: 100%;
     text-align:center;
-    box-shadow: 0 0 3px gray;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-size:40px;
     font-weight:bold;
     background-color: #F9F9F9;
@@ -148,7 +148,7 @@ p {
 }
 .round-button:hover {
     background: #F9F9F9;
-    z-index: 
+     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
     
