@@ -246,8 +246,12 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
             $user->register($password);
         }
 
-        $user->login($password);
-		$app->redirect('/api/v1.0/User/addGoogleCal');
+        // if($user->login($data->password)) {
+        // 	//$app->redirect('/api/v1.0/User/addGoogleCal');
+        // } else {
+        // 	echo 'Some error';
+        // }
+		
 
     });
 
@@ -272,7 +276,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		    }
 	    }
 
-	   	$app->redirect('/settings');
+	   	$app->redirect('/');
 
 	});
 

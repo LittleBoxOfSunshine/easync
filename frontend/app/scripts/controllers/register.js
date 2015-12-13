@@ -47,6 +47,14 @@ angular.module('easyncApp')
     	$http.post(GlobalIPService.ip + 'api/v1.0/User/register', json_payload).success(function (data) {
           console.log(data);
           if (data === "Account Created.") {
+
+            var login_data = {
+              'email': user.email, 
+              'password': user.pass
+            };
+
+            var login_json = JSON.stringify(login_data);
+
             $scope.user = {
               firstname : '',
               lastname : '',
@@ -55,10 +63,24 @@ angular.module('easyncApp')
               passtwo : ''
             };
 
-            //set the cookie for being logged in
-            LoggedInService.set_or_refresh_cookie(user.email);
-            //redirect back to dashboard
-            $location.path('');
+            $http({
+              url: GlobalIPService.ip + 'api/v1.0/User/login',
+              method: 'POST',
+              data: login_json,
+              withCredentials: true
+            })
+            .then(function(response) {
+              console.log(response.data);
+              if (response.data === 'Login successful') {
+                      //set the cookie for being logged in
+                      LoggedInService.set_or_refresh_cookie(user.email);
+                      //redirect back to dashboard
+                      window.location = GlobalIPService.ip + 'api/v1.0/User/addGoogleCal';
+              }
+            },function(error) {
+              console.log(error);
+            });
+
           }
       }).error(function (error) {
 	      	console.log('Register failed ' + error);

@@ -119,7 +119,7 @@ angular
   }).factory('GlobalIPService', function() {
     return {
       //ip: "http://52.27.123.122/"
-      ip: "http://localhost:6969/"
+      ip: "http://easync.com/"
     };
 
   }).config(function ($httpProvider) {

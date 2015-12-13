@@ -46,6 +46,9 @@ Vagrant.configure(2) do |config|
     if ! [ -L /var/www ]; then
       rm -rf /var/www
       ln -fs /vagrant /var/www
+      ln -fs /vagrant/public/styles /var/www/styles
+      ln -fs /vagrant/public/scripts /var/www/scripts
+      ln -fs /vagrant/public/fonts /var/www/fonts
     fi
     
     # Install PHP + dependencies
