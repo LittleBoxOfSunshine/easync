@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class Model</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Binding.html">Binding</a></li>
+				<li><a href="class-CalIntervalDiff.html">CalIntervalDiff</a></li>
+				<li><a href="class-Database.html">Database</a></li>
+				<li><a href="class-Event.html">Event</a></li>
+				<li><a href="class-GoogleCalendar.html">GoogleCalendar</a></li>
+				<li><a href="class-Group.html">Group</a></li>
+				<li><a href="class-IntervalObject.html">IntervalObject</a></li>
+				<li class="active"><a href="class-Model.html">Model</a></li>
+				<li><a href="class-Permission.html">Permission</a></li>
+				<li><a href="class-User.html">User</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-CRUD.html">CRUD</a></li>
+			</ul>
+
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-rglob.html">rglob</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Model</h1>
+
+
+
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-Event.html">Event</a>, 
+			<a href="class-GoogleCalendar.html">GoogleCalendar</a>, 
+			<a href="class-Group.html">Group</a>, 
+			<a href="class-User.html">User</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		<b>Abstract</b><br>
+		
+		
+		
+
+			<b>Located at</b> <a href="source-class-Model.html#7-146" title="Go to source code">lib/Model.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Model.html#11-82" title="Go to source code">__construct</a>( <span>array <var>&amp; $args</var> = <span class="php-keyword1">array</span>()</span>, <span>array <var>$required</var> = <span class="php-keyword1">array</span>()</span>, <span> <var>&amp; $fromUserInput</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			<p>This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
+of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
+some of the functionally that would normally be achieved by overloading the constructor.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
+of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
+some of the functionally that would normally be achieved by overloading the constructor.</p>
+
+<p>The $args parameter contains an array of key => value pairs where the keys correspond to NULL properties
+of the child class and the values to initialize them to. Should a key be given that doesn't have a
+corresponding property to store it in, code execution is halted. This prevents errorneous extra data from
+being added to an instance.</p>
+
+<p>If the $required parameter is provided, it is an array of strings that correspond to instance properities
+that MUST be initialized for the constructor to run correctly. If any of the required inputs are not found
+in $args code execution is halted. By default/if no $required parameter is provided, the constructor will
+require that ALL instance variables be instantiated. Multiple valid required patterns may be provided (this
+allows the CRUD interface load function to be defined more flexibly)</p>
+
+<p>The $fromUserInput parameter is an optional flag that signals the data contained in args comes from some
+form of user input, rather than class definitions. Consequently, it is possible and expected that the data
+may be malformed, but the calling code is equipped to handle that exception. So, the constructor returns
+false as an error message instead of halting code execution</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="loadInto" id="_loadInto">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_loadInto">#</a>
+		<code><a href="source-class-Model.html#84-92" title="Go to source code">loadInto</a>( <span>array <var>&amp; $data</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			<p>Provides a FETCH_INTO interface with access to private properties + error checking. Expects associative array where
+keys correspond to properties defined in the child class</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Provides a FETCH_INTO interface with access to private properties + error checking. Expects associative array where
+keys correspond to properties defined in the child class</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="loadAllInto" id="_loadAllInto">
+
+		<td class="attributes"><code>
+			 protected 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_loadAllInto">#</a>
+		<code><a href="source-class-Model.html#94-123" title="Go to source code">loadAllInto</a>( <span>array <var>&amp; $data</var> = <span class="php-keyword1">array</span>()</span>, <span>array <var>&amp; $properties</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			<p>Provides a FETCH_INTO interface with access to private properties + error checking, but creates arrays instead of
+assigning scalar values. Expects an array of associative arrays where keys coreespond to properties defined in the
+child class</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>Provides a FETCH_INTO interface with access to private properties + error checking, but creates arrays instead of
+assigning scalar values. Expects an array of associative arrays where keys coreespond to properties defined in the
+child class</p>
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="initBinding" id="_initBinding">
+
+		<td class="attributes"><code>
+			 protected static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_initBinding">#</a>
+		<code><a href="source-class-Model.html#136-140" title="Go to source code">initBinding</a>( <span>array <var>$bindingArgs</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getBinding" id="_getBinding">
+
+		<td class="attributes"><code>
+			 protected static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getBinding">#</a>
+		<code><a href="source-class-Model.html#142-144" title="Go to source code">getBinding</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
