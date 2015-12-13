@@ -1,14 +1,14 @@
 <div class="row row-centered" ng-controller="GroupsCtrl as groups">
     <h2>Groups</h2>
     <div class="col-md-3 col-centered" ng-init="loadGroups()">
-        <table class="table table-hover" id="grouplisttable">
+        <table class="table table-hover hoverTable" id="grouplisttable" >
             <thead>
                 <tr>
                     <th>Group Name</th>
                     <th>Number of Members</th>
                 </tr>
             </thead>
-            <tbody class="hoverTable">
+            <tbody >
                 <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)">
                     <td> {{ key }} </td>
                     <td> {{ value.length }} </td>
@@ -22,7 +22,7 @@
             <a ng-show="!newRow" ng-click="addrow()"><span class="glyphicon glyphicon-plus pull-right"> </span></a>
             <a ng-show="newRow" ng-click="saverow(newName, newEmail, newContact)"><span class="glyphicon glyphicon-floppy-save pull-right"></span></a> 
         </h3>
-        <table class="table table-hover">
+        <table class="table table-hover hoverTable">
             <thead>
                 <tr>
                     <th> Name </th>
