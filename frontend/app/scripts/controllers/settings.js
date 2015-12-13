@@ -59,8 +59,8 @@ angular.module('easyncApp')
 		});
 	};
 
-		$window.location.href(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal');
-	};
+		// $window.location.href(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal');
+	// };
 
 	$scope.toggleAddContact = function () {
 		if ($scope.addContact) {
@@ -109,3 +109,5 @@ angular.module('easyncApp')
 			console.log(error);
 		});
 };
+
+});
