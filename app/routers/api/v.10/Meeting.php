@@ -4,44 +4,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 	
 	//for giving list of meeting possibilities
 	$app->post('/planMeeting', $AUTH_MIDDLEWARE(), function () use ($app){
-		
-		/*
-
-		required:
-			startTime, endTime, name, creatorUserID (global, not input), timeZone
-		
-		json object consists of:
-			equireds ^ 
-			array of emails
-			length
-			day range (how early/late in day)
-			all attendees required(bool)
-
-		output: array of the ranges, sorted by rank;# of people can't attend each one
-		*/
-
-		/*
-		steps: (a lot of these will be combined/moved)
-			! copy emails, prune those w/out googlecal acess
-			! load any tokens, construct any API objects
-			pull events
-			diff by all attendees - look up group scheduling algorithm 
-				get the free times of each person (sort.php)
-					(not necessary to remember event names)
-				find the max overpallping of $length
-
-				if impossibr and required
-					give failure message
-				else if not required
-					move on
-
-			diff, rank by max #tendies
-			give top options or failure if no optoins exist (store copy of results in session)
-			
-		*/
-		//$app->response->headers->set('Content-Type', 'application/json');
-
-		//json or form request?
 
 		$meeting = json_decode($app->request()->getBody());
 
@@ -81,13 +43,10 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			$stmt->execute();
 			$userID = $stmt->fetch();
 
-			if($userID == false)
-				echo "ERROR: The user: " . $email . " does not have a userID\n";
-			else{
+			if($userID != false){
 				$userID = $userID['userID'];
 				
 				$cal = new GoogleCalendar(array('userID' => $userID));
-				//$allEvents[] = $cal->getEvents($startTime, $endTime);
 				$mergedEvents = $cal->merge_ranges( $cal->getEvents($startTime, $endTime) );
 				$invertedEvents = $cal->invertEvents($mergedEvents);
 				$minuteEvents = $cal->convertToMinutes( $invertedEvents, $startTime );
@@ -130,20 +89,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$tree = new CalIntervalDiff($allEvents, $sT, $eT, $dayStart, $dayEnd, $length);
 
 		$meetingTimes = $tree->getTop(5);
-/*
-		$meetingTimes = array(
-			array(
-				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com', 'newtest@gmail.com'),
-				'startTime' => '0',
-				'endTime' => '480'
-			),
-			array(
-				'people' => array('smitheric95@gmail.com', 'cahenk95@gmail.com'),
-				'startTime' => '481',
-				'endTime' => '3360'
-			)
-		);
-*/	
 
 		//make sure everyone can attend
 		if($allRequired){
@@ -293,17 +238,6 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			die('No meetings cookie was set.. planMeeting was never called?');
 		}
 
-		/*
-		
-		output: success/failure msgs
-
-		steps:
-			load meeting details from session using index (time range) given as input
-			create meeting (insert db)
-			add attendees (insert db)
-			send confimartion/rsvp emails to list of emails
-			echo successs/failure
-		*/
 	});	
 
 	$app->post('/rsvp', $AUTH_MIDDLEWARE(), function () use ($app){

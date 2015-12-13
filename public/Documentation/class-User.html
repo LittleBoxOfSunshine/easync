@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class User</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Binding.html">Binding</a></li>
+				<li><a href="class-CalIntervalDiff.html">CalIntervalDiff</a></li>
+				<li><a href="class-Database.html">Database</a></li>
+				<li><a href="class-Event.html">Event</a></li>
+				<li><a href="class-GoogleCalendar.html">GoogleCalendar</a></li>
+				<li><a href="class-Group.html">Group</a></li>
+				<li><a href="class-IntervalObject.html">IntervalObject</a></li>
+				<li><a href="class-Model.html">Model</a></li>
+				<li><a href="class-Permission.html">Permission</a></li>
+				<li class="active"><a href="class-User.html">User</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-CRUD.html">CRUD</a></li>
+			</ul>
+
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-rglob.html">rglob</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class User</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Model.html"><span>Model</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>User</span></b>			
+			 implements 
+				<a href="class-CRUD.html"><span>CRUD</span></a>
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+			<b>Located at</b> <a href="source-class-User.html#3-227" title="Go to source code">models/User.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-User.html#9-18" title="Go to source code">__construct</a>( <span>array <var>$args</var> = <span class="php-keyword1">array</span>()</span>, <span> <var>$fromUserInput</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			<p>This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
+of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
+some of the functionally that would normally be achieved by overloading the constructor.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
+of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
+some of the functionally that would normally be achieved by overloading the constructor.</p>
+
+<p>The $args parameter contains an array of key => value pairs where the keys correspond to NULL properties
+of the child class and the values to initialize them to. Should a key be given that doesn't have a
+corresponding property to store it in, code execution is halted. This prevents errorneous extra data from
+being added to an instance.</p>
+
+<p>If the $required parameter is provided, it is an array of strings that correspond to instance properities
+that MUST be initialized for the constructor to run correctly. If any of the required inputs are not found
+in $args code execution is halted. By default/if no $required parameter is provided, the constructor will
+require that ALL instance variables be instantiated. Multiple valid required patterns may be provided (this
+allows the CRUD interface load function to be defined more flexibly)</p>
+
+<p>The $fromUserInput parameter is an optional flag that signals the data contained in args comes from some
+form of user input, rather than class definitions. Consequently, it is possible and expected that the data
+may be malformed, but the calling code is equipped to handle that exception. So, the constructor returns
+false as an error message instead of halting code execution</p>
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Model.html#___construct">Model::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="login" id="_login">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_login">#</a>
+		<code><a href="source-class-User.html#20-45" title="Go to source code">login</a>( <span> <var>$password</var></span>, <span> <var>$googleAuth</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getUserDetails" id="_getUserDetails">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getUserDetails">#</a>
+		<code><a href="source-class-User.html#47-55" title="Go to source code">getUserDetails</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getContacts" id="_getContacts">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getContacts">#</a>
+		<code><a href="source-class-User.html#57-59" title="Go to source code">getContacts</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="get" id="_get">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_get">#</a>
+		<code><a href="source-class-User.html#61-63" title="Go to source code">get</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addGoogleCal" id="_addGoogleCal">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addGoogleCal">#</a>
+		<code><a href="source-class-User.html#65-67" title="Go to source code">addGoogleCal</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getMeetings" id="_getMeetings">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getMeetings">#</a>
+		<code><a href="source-class-User.html#69-71" title="Go to source code">getMeetings</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getSettings" id="_getSettings">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getSettings">#</a>
+		<code><a href="source-class-User.html#73-75" title="Go to source code">getSettings</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="updateSettings" id="_updateSettings">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_updateSettings">#</a>
+		<code><a href="source-class-User.html#77-79" title="Go to source code">updateSettings</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isLoggedIn" id="_isLoggedIn">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isLoggedIn">#</a>
+		<code><a href="source-class-User.html#81-88" title="Go to source code">isLoggedIn</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="logout" id="_logout">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_logout">#</a>
+		<code><a href="source-class-User.html#90-100" title="Go to source code">logout</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="createAuthToken" id="_createAuthToken">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_createAuthToken">#</a>
+		<code><a href="source-class-User.html#102-109" title="Go to source code">createAuthToken</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="revokeAuthToken" id="_revokeAuthToken">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_revokeAuthToken">#</a>
+		<code><a href="source-class-User.html#111-115" title="Go to source code">revokeAuthToken</a>( <span> <var>$auth</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="authToUserID" id="_authToUserID">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_authToUserID">#</a>
+		<code><a href="source-class-User.html#117-130" title="Go to source code">authToUserID</a>( <span> <var>$authToken</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="emailToUser" id="_emailToUser">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_emailToUser">#</a>
+		<code><a href="source-class-User.html#132-159" title="Go to source code">emailToUser</a>( <span> <var>$email</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="userToEmail" id="_userToEmail">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_userToEmail">#</a>
+		<code><a href="source-class-User.html#161-167" title="Go to source code">userToEmail</a>( <span> <var>$userID</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="exists" id="_exists">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_exists">#</a>
+		<code><a href="source-class-User.html#169-178" title="Go to source code">exists</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="register" id="_register">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_register">#</a>
+		<code><a href="source-class-User.html#180-184" title="Go to source code">register</a>( <span> <var>$password</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="create" id="_create">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_create">#</a>
+		<code><a href="source-class-User.html#186-214" title="Go to source code">create</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-CRUD.html#_create">CRUD::create()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="update" id="_update">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_update">#</a>
+		<code><a href="source-class-User.html#216-218" title="Go to source code">update</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-CRUD.html#_update">CRUD::update()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="delete" id="_delete">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_delete">#</a>
+		<code><a href="source-class-User.html#220-222" title="Go to source code">delete</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-CRUD.html#_delete">CRUD::delete()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load" id="_load">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load">#</a>
+		<code><a href="source-class-User.html#224-226" title="Go to source code">load</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+				<h4>Implementation of</h4>
+				<div class="list"><code><a href="class-CRUD.html#_load">CRUD::load()</a></code></div>
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Model.html#methods">Model</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Model.html#_getBinding">getBinding()</a>, 
+			<a href="class-Model.html#_initBinding">initBinding()</a>, 
+			<a href="class-Model.html#_loadAllInto">loadAllInto()</a>, 
+			<a href="class-Model.html#_loadInto">loadInto()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="email" id="$email">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-User.html#5" title="Go to source code"><var>$email</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$email" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="name" id="$name">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-User.html#6" title="Go to source code"><var>$name</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$name" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="userID" id="$userID">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-User.html#7" title="Go to source code"><var>$userID</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$userID" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
