@@ -35,7 +35,7 @@ $app->add(new \Slim\Middleware\SessionCookie(array(
     'path' => '/',
     'domain' => null,
     'secure' => false,
-    'httponly' => false,
+    'httponly' => false, 
     'name' => 'slim_session',
     'secret' => 'F3613642856D7E27445E9DBAD0402AD4534ED000C203FC564082652CB5CF7034',
     'cipher' => MCRYPT_RIJNDAEL_256,
@@ -53,7 +53,7 @@ $AUTH_MIDDLEWARE = function () use ($app){
         // This only needs to run once
         if($USER_ID != NULL)
             return;
-            
+
         $stmt = Database::prepareAssoc("SELECT userID FROM `Auth_Token` WHERE `auth_token`=:authToken");
         
         $error403 = function () use ($app){
@@ -62,7 +62,7 @@ $AUTH_MIDDLEWARE = function () use ($app){
         
         if(!isset($_SESSION['auth_token']))
             $error403();
-
+        
         $stmt->bindParam(':authToken', $_SESSION['auth_token']);
         $stmt->execute();
             
@@ -148,6 +148,9 @@ foreach($routers as $router){
 $app->get('/', function () use ($app){
 	echo file_get_contents(__DIR__.'/../public/index.html');
 });
+
+$app->response->headers->set('Access-Control-Allow-Origin', 'http://localhost:9000');
+$app->response->headers->set('Access-Control-Allow-Credentials', 'true');
         
 // Start the application
 $app->run();
