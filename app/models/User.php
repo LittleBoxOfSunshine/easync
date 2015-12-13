@@ -44,7 +44,7 @@ class User extends Model implements CRUD{
 		}
 	}
 
-	public function sendConfEmails($emailArray){
+	public static function sendConfEmails($emailArray, $meetingID){
 
 		$subject = 'Easync Meeting Request';
 
@@ -55,11 +55,12 @@ class User extends Model implements CRUD{
 		</head>
 		<body>
 		  <p>Please accept or decline your acceptance at this meeting</p>
-		  <p>Accept link...routes to rsvp</p>
-		  <p>Decline link...dont think it routes anywhere?</p>
-		</body>
-		</html>
-		';
+		  <p>Accept link:';
+			$message2 = '</p>
+		  <p>Decline link';
+			$message3 = '</p>
+			</body>
+			</html>';
 
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -68,8 +69,34 @@ class User extends Model implements CRUD{
 
 		// Mail it
 		foreach($emailArray as $to){
-		  mail($to, $subject, $message, $headers);
+			$accept = '
+				<form action="'.WEB_ROOT.'/api/v1.0/User/rsvp" method="POST">
+				 	<input type="hidden" name="token" value='.self::makeRsvpToken($to);.'/>
+					<input type="hidden" name="attending" value="true"/>
+					<input type="submit" value="Accept"/>
+				</form>
+			';
+			$decline = '
+				<form action="'.WEB_ROOT.'/api/v1.0/User/rsvp" method="POST">
+					<input type="hidden" name="token" value='.self::makeRsvpToken($to);.'/>
+					<input type="hidden" name="attending" value="false"/>
+					<input type="submit" value="Decline"/>
+				</form>
+			';
+		  mail($to, $subject, $message.$accept.$message2.$decline.$message3, $headers);
 		}
+	}
+
+	private static function makeRsvpToken($email, $meetingID){
+		$rsvpToken = bin2hex(openssl_random_pseudo_bytes(32));
+
+		$stmt = Database::prepareAssoc("UPDATE Meeting SET token=:token  WHERE email=:email AND meetingID=:meetingID;");
+		$stmt->bindParam(':token', $rsvpToken);
+		$stmt->bindParam(':email', $email);
+		$stms->bindParam(":meetingID, $meetingID")
+		$stmt->execute();
+
+		return $rsvpToken;
 	}
 
 	public function getUserDetails(){
