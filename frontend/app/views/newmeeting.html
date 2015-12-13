@@ -17,7 +17,7 @@
 		<div class="row"><p>Near Me</p></div>
 		<div class="row" ng-init="loadcontacts()" ng-model="usercontacts">
 			<p>Add Contact</p>
-			<p ng-repeat="x in usercontacts" ng-click="addcontacttoattendees(x)">
+			<p ng-repeat="x in usercontacts" ng-click="addcontacttoattendees(x)" class="contact">
 				{{ x.name }} <br>
 			</p>
 		</div>
@@ -51,8 +51,9 @@
 				 <input name="beforetime" type="time" ng-model="constraints.end_time" vvalue="08:30:00" step="600"><br>
 				<span class="error" ng-show="constraints.start_time >= constraints.end_time">
 					End time must be greater as start time
-				</span><br>
-				<p>Length </p><select name="duration" ng-model="constraints.duration">
+				</span>
+				<br><br>
+				<p>Length </p><select name="duration" ng-model="constraints.duration" style="margin-top:-30px">
 					<option value="15"> 15 Minutes</option>
 					<option value="30"> 30 Minutes</option>
 					<option value="45"> 45 Minutes</option>
@@ -69,7 +70,7 @@
 			</form>
 		</div>
 		<div class="col-md-4">
-			<button class="buttonLogin" ng-show="validateconstraintfields() === false" disabled>Find Possible Meeting Times</button>
+			<button class="buttonLogin" ng-show="validateconstraintfields() === false" style="margin-left:35px" disabled>Find Possible Meeting Times</button>
 			<button class="btn btn-info" ng-show="validateconstraintfields() === true" ng-click="findmeetingtimes(constraints, attendees)">Find Possible Meeting Times</button>
 		</div>
 	</div>
@@ -106,7 +107,7 @@ function toggleEmailField() {
 </script>
 
 <style>
-	.groups:hover{
+	.groups:hover, .contact:hover{
 		color:#FF5252;
 		box-shadow: 0px 0px 5px #fff;
 	}
@@ -145,6 +146,8 @@ function toggleEmailField() {
 		display: table;
 		margin-top: 30px;
 		height:30px;
+		width:225px;
+		text-align: center;
 	}
 
 	input[type="file"] {
