@@ -59,19 +59,6 @@ angular.module('easyncApp')
 		});
 	};
 
-	$scope.connectCal = function() {
-		/*$http({
-			url: GlobalIPService.ip + 'api/v1.0/User/addGoogleCal',
-			method: 'JSONP',
-			withCredentials: true,
-			dataType: 'jsonp'
-		})*/
-		/*$http.jsonp(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal')
-		.then(function (response) {
-		}, function (error) {
-			console.log("error connecting google cal", error);
-		});*/
-
 		$window.location.href(GlobalIPService.ip + 'api/v1.0/User/addGoogleCal');
 	};
 
@@ -121,5 +108,4 @@ angular.module('easyncApp')
 		}, function (error) {
 			console.log(error);
 		});
-	};
-});
+};

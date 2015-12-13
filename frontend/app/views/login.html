@@ -12,7 +12,7 @@
         <form name="loginform" class="css-form" id="loginform">
           <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
           <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
-          <input type="submit" value="Log In" ng-click="login(email, pass)">
+          <input class="buttonLogin" type="submit" value="Log In" ng-click="login(email, pass)">
         </form>
 
         <div id="googlesignin">
@@ -118,6 +118,7 @@
     margin-left: auto;
     margin-right: auto;
     height:30px;
+    margin-bottom:10px;
   }
 
   #loginformscol div {
@@ -127,6 +128,10 @@
 
   #loginform {
     text-align: center;
+  }
+
+  .buttonLogin {
+    margin-top: 10px;
   }
 
 </style>
