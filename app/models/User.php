@@ -44,6 +44,34 @@ class User extends Model implements CRUD{
 		}
 	}
 
+	public function sendConfEmails($emailArray){
+
+		$subject = 'Easync Meeting Request';
+
+		$message = '
+		<html>
+		<head>
+		  <title>Easync Meeting Invite</title>
+		</head>
+		<body>
+		  <p>Please accept or decline your acceptance at this meeting</p>
+		  <p>Accept link...routes to rsvp</p>
+		  <p>Decline link...dont think it routes anywhere?</p>
+		</body>
+		</html>
+		';
+
+		$headers  = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+
+		$headers .= 'From: Easync <easync@easync.com>' . "\r\n";
+
+		// Mail it
+		foreach($emailArray as $to){
+		  mail($to, $subject, $message, $headers);
+		}
+	}
+
 	public function getUserDetails(){
 		$stmt = Database::prepareAssoc("SELECT `name`,`email`,`phoneNumber`,`avatar` FROM `User` WHERE `userID`=:userID;");
 		$stmt->bindParam(':userID', $this->userID);
