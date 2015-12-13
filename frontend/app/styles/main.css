@@ -149,9 +149,7 @@ p {
 .round-button:hover {
     background: #F9F9F9;
      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-}
-
-    
+}    
 
 h1,h2{
    text-align: center;
@@ -450,3 +448,97 @@ html, body {
   color: #F9F9F9;
 }
 /*end style from index*/
+
+
+ul.img-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+ul.img-list li {
+  display: inline-block;
+  height: 150px;
+  margin: 0 1em 1em 0;
+  position: relative;
+  width: 150px;
+}
+
+span.img-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+}
+
+span.img-content span {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+span.img-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+}
+
+ul.img-list li:hover span.img-content {
+  opacity: 1;
+}
+
+
+span.img-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+
+
+
+h1, h4{
+  color:#FF5252;
+  text-align:center;
+}
+
+img{
+  width:250;
+  height:250;
+  margin:25px;
+}
+li{
+  margin-left:-30px;
+}
+
+.devPro, .techOver {
+  text-decoration: none;
+  list-style-type: none;
+  text-align: center;
+
+}
+
+

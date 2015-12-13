@@ -18,6 +18,15 @@ angular.module('easyncApp')
   	$scope.contacts = [];
     
     //load groups from DB and display them
+
+    $scope.changeColor = function(person, bool) {
+        if(bool === true) {
+            $scope.personColour = {color: '#FF5252'};
+        } else if (bool === false) {
+            $scope.personColour = {color: '#F9F9F9'}; //or, whatever the original color is
+        }
+    };
+
     $scope.loadGroups = function() {
     	$http({
     		method:'GET',
