@@ -154,6 +154,18 @@ class User extends Model implements CRUD{
 
 	}
 
+	/*public function createAuthToken($uID){
+		$token = bin2hex(openssl_random_pseudo_bytes(32));
+		$stmt = Database::prepareAssoc("INSERT INTO Auth_Token (`auth_token`, `userID`) VALUES(:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		if(isset($uID))
+			$stmt->bindParam(':userID', $uID);
+		else
+			$stmt->bindParam(':userID', $this->userID);
+		$stmt->execute();
+		return $token;
+	}*/
+
 	public function createAuthToken(){
 		$token = bin2hex(openssl_random_pseudo_bytes(32));
 		$stmt = Database::prepareAssoc("INSERT INTO Auth_Token (`auth_token`, `userID`) VALUES(:token, :userID);");
