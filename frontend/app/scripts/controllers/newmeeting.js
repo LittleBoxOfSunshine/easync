@@ -12,6 +12,7 @@
 
 angular.module('easyncApp')
   .controller('NewMeetingCtrl', function ($scope, $http, $cookies, LoggedInService, GlobalIPService, $location) {
+    $scope.possible_times = [];
 
   	$scope.possibletimes_bool = false;
 
@@ -228,10 +229,12 @@ angular.module('easyncApp')
                 data: JSON.stringify(request_obj)
             }).then(function (response) {
                 console.log(response.data);
+                $scope.possible_times = response.data;
+                $scope.possibletimes_bool = true;
             }, function (error) {
                 console.log(error);
             });
-        }
+        };
 
         //for groups
         var groupnames = attendees.groups.map(function (val) { return val.groupname; });
@@ -241,6 +244,23 @@ angular.module('easyncApp')
             withCredentials: true,
             data : JSON.stringify(groupnames)
         }).then(scheduleMeeting, function(error) {
+            console.log(error);
+        });
+    };
+
+    $scope.finalizeMeeting = function(meeting) {
+        var index = $scope.possible_times.indexOf(meeting);
+        var data = {'index' : index};
+        console.log($cookies.getAll());
+
+        $http({
+            url: GlobalIPService.ip + 'api/v1.0/Meeting/finalizeMeeting',
+            method: 'POST',
+            withCredentials: true,
+            data: JSON.stringify(data)
+        }, function (response) {
+            console.log(response.data);
+        }, function (error) {
             console.log(error);
         });
     };
