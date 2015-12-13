@@ -1,53 +1,91 @@
-<div class="row marketing">
+<div class="row marketing loginregrow">
 
-<div class="col-md-8 log-in-cal">
-  <time datetime="2014-09-20" class="icon">
-    <em><span class="glyphicon glyphicon-ok color" aria-hidden="true" ></span></em>
-    <strong>Log In</strong>
-  </time>
-</div>
+  <div class="col-md-8 log-in-cal">
+    <time datetime="2014-09-20" class="icon">
+      <a><img src="/images/hipsterlogo.png"></a>
+      <strong>Log In</strong>
+    </time>
+  </div>
 
-<div class="col-md-4">
-    <div ng-controller="LoginCtrl">
-      <form name="loginform" class="css-form" >
-        <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
-        <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
-        <input type="submit" value="Log In" id="btn">
-      </form>
+  <div class="col-md-4">
+      <div ng-init="check_cookies()" ng-controller="LoginCtrl" id="loginformscol">
+        <form name="loginform" class="css-form" id="loginform">
+          <input type="email" ng-model="email" placeholder="Email" id="emLog"><br>
+          <input type="password" ng-model="pass" placeholder="Password" id="passLog"><br>
+          <input class="buttonLogin" type="submit" value="Log In" ng-click="login(email, pass)">
+        </form>
 
-      <div id="googlesignin">
-        <p><h2> OR sign in with google </h2></p>
-        <div id="my-signin2"></div>
-        <a onclick="signout_google()">Sign out of google</a>
+        <div id="googlesignin">
+          <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark" id="googleSignInButton"></div>
+          <a onclick="signout_google()">Sign out of google</a>
+        </div>
       </div>
-    </div>
+  </div>
 </div>
 
 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 <script>
-    function onSuccess(googleUser) {
-      console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-    }
-    function onFailure(error) {
-      console.log(error);
-    }
-    function renderButton() {
-      gapi.signin2.render('my-signin2', {
-        'scope': 'https://www.googleapis.com/auth/plus.login',
-        'width': 200,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
-      });
-    }
+
     function signout_google() {
     	var auth2 = gapi.auth2.getAuthInstance();
     	auth2.signOut().then(function () {
       		console.log('User signed out.');
     	});
   	}
+
+    function onSignIn(googleUser) {
+      // Useful data for your client-side scripts:
+      var profile = googleUser.getBasicProfile();
+      /*console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+      console.log("Name: " + profile.getName());
+      console.log("Image URL: " + profile.getImageUrl());
+      console.log("Email: " + profile.getEmail());*/
+
+      // The ID token you need to pass to your backend:
+      var id_token = googleUser.getAuthResponse().id_token;
+      //console.log("ID Token: " + id_token);
+
+      console.log(profile.getName().split(' ')[0], profile.getName().split(' ')[1]);
+
+      var data = {
+        'google_ID' : profile.getId(),
+        'firstname' : profile.getName().split(' ')[0],
+        'lastname' : profile.getName().split(' ')[1],
+        'email' : profile.getEmail(),
+        'google_token' : id_token
+      };
+
+      var json_data_global = JSON.stringify(data);
+    
+      $.post('http://easync.com/api/v1.0/User/googleSignIn', json_data_global).done(function(response) {
+        //window.location = 'http://easync.com/api/v1.0/User/addGoogleCal';
+        setCookie('easync_logged', 'true', 2);
+        setCookie('easync_email', json_data_global.email, 2);
+        console.log(response);
+      });
+
+      /*$.ajax({
+        url:'http://easync.com/api/v1.0/User/googleSignIn',
+        type: "POST",
+        dataType: "json",
+        data: json_data_global,
+        error : function (error) {
+          console.log("erdfhfgror");
+          
+        },
+        succcess: function (response) {
+          console.log("successful");
+          console.log(response);
+        }
+      });*/
+    };
+
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*500));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+  }
 </script>
 
 <style>
@@ -56,6 +94,7 @@
 	}
 
 	#googlesignin {
+    margin-top: 30px;
 		text-align: center;
 	}
 
@@ -72,6 +111,33 @@
     width: 250px;
     margin: 10px;
     height:30px;
+  }
+
+  input {
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    height:30px;
+    margin-bottom:10px;
+  }
+
+  #loginformscol div {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #loginform {
+    text-align: center;
+  }
+
+  .buttonLogin {
+    margin-top: 10px;
+  }
+
+  img{
+    margin-top: 40px;
+    width: 450px;
+    height:300px;
   }
 
 </style>

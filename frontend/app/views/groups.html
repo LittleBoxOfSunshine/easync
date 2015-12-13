@@ -1,13 +1,66 @@
-<div class="row">
-    <div class="col-md-6">
-        <h2>Groups</h2>
-        <!--poop-->
-        <!--swag-->
-        <h4>Group 1</h4>
-        <ul class="group-members-list">
-            <li>John McCain</li>
-            <li>John Carmack</li>
-            <li>John Stamos</li>
-        </ul>
+<div class="row row-centered" ng-controller="GroupsCtrl as groups">
+    <h2>Groups</h2>
+    <div class="col-md-4 col-centered" ng-init="loadGroups()">
+        <table class="table table-hover hoverTable" id="grouplisttable" >
+            <thead>
+                <tr>
+                    <th>Group Name</th>
+                    <th>Number of Members</th>
+                    <th>    </th>
+                </tr>
+            </thead>
+            <tbody >
+                <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)" id="godHelpME" ng-style="color" ng-mouseenter="changeColor(i,true)" ng-mouseleave="changeColor(i,false)">
+                    <td> {{ key }} </td>
+                    <td> {{ value.length }} </td>
+                    <td><span class="glyphicon glyphicon-pencil"></span></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
+
+    <div class="col-md-8 col-centered" ng-show="selectedgroup.length > 0">
+        <h3> {{ groupname }} 
+            <a ng-show="!newRow" ng-click="addrow()"><span class="glyphicon glyphicon-plus pull-right"> </span></a>
+            <a ng-show="newRow" ng-click="saverow(newName, newEmail, newContact)"><span class="glyphicon glyphicon-floppy-save pull-right"></span></a> 
+        </h3>
+        <table class="table table-hover hoverTable">
+            <thead>
+                <tr>
+                    <th> Name </th>
+                    <th> Email </th>
+                </tr>
+            </thead>
+            <tbody id="groupDetails">
+
+                <tr ng-repeat="person in selectedgroup">
+                    <td> {{ person.name }} </td>
+                    <td> {{ person.email }} </td>
+                </tr>
+                <tr ng-show="newRow == true">
+                    <td><input class="form-control input-sm" ng-model="newName"></td>
+                    <td><input class="form-control input-sm" ng-model="newEmail"></td>
+                </tr>
+                <tr ng-show="newRow == true" ng-init=loadcontacts()>
+                    <td>or add a contact</td>
+                    <td>
+                        <select class="form-control" ng-model="newContact">
+                            <option ng-repeat="person in contacts" value="{{ person }}"> {{ person.name }} </option>
+                        </select>
+                    </td>
+                </tr>
+
+            </tbody> 
+        </table>
+
+    </div>
+
 </div>
+<style>
+table.glyphicon-hover .glyphicon {
+  visibility: hidden;
+}
+table.glyphicon-hover td:hover .glyphicon {
+  visibility: visible;
+}
+</style>

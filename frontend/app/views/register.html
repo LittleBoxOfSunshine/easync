@@ -1,41 +1,84 @@
-<div class="row">
+<div class="row loginregrow">
 
-<div class="col-md-8 register-cal">
-	<time datetime="2014-09-20" class="icon">
-	  <em><span class="glyphicon glyphicon-ok color" aria-hidden="true" ></span></em>
-	  <strong>Register</strong>
-	</time>
-</div>
+	<div class="col-md-8 register-cal">
+		<time datetime="2014-09-20" class="icon">
+		  <em><span class="glyphicon glyphicon-ok color" aria-hidden="true" ></span></em>
+		  <strong>Register</strong>
+		</time>
+	</div>
 
 
 
-<div class="col-md-4">
-	<div ng-controller="RegisterCtrl as register" >
+	<div class="col-md-4">
+		<div ng-controller="RegisterCtrl as register" >
 
-		<form name="form" novalidate  class="css-form">
-			<input type="text" ng-model="user.firstname" required placeholder="First Name"> <br>
+			<form name="form" novalidate  class="css-form">
+				<input type="text" ng-model="user.firstname" required placeholder="First Name"> <br>
 
-			<input type="text" ng-model="user.lastname" required placeholder="Last Name"> <br>
+				<input type="text" ng-model="user.lastname" required placeholder="Last Name"> <br>
 
-			<input type="email" ng-model="user.email" name="email" required placeholder="Email"> <br>
-			<div ng-show="form.$submitted">
-				<div ng-show="form.email.$error.email">Not a valid email!</div>
-			</div>
+				<input type="email" ng-model="user.email" name="email" required placeholder="Email"> <br>
+				<div ng-show="form.$submitted">
+					<div ng-show="form.email.$error.email">Not a valid email!</div>
+				</div>
+				<input type="password" ng-model="user.pass" required id="pass1" name="pass1" placeholder="Password"> <br>
+				<input type="password" name="pass2" ng-model="user.passtwo" pwcheck="pass1" required placeholder="Confirm Password"> <br>
+				<div ng-show="form.pass2.$error">
+					<div ng-show="form.pass2.$error.pwcheck">Passwords must be identical</div>
+				</div>
 
-			<input type="password" ng-model="user.pass" required id="pass1" name="pass1" placeholder="Password"> <br>
-			<input type="password" name="pass2" ng-model="passtwo" pwcheck="pass1" required placeholder="Confirm Password"> <br>
-			<div ng-show="form.pass2.$error">
-				<div ng-show="form.pass2.$error.pwcheck">Passwords must be identical</div>
-			</div>
+				<input ng-show="form.$valid" type="submit" ng-click="register.register(user)" value="Sign Up" name="submit">
+				<input ng-show="!form.$valid" type="submit" value="Sign Up" name="submit" disabled>
 
-			<input ng-show="form.$valid" type="submit" ng-click="register.register(user)" value="Sign Up" name="submit">
-			<input ng-show="!form.$valid" type="submit" value="Sign Up" name="submit" disabled>
+			</form>
 
-		</form>
+			<div id="googlesignin">
+	          <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+	          <a onclick="signout_google()">Sign out of google</a>
+	        </div>
 
+		</div>
 	</div>
 </div>
-</div>
+
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+<script>
+    function signout_google() {
+    	var auth2 = gapi.auth2.getAuthInstance();
+    	auth2.signOut().then(function () {
+      		console.log('User signed out.');
+    	});
+  	}
+
+    function onSignIn(googleUser) {
+      // Useful data for your client-side scripts:
+      var profile = googleUser.getBasicProfile();
+      console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+      console.log("Name: " + profile.getName());
+      console.log("Image URL: " + profile.getImageUrl());
+      console.log("Email: " + profile.getEmail());
+
+      // The ID token you need to pass to your backend:
+      var id_token = googleUser.getAuthResponse().id_token;
+      console.log("ID Token: " + id_token);
+
+      console.log(profile.getName().split(' ')[0], profile.getName().split(' ')[1]);
+
+      var data = {
+        'google_ID' : profile.getId(),
+        'firstname' : profile.getName().split(' ')[0],
+        'lastname' : profile.getName().split(' ')[1],
+        'email' : profile.getEmail(),
+        'google_token' : id_token
+      };
+
+      var json_data = JSON.stringify(data);
+
+      $.post('http://easync.com/api/v1.0/User/googleSignIn', function (data) {
+        console.log(data);
+      });
+    };
+</script>
 
 <style>
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!--dango colors-->
+    <color name="pink">#F4A4EB</color>
+    <color name="beige">#F9EDED</color>
+    <color name="green">#587247</color>
+
+    <!--misc colors-->
+    <color name="black">#000000</color>
+    <color name="EEE">#EEEEEE</color>
+    <color name="darkCharcoal">#222222</color>
+</resources>

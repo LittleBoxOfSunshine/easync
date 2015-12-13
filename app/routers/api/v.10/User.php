@@ -47,7 +47,7 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 				echo 'Inserted tokenID';
 			}
 			else{
-				echo 'Already Used Google Sign In.';
+				echo json_encode('Already Used Google Sign In.');
 			}
 		}
 
@@ -59,25 +59,23 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 			$stmt->execute();
 
 		    if($stmt->errorCode() === '00000'){
-			    echo 'Account Created.';
+			    echo json_encode('Account Created.');
 		    }
 		    else if($stmt->errorCode() === '23000'){
-			    echo 'ERROR: This email is already registered...';
+			    echo json_encode('ERROR: This email is already registered...');
 		    }
 		    else{
-			    echo 'A MySQL error has occurred.';
+			    echo json_encode('A MySQL error has occurred.');
 		    }
 	    }
 
+	    $uID = Database::lastInsertId();
 
 		if(isset($_SESSION['auth_token'])){
 			$user->revokeAuthToken($_SESSION['auth_token']);
-			$_SESSION['auth_token'] = $user->createAuthToken();
 		}
 
-		else {
-			$_SESSION['auth_token'] = $user->createAuthToken();
-		}
+		$_SESSION['auth_token'] = $user->createAuthToken($uID);
 	});
 
 	$app->post('/login', function () use ($app){
@@ -106,7 +104,6 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 				echo 'Incorrect username and/or password';
 			}
 		}
-
     });
 
 	$app->post('/nearbyJoin', $AUTH_MIDDLEWARE(), function () use ($app){
@@ -247,8 +244,12 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
             $user->register($password);
         }
 
-        $user->login($password);
-		$app->redirect('/api/v1.0/User/addGoogleCal');
+        // if($user->login($data->password)) {
+        // 	//$app->redirect('/api/v1.0/User/addGoogleCal');
+        // } else {
+        // 	echo 'Some error';
+        // }
+		
 
     });
 
@@ -284,6 +285,22 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 		$email = $app->request->get('email');
 		$stmt = Database::prepareAssoc("SELECT email from User WHERE email=:email;");
 		$stmt->bindParam(':email', $email);
+		$stmt->execute();
+
+		$dat = $stmt->fetch();
+
+		if($dat !== false)
+			echo json_encode(true);
+		else
+			echo json_encode(false);
+	});
+
+	$app->get('/hasConnectedGoogleCal', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		$stmt = Database::prepareAssoc("SELECT userID from CalendarTokens WHERE userID=:userID");
+		$stmt->bindParam(':userID', $USER_ID);
 		$stmt->execute();
 
 		$dat = $stmt->fetch();
@@ -336,7 +353,21 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 
 		echo json_encode($data);
+	});
 
+	$app->get('/getContactsInfo', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+		$app->response->headers->set('Content-Type', 'application/json');
+
+		$stmt = Database::prepareAssoc("SELECT name, email FROM User WHERE email in 
+										(SELECT contactEmail FROM Contacts WHERE userID=:userID)");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		$data = [];
+		if ($data = $stmt->fetchAll()) {
+    		echo json_encode($data);
+		}
 	});
 
 	$app->post('/addContacts', $AUTH_MIDDLEWARE(), function() use ($app){
@@ -356,6 +387,40 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		if($stmt->errorCode() === '00000'){
 			echo 'Contacts Added';
+		}
+		else if($stmt->errorCode() === '23000'){
+			echo 'WARNING: These contacts already exist...';
+		}
+		else{
+			echo 'A MySQL error has occurred.';
+		}
+
+	});
+
+	$app->post('/addContactsCheckEmail', $AUTH_MIDDLEWARE(), function() use ($app){
+		global $USER_ID;
+		$contacts = json_decode($app->request()->getBody());
+		$contact = $contacts->email;
+
+
+		$stmt_one = Database::prepareAssoc("SELECT name, email FROM User WHERE email=:email;");
+		$stmt_one->bindParam(':email', $contact);
+		$stmt_one->execute();
+
+		$dat = $stmt_one->fetch();
+		if ($dat == false) {
+			echo 'no user found for email';
+			return;
+		}
+
+		$stmt = Database::prepareAssoc("INSERT INTO Contacts (`userID`, `contactEmail`) VALUES (:userID, :contactEmail);");
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->bindParam(':contactEmail', $contact);
+
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo json_encode($dat);
 		}
 		else if($stmt->errorCode() === '23000'){
 			echo 'WARNING: These contacts already exist...';
@@ -404,6 +469,22 @@ $app->group('/api/v1.0/User', function() use ($app, $AUTH_MIDDLEWARE) {
 
 		echo 'Settings updated...';
 
+	});
+
+	$app->get('/removeContact', $AUTH_MIDDLEWARE(), function() use ($app) {
+		global $USER_ID;
+
+		$email = $app->request->get('email');
+		$stmt = Database::prepareAssoc("DELETE FROM Contacts WHERE contactEmail=:email AND userID=:userID;");
+		$stmt->bindParam(':email', $email);
+		$stmt->bindParam(':userID', $USER_ID);
+		$stmt->execute();
+
+		if($stmt->errorCode() === '00000'){
+			echo 'Contact Removed';
+		} else {
+			echo 'A MySQL error has occurred.';
+		}
 	});
 
 });

@@ -40,7 +40,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		$endTime = substr($endTime, 0, -6);
 		$endTime = $endTime . "-06:00";
 
-
+		
 		$allEvents = [];
 
 		/*
@@ -48,6 +48,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		 * merge their events - turn them into free times
 		 * add to allEvents
 		 */
+
 		foreach($emails as $email){
 			$stmt = Database::prepareAssoc("SELECT `userID` FROM `User` WHERE email=:email");
 			$stmt->bindParam(':email', $email);
@@ -194,8 +195,10 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			//load meeting details from session using index (time range) given as input	
 			$index = json_decode($app->request()->getBody());
 
-			if($index === NULL)
-				die("Index was not sent in json.");
+			if($index === NULL) {
+				echo "Index was not sent in json.";
+				return;
+			}
 
 			$index = $index->index;
 
@@ -279,7 +282,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 		else{
-			die('No meetings cookie was set.. planMeeting was never called?');
+			echo 'No meetings cookie was set.. planMeeting was never called?';
 		}
 
 	});	

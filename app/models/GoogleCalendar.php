@@ -93,6 +93,7 @@ class GoogleCalendar extends Model{
 	}
 
 	public static function requestAccess($app, $USER_ID){
+		//$app->response->headers->set('Content-Type', 'application/javascript');
 		$authUrl = self::makeGoogleClient($USER_ID)->createAuthUrl();
  		$app->redirect($authUrl);
 	}

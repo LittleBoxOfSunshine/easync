@@ -1,12 +1,25 @@
 <div class="row">
-	<h1><marquee>Scheduled Meetings</marquee></h1>		
-		<table id="scheduledMeetings">
-		<tr ng-repeat="x in meetings">
-			<td>{{x.name}}</td>
-			<td>{{x.location}}</td>	
-			<td>{{x.startTime}}</td>
-			<td>{{x.attendees}}</td>
-		</tr>
+	<h2>Scheduled Meetings</h2>		
+		<table id="scheduledMeetings" ng-init="loadMeetings()" class="table table-striped">
+			<thead>
+				<tr>
+					<td>Name</td>
+					<td>Location</td>
+					<td>Start Time</td>
+					<td>Attendees</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="x in meetings">
+					<td>{{x.name}}</td>
+					<td>{{x.location}}</td>	
+					<td>{{x.startTime}}</td>
+					<td>{{x.attendees}}</td>
+				</tr>
+			</tbody>
 	</table>
-
 </div>	
+
+<style>
+	
+</style>

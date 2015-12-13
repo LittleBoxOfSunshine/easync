@@ -1,49 +1,101 @@
 <div  class="container" ng-controller="NewMeetingCtrl as newmeeting">
-	<h1>Schedule a New Meeting</h1>
-	<div class="row text-center" id="attendees">
-		<h3> Attendees </h3>
-		<div class="col-md-4" ng-model="attendees"> 
-			Currently Selected
-				<p ng-repeat="x in attendees">
+	<h2>Schedule a New Meeting</h2>
+	<div class="col-md-4 text-center" id="attendees" style="text-align: center">
+		<h3 style="text-align:left"> Attendees </h3>
+		<div class="row" ng-model="attendees"> 
+			<p>Currently Selected</p> 
+				<p ng-repeat="x in attendees.emails" ng-click="removefromattendees(x)">
+					{{ x|attendeesValue }}
+				</p>
+				<p ng-repeat="x in attendees.users" ng-click="removefromattendees(x)">
+					{{ x|attendeesValue }}
+				</p>
+				<p ng-repeat="x in attendees.groups" ng-click="removefromattendees(x)">
 					{{ x|attendeesValue }}
 				</p>
 		</div>
-		<div class="col-md-4">Near Me</div>
-		<div class="col-md-4">
+		<div class="row"><p>Near Me</p></div>
+		<div class="row" ng-init="loadcontacts()" ng-model="usercontacts">
 			<p>Add Contact</p>
-			<p> Sam </p>
-			<p> Jorge </p>
+			<p ng-repeat="x in usercontacts" ng-click="addcontacttoattendees(x)" class="contact">
+				{{ x.name }} <br>
+			</p>
 		</div>
-	</div>
+		<div class="row" ng-model="usercontacts" ng-init="loadgroups()">
+			<p>Add Group</p>
+			<p ng-repeat="x in groups" ng-click="addgrouptoattendees(x)" class="groups">
+				{{ x.groupname }}
+			</p>
+		</div>
+	
 	<div class="row text-center" id="addattendees">
-		<button class="btn btn-success" onclick="toggleEmailField()">Add Attendees by Email</button><br>
+		<button class="buttonLogin" onclick="toggleEmailField()" style="margin-right:188px">Add Attendees by Email</button><br>
 		<span id="addbyemailslide">
-			<input ng-model="attendeeemail" type="email"> <span ng-click="addemailattendee(attendeeemail)" class="glyphicon glyphicon-plus-sign"></span>
+			<input ng-model="attendeeemail" type="email" style="margin-right:165px" class="emailInput"> <span ng-click="addemailattendee(attendeeemail)" class="glyphicon glyphicon-plus-sign" ></span>
+				
+			<?php endif ?>
 		</span>
 	</div>
+	</div>
+	<div class="col-md-4">
+		<div class="row text-center" id="datetimeconstraints">
+			<form name="datetimeform">
+				<p>Dates</p>
+				 <input name="fromdate" type="date" ng-model="constraints.start_date" v>
+				      <input name="todate" type="date" ng-model="constraints.end_date"><br>
+					<span class="error" ng-show="constraints.start_date > constraints.end_date">
+					End date must be greater or same as start date
+				</span><br>
+				<p>Times</p>
+				 <input name="aftertime" type="time" ng-model="constraints.start_time" value="08:30:00" step="600">
+				 <input name="beforetime" type="time" ng-model="constraints.end_time" vvalue="08:30:00" step="600"><br>
+				<span class="error" ng-show="constraints.start_time >= constraints.end_time">
+					End time must be greater as start time
+				</span>
+				<br><br>
+				<p>Length </p><select name="duration" ng-model="constraints.duration" style="margin-top:-30px">
+					<option value="15"> 15 Minutes</option>
+					<option value="30"> 30 Minutes</option>
+					<option value="45"> 45 Minutes</option>
+					<option value="60"> 1 Hour</option>
+					<option value="120"> 2 Hours</option>
+				</select> 
+				<label for="required" style="text-align:left">Attendance Required </label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> <br>
 
-	<div class="row text-center" id="datetimeconstraints">
-		<h3> Date and Time Constraints</h3>
-		<form name="datetimeform">
-			From <input name="fromdate" type="date"> To <input name="todate" type="date"><br>
-			After <input name="aftertime" type="time"> Before <input name="beforetime" type="time"><br>
-			Length <select name="duration">
-				<option value="15"> 15 Minutes</option>
-				<option value="30"> 30 Minutes</option>
-				<option value="45"> 45 Minutes</option>
-				<option value="60"> 1 Hour</option>
-				<option value="120"> 2 Hours</option>
-			</select>
-			<label for="required">Attendance Required</label><input type="checkbox" name="required" id="required"> 
-
-		</form>
+				<input type="text" ng-model="constraints.title" placeholder="Meeting Name">
+				<input type="text" ng-model="constraints.location" placeholder="Meeting Location"><br>
+				<textarea class="form-control" ng-model="constraints.description" placeholder="Meeting Description" id="meeting_description"></textarea>
+				
+				<input type="file" ng-model="constraints.attachment" placeholder="Attachment">
+			</form>
+		</div>
+		<div class="col-md-4">
+			<button class="buttonLogin" ng-show="validateconstraintfields() === false" style="margin-left:35px" disabled>Find Possible Meeting Times</button>
+			<button class="btn btn-info" ng-show="validateconstraintfields() === true" ng-click="findmeetingtimes(constraints, attendees)">Find Possible Meeting Times</button>
+		</div>
 	</div>
 
-	<div class="row text-center" id="possibletimes">
+	<div class="col-md-4 text-center" id="possibletimes" ng-show="possibletimes_bool">
 		<h3> Possible Times</h3>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<td>Attendees</td>
+					<td>Start Time</td>
+					<td>End Time</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="x in possible_times" ng-click="finalizeMeeting(x)">
+					<td><span ng-repeat="name in x.people">{{ name }}, </span></td>
+					<td> {{ x.startTime }} </td>
+					<td> {{ x.endTime }} </td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
+	
 </div>
-
 <script>
 function toggleEmailField() {
 	var inputarea = document.getElementById("addbyemailslide");
@@ -55,6 +107,14 @@ function toggleEmailField() {
 </script>
 
 <style>
+	.groups:hover, .contact:hover{
+		color:#FF5252;
+		box-shadow: 0px 0px 5px #fff;
+	}
+	p{
+		text-align: left;
+		margin-left:20px;
+	}
 	h1 {
 		text-align: center;
 	}
@@ -77,18 +137,6 @@ function toggleEmailField() {
 	}
 
 
-	#attendees, #addattendees {
-		background-color: lightblue;
-	}
-
-	#datetimeconstraints {
-		background-color: lightgreen;
-	}
-
-	#possibletimes {
-		background-color: lightblue;
-	}
-
 	#addbyemailslide {
 		display: none;
 	}
@@ -97,5 +145,27 @@ function toggleEmailField() {
 		margin: auto;
 		display: table;
 		margin-top: 30px;
+		height:30px;
+		width:225px;
+		text-align: center;
+	}
+
+	input[type="file"] {
+		margin-right: auto;
+		margin-left: auto;
+		width: 180px;
+	}
+
+	textarea#meeting_description {
+		width: 250px;
+		margin-top: 20px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	label {
+		padding-right:5px;
+	}
+	.glypicon-plus-sign {
+		margin-right:150px;
 	}
 </style>

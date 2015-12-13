@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="57ae0d750ff83f0c738d21720224ac7ea866a094">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/classes-6becfab0198c91f59fda42bbd772caf69244d04f.jar" />
+    </item>
+    <item
+        jar="/Users/jorgeavaldez/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.0/support-annotations-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="92e3fc113ec3ee36b64603a38857b95700025633">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.0-592292a627e89f390b17741668c659aa4fb6b999.jar" />
+    </item>
+    <item
+        jar="/Users/jorgeavaldez/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/2.0.0-beta2/880d9e0997b2d1bfc98e0d121ced33ee5d04aac4/retrofit-2.0.0-beta2.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="880d9e0997b2d1bfc98e0d121ced33ee5d04aac4">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/retrofit-2.0.0-beta2-2a5085e58835f9b09aec52a977b97c86ae7c2081.jar" />
+    </item>
+    <item
+        jar="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="ddde541c289c8b816a8f8fd6c325d80788c522a6">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/classes-ca6cda8377d2dfa75c2abe7b5bbc30cfe319044b.jar" />
+    </item>
+    <item
+        jar="/Users/jorgeavaldez/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.6.0/98476622f10715998eacf9240d6b479f12c66143/okio-1.6.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="98476622f10715998eacf9240d6b479f12c66143">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/okio-1.6.0-ce4a5167617366e1c34313cd4169ef49d5299523.jar" />
+    </item>
+    <item
+        jar="/Users/jorgeavaldez/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.5.0/4de2b4ed3445c37ec1720a7d214712e845a24636/okhttp-2.5.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="4de2b4ed3445c37ec1720a7d214712e845a24636">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/okhttp-2.5.0-7d3e1afee757d91d36f0cead686d14f9b5b9a592.jar" />
+    </item>
+    <item
+        jar="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.0/jars/libs/internal_impl-23.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="8716243bf04bae8d6c9ca94d27b9a9be7236f0a3">
+        <dex dex="/Users/jorgeavaldez/Projects/easync/android/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.0-1f05b391306bce246d9e500384be15671fcfb218.jar" />
+    </item>
+
+</items>

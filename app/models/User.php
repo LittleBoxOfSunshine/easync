@@ -71,14 +71,14 @@ class User extends Model implements CRUD{
 		foreach($emailArray as $to){
 			$accept = '
 				<form action="'.WEB_ROOT.'/api/v1.0/User/rsvp" method="POST">
-				 	<input type="hidden" name="token" value='.self::makeRsvpToken($to).'/>
+				 	<input type="hidden" name="token" value='.self::makeRsvpToken($to, $meetingID).'/>
 					<input type="hidden" name="attending" value="true"/>
 					<input type="submit" value="Accept"/>
 				</form>
 			';
 			$decline = '
 				<form action="'.WEB_ROOT.'/api/v1.0/User/rsvp" method="POST">
-					<input type="hidden" name="token" value='.self::makeRsvpToken($to).'/>
+					<input type="hidden" name="token" value='.self::makeRsvpToken($to, $meetingID).'/>
 					<input type="hidden" name="attending" value="false"/>
 					<input type="submit" value="Decline"/>
 				</form>
@@ -93,7 +93,7 @@ class User extends Model implements CRUD{
 		$stmt = Database::prepareAssoc("UPDATE Meeting SET token=:token  WHERE email=:email AND meetingID=:meetingID;");
 		$stmt->bindParam(':token', $rsvpToken);
 		$stmt->bindParam(':email', $email);
-		$stmt->bindParam(":meetingID, $meetingID");
+		$stmt->bindParam(":meetingID", $meetingID);
 		$stmt->execute();
 
 		return $rsvpToken;
@@ -153,6 +153,18 @@ class User extends Model implements CRUD{
 		}
 
 	}
+
+	/*public function createAuthToken($uID){
+		$token = bin2hex(openssl_random_pseudo_bytes(32));
+		$stmt = Database::prepareAssoc("INSERT INTO Auth_Token (`auth_token`, `userID`) VALUES(:token, :userID);");
+		$stmt->bindParam(':token', $token);
+		if(isset($uID))
+			$stmt->bindParam(':userID', $uID);
+		else
+			$stmt->bindParam(':userID', $this->userID);
+		$stmt->execute();
+		return $token;
+	}*/
 
 	public function createAuthToken(){
 		$token = bin2hex(openssl_random_pseudo_bytes(32));

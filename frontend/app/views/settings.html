@@ -1,0 +1,52 @@
+<div class="userName" ng-init="loadUser()">
+	<h2> Hello {{name}}</h2>
+	
+
+</div>
+
+<div class="row loginregrow" ng-controller="SettingsCtrl as settings">
+	<div class="col-md-6 contactsCol col-centered">
+		<div class="contactsList" ng-init="loadContacts()">
+			<table class="table table-hover" id="contactsTable">
+				<thead>
+					<tr>
+						<th>Contacts</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="x in contacts" ng-click="removeContact(x)">
+						<td>{{ x.name }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div ng-show="addContact">
+			<input class="form-control input-sm add-contact" placeholder="email" ng-keypress="handleNewContact($event)" ng-model="newContact">
+		</div>
+		<div class="alert alert-danger" ng-show="newContactError" role="alert"><strong>Error:</strong> email not registered with Easync</div>
+		<button class="btn" id="addContactButton" ng-click="toggleAddContact()"> Add Contact </button>
+	</div>
+</div>
+<style>
+.name{
+	text-align:left;
+	color:#1B998B;
+}
+
+#contactsTable th {
+	text-align: center;
+}
+
+.contactList > table {
+	margin-right: auto;
+	margin-left: auto;
+	width: 300px;
+	margin-bottom: 40px;
+}
+
+div.contactsCol.col-centered {
+	text-align: center;
+}
+
+
+</style>

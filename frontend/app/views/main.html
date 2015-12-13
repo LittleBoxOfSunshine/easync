@@ -1,31 +1,58 @@
-<div class="row ">
-  <div class="col-md-4">
-    <a ng-href="#/newmeeting"><div class="round-button">New Meeting<br><span class="glyphicon glyphicon-plus"></span></div></a>
-  </div>
+<div  ng-init="check_cookies()" class="row circleButtons">
 
-  <div class="col-md-4">
-    <a ng-href="#/scheduled"><div class="round-button"><br>Scheduled<br> <span class="glyphicon glyphicon-calendar"></span></div></a>
-  </div>
-  
-  <div class="col-md-4">
-    <a ng-href="#/groups"><div class="round-button"><br>Groups<br><span class="glyphicon glyphicon-glass"></span></div></a>
-  </div>
-</div>
+<ul class="btn-list">
+  <li class="round-button" >
+    <a ng-href="#/newmeeting">
+    <span class="glyphicon glyphicon-plus main-icon"></span>
+    <span class="text-content"><p>New Meeting</p></span></span>
+    </a>
+  </li>
+  <li class="round-button" >
+    <a ng-href="#/scheduled" ng-mouseOver="">
+     <span class="glyphicon glyphicon-calendar main-icon"></span>
+     <span class="text-content"><p>Scheduled</p></span>
+    </a>
+  </li>
+  <li class="round-button" >
+    <a ng-href="#/groups">
+      <span class="glyphicon glyphicon-glass main-icon"></span><span class="text-content"><p>Groups</p></span>
+    </a>
+  </li>
+  </ul>
+ </div>
 
+
+<script>
+var $x = $('.round-button > a > span.text-content > p');
+$x.each(function(){
+  var pad = (200 - $(this).height())/2;
+  $(this).css('padding-top',pad);
+});
+var y = $('.round-button > a > span.glyphicon');
+y.each(function(){
+  var pad2 = (200 - $(this).height())/2;
+  $(this).css('padding-top',pad2);
+});
+
+</script>
 
 <style>
-  .marketing a {
-    margin: auto;
-    display: table;
-    text-decoration: none;
-  }
+.main-icon {
+  opacity:1;
+  z-index: 9999;
 
-  a:hover {
-    text-decoration: none;
-  }
-
-.glyphicon-calendar{
-  
 }
+.main-icon:hover {
+   opacity:0
+}
+.main-icon {
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+   opacity:1;
+  z-index: 9999;
+}
+
 </style>
 
