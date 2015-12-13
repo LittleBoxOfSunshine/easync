@@ -9,7 +9,7 @@
                 </tr>
             </thead>
             <tbody >
-                <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)" id="godHelpME">
+                <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)" id="godHelpME" ng-style="color" ng-mouseenter="changeColor(i,true)" ng-mouseleave="changeColor(i,false)">
                     <td> {{ key }} </td>
                     <td> {{ value.length }} </td>
                 </tr>
@@ -53,9 +53,3 @@
     </div>
 
 </div>
-
-<style>
- 
-
-
-</style>
