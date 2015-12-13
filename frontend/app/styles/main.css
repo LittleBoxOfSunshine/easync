@@ -11,6 +11,11 @@ a {
 a:hover {
   text-decoration: none;
 }
+
+#reg_nav_header {
+  margin-right:12px;
+}
+
 .btn {
     width: 200px;
     height: 40px;

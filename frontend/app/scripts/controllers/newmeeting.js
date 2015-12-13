@@ -258,8 +258,10 @@ angular.module('easyncApp')
             method: 'POST',
             withCredentials: true,
             data: JSON.stringify(data)
-        }, function (response) {
-            console.log(response.data);
+        }).then( function (response) {  
+            if (response.data == 'Your meeting has been scheduled.') {
+                $location.path('/scheduled');
+            }
         }, function (error) {
             console.log(error);
         });
