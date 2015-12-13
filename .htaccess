@@ -5,4 +5,4 @@ RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^ index.php [L]
 
-RewriteRule !^(public/|styles/|scripts/|fonts/|index\.php) [NC,F]
+RewriteRule !^(public/|styles/|scripts/|fonts/|images/|index\.php) [NC,F]
