@@ -179,8 +179,10 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 			//load meeting details from session using index (time range) given as input	
 			$index = json_decode($app->request()->getBody());
 
-			if($index === NULL)
-				die("Index was not sent in json.");
+			if($index === NULL) {
+				echo "Index was not sent in json.";
+				return;
+			}
 
 			$index = $index->index;
 
@@ -235,7 +237,7 @@ $app->group('/api/v1.0/Meeting', function() use ($app, $AUTH_MIDDLEWARE) {
 		}
 
 		else{
-			die('No meetings cookie was set.. planMeeting was never called?');
+			echo 'No meetings cookie was set.. planMeeting was never called?';
 		}
 
 	});	

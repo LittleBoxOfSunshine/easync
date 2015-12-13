@@ -38,45 +38,62 @@
 	</div>
 	</div>
 	<div class="col-md-4">
-	<div class="row text-center" id="datetimeconstraints">
-		<form name="datetimeform">
-			<p>Dates</p>
-			 <input name="fromdate" type="date" ng-model="constraints.start_date" v>
-			      <input name="todate" type="date" ng-model="constraints.end_date"><br>
-				<span class="error" ng-show="constraints.start_date > constraints.end_date">
-				End date must be greater or same as start date
-			</span><br>
-			<p>Times</p>
-			 <input name="aftertime" type="time" ng-model="constraints.start_time" value="08:30:00" step="600">
-			 <input name="beforetime" type="time" ng-model="constraints.end_time" vvalue="08:30:00" step="600"><br>
-			<span class="error" ng-show="constraints.start_time >= constraints.end_time">
-				End time must be greater as start time
-			</span><br>
-			<p>Length </p><select name="duration" ng-model="constraints.duration">
-				<option value="15"> 15 Minutes</option>
-				<option value="30"> 30 Minutes</option>
-				<option value="45"> 45 Minutes</option>
-				<option value="60"> 1 Hour</option>
-				<option value="120"> 2 Hours</option>
-			</select> 
-			<label for="required" style="text-align:left">Attendance Required </label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> <br>
+		<div class="row text-center" id="datetimeconstraints">
+			<form name="datetimeform">
+				<p>Dates</p>
+				 <input name="fromdate" type="date" ng-model="constraints.start_date" v>
+				      <input name="todate" type="date" ng-model="constraints.end_date"><br>
+					<span class="error" ng-show="constraints.start_date > constraints.end_date">
+					End date must be greater or same as start date
+				</span><br>
+				<p>Times</p>
+				 <input name="aftertime" type="time" ng-model="constraints.start_time" value="08:30:00" step="600">
+				 <input name="beforetime" type="time" ng-model="constraints.end_time" vvalue="08:30:00" step="600"><br>
+				<span class="error" ng-show="constraints.start_time >= constraints.end_time">
+					End time must be greater as start time
+				</span><br>
+				<p>Length </p><select name="duration" ng-model="constraints.duration">
+					<option value="15"> 15 Minutes</option>
+					<option value="30"> 30 Minutes</option>
+					<option value="45"> 45 Minutes</option>
+					<option value="60"> 1 Hour</option>
+					<option value="120"> 2 Hours</option>
+				</select> 
+				<label for="required" style="text-align:left">Attendance Required </label><input type="checkbox" name="required" id="required" ng-model="constraints.required"> <br>
 
-			<input type="text" ng-model="constraints.title" placeholder="Meeting Name">
-			<input type="text" ng-model="constraints.location" placeholder="Meeting Location"><br>
-			<textarea class="form-control" ng-model="constraints.description" placeholder="Meeting Description" id="meeting_description"></textarea>
-			
-			<input type="file" ng-model="constraints.attachment" placeholder="Attachment">
-		</form>
-		</div>
+				<input type="text" ng-model="constraints.title" placeholder="Meeting Name">
+				<input type="text" ng-model="constraints.location" placeholder="Meeting Location"><br>
+				<textarea class="form-control" ng-model="constraints.description" placeholder="Meeting Description" id="meeting_description"></textarea>
+				
+				<input type="file" ng-model="constraints.attachment" placeholder="Attachment">
+			</form>
 		</div>
 		<div class="col-md-4">
-		<button class="buttonLogin" ng-show="validateconstraintfields() === false" disabled>Find Possible Meeting Times</button>
-		<button class="btn btn-info" ng-show="validateconstraintfields() === true" ng-click="findmeetingtimes(constraints, attendees)">Find Possible Meeting Times</button>
-
-	<div class="row text-center" id="possibletimes" ng-show="possibletimes_bool">
-		<h3> Possible Times</h3>
+			<button class="buttonLogin" ng-show="validateconstraintfields() === false" disabled>Find Possible Meeting Times</button>
+			<button class="btn btn-info" ng-show="validateconstraintfields() === true" ng-click="findmeetingtimes(constraints, attendees)">Find Possible Meeting Times</button>
+		</div>
 	</div>
-</div>
+
+	<div class="col-md-4 text-center" id="possibletimes" ng-show="possibletimes_bool">
+		<h3> Possible Times</h3>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<td>Attendees</td>
+					<td>Start Time</td>
+					<td>End Time</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="x in possible_times" ng-click="finalizeMeeting(x)">
+					<td><span ng-repeat="name in x.people">{{ name }}, </span></td>
+					<td> {{ x.startTime }} </td>
+					<td> {{ x.endTime }} </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
 </div>
 <script>
 function toggleEmailField() {

@@ -33,17 +33,17 @@ class IntervalObject{
 
                 $child->getTop($x, $ret, $copy);
 
-                if(count($ret) >= $x)
-                    return;
+               // if(count($ret) >= $x)
+                 //   return;
             }
 
             if (strcmp($this->people[0], 'ROOT') != 0)
-                if(count($parents) > 1)
+                if(count($parents) > 1 && count($parents) == count(array_unique($parents)) && floor($this->getLower()/1440) == floor($this->getUpper()/1440))
                     $ret[] = array('people' => $parents, 'startTime' => $this->getLower(), 'endTime' => $this->getUpper());
         }
         else if($this->people[0] != 'ROOT'){
             $peeps = array_merge($parents, $this->people);
-            if(count($peeps) > 1)
+            if(count($peeps) > 1 && count($peeps) == count(array_unique($peeps)) && floor($this->getLower()/1440) == floor($this->getUpper()/1440))
                 $ret[] = array('people' => $peeps, 'startTime' => $this->getLower(), 'endTime' => $this->getUpper());
         }
     }
@@ -340,11 +340,20 @@ class CalIntervalDiff{
             $ret[$i]['endTime'] -= $this->rangeLowerBound;
         }
 
-        return $ret;
+		usort($ret, 'self::compareDepth');
+
+        return array_slice($ret, 0, $x);
 	}
 	
 	public static function getLength(){
 		return self::$length;
+	}
+
+	public static function compareDepth($a, $b){
+		if(count($a['people']) == count($b['people']))
+			return 0;
+		else
+			return (count($a['people']) > count($b['people'])) ? -1 : 1;
 	}
 
     /*
