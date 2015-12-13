@@ -4,60 +4,142 @@
     A bit problematic, no one seemed to be able to come up with the perfect date and time.
     "Wait, there should be an app for that!", they thought, and set out to create the perfect group scheduling application.
   </div>
-<h2>Easync redefining the way you connect.</h2>
+<h4>Easync, redefining the way you connect</h4>
 <h1>The Crayala Team</h1>
 <h2>Databases</h2>
-<ul class="img-list">
+<ul class="about-list">
   <li>
     <a href="http://ericsmithrocks.com">
       <img src="/images/eric.jpg" width="150" height="150" />
-      <span class="img-content"><span>Tendies</span></span>
+      <span class="about-content"><span>Tendies</span></span>
     </a>
   </li>
   <li>
     <a href="http://alpacas.com">
       <img src="/images/chris.jpg" width="150" height="150" />
-      <span class="img-content"><span>Git Jesus</span></span>
+      <span class="about-content"><span>Git Jesus</span></span>
     </a>
   </li>
   <li>
     <a href="https://www.youtube.com/watch?v=uRPKbAj4cuQ">
       <img src="/images/jayce.jpg" width="150" height="150" />
-      <span class="img-content"><span>J-ICE</span></span>
+      <span class="about-content"><span>J-ICE</span></span>
     </a>
   </li>
   
 </ul>
 <h2>GUI</h2>
-<ul class="img-list">
+<ul class="about-list">
   <li>
     <a href="https://twitter.com/cakeslap">
       <img src="/images/gavin.jpg" width="150" height="150" />
-      <span class="img-content"><span>Even dreams have seams</span></span>
+      <span class="about-content"><span>Even dreams have seams</span></span>
     </a>
   </li>
   <li>
     <a href="https://twitter.com/mdzingo">
       <img src="/images/morgan.png" width="150" height="150" />
-      <span class="img-content"><span>If I could major in Alpacas I would</span></span>
+      <span class="about-content"><span>If I could major in Alpacas I would</span></span>
     </a>
   </li>
   <li>
     <a href="http://jorgev.me">
       <img src="/images/jorge.jpg" width="150" height="150" />
-      <span class="img-content"><span>I do great shit.</span></span>
+      <span class="about-content"><span>I do great shit.</span></span>
     </a>
   </li>
   <li>
     <a href="https://www.facebook.com/samwhunter">
       <img src="/images/sam.png" width="150" height="150" />
-      <span class="img-content"><span>Do it for Bub.</span></span>
+      <span class="about-content"><span>Do it for Bub.</span></span>
     </a>
   </li>
   
 </ul>
+
+<h1>Inspiration</h1>
+<p>We compiled quotes throughout the semester, each of these truely explains why we have created easync.</p>
+<ul class="inspiration">
+  <li>"I like meetings" -Jorge</li>
+  <li>"I drive for lift" -Jayce</li>
+  <li>"I enjoy doing android applications, I'm a robot." -Gavin</li>
+  <li>"I don't have time to sit and plan a meeting" -Morgan</li>
+  <li>"I enjoy android as much as I enjoy my time"</li>
+  <li>"After 100 ideas, I voted we just do something"</li>
+  <li>"SmuFood was my first adventure. This is my second"</li>
+</ul>
 </div>
 
-<style>
 
+<style>
+.inspiration{
+  list-style-type: none;
+}
+ul.about-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+ul.about-list li {
+  display: inline-block;
+  height: 150px;
+  margin: 0 1em 1em 0;
+  position: relative;
+  width: 150px;
+}
+span.about-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+}
+
+span.about-content span {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+span.about-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+}
+
+ul.about-list li:hover span.about-content {
+  opacity: 1;
+}
+
+span.about-content {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  cursor: pointer;
+  display: table;
+  height: 150px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 150px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+h2 {
+  margin-top: -10px;
+}
 </style>

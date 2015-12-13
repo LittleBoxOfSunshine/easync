@@ -159,13 +159,13 @@ div{
   text-align: center;
 }
 
-ul.img-list {
+ul.btn-list {
   list-style-type: none;
   padding: 0;
   text-align: center;
 }
 
-ul.img-list li {
+ul.btn-list li {
   display: inline-block;
   height: 220px;
   position: relative;
@@ -201,7 +201,7 @@ span.text-content {
   border-radius:110px;
 }
 
-ul.img-list li:hover span.text-content {
+ul.btn-list li:hover span.text-content {
   opacity: 1;
 }
 
@@ -389,8 +389,11 @@ body {
 
 /*style from index*/
 .glyphicon-cog {
-  font-size: 1em;
+  font-size: .9em;
   color:#F9F9F9;
+  padding-right: 10px;
+  margin-bottom: 10px;
+
 }
 .navbar-brand {
   font-size: 32px;
@@ -520,16 +523,11 @@ span.img-content {
 
 
 
-h1, h4{
+h1, h2, h3,h4{
   color:#FF5252;
   text-align:center;
 }
 
-img{
-  width:250;
-  height:250;
-  margin:25px;
-}
 li{
   margin-left:-30px;
 }
