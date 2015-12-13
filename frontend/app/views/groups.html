@@ -1,23 +1,25 @@
 <div class="row row-centered" ng-controller="GroupsCtrl as groups">
     <h2>Groups</h2>
-    <div class="col-md-3 col-centered" ng-init="loadGroups()">
+    <div class="col-md-4 col-centered" ng-init="loadGroups()">
         <table class="table table-hover hoverTable" id="grouplisttable" >
             <thead>
                 <tr>
                     <th>Group Name</th>
                     <th>Number of Members</th>
+                    <th>    </th>
                 </tr>
             </thead>
             <tbody >
                 <tr ng-repeat="(key, value) in groups" ng-click="changeGoup(value, key)" id="godHelpME" ng-style="color" ng-mouseenter="changeColor(i,true)" ng-mouseleave="changeColor(i,false)">
                     <td> {{ key }} </td>
                     <td> {{ value.length }} </td>
+                    <td><span class="glyphicon glyphicon-pencil"></span></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="col-md-5 col-centered" ng-show="selectedgroup.length > 0">
+    <div class="col-md-8 col-centered" ng-show="selectedgroup.length > 0">
         <h3> {{ groupname }} 
             <a ng-show="!newRow" ng-click="addrow()"><span class="glyphicon glyphicon-plus pull-right"> </span></a>
             <a ng-show="newRow" ng-click="saverow(newName, newEmail, newContact)"><span class="glyphicon glyphicon-floppy-save pull-right"></span></a> 
@@ -30,6 +32,7 @@
                 </tr>
             </thead>
             <tbody id="groupDetails">
+
                 <tr ng-repeat="person in selectedgroup">
                     <td> {{ person.name }} </td>
                     <td> {{ person.email }} </td>
@@ -53,3 +56,11 @@
     </div>
 
 </div>
+<style>
+table.glyphicon-hover .glyphicon {
+  visibility: hidden;
+}
+table.glyphicon-hover td:hover .glyphicon {
+  visibility: visible;
+}
+</style>
