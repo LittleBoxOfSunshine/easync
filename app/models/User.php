@@ -93,7 +93,7 @@ class User extends Model implements CRUD{
 		$stmt = Database::prepareAssoc("UPDATE Meeting SET token=:token  WHERE email=:email AND meetingID=:meetingID;");
 		$stmt->bindParam(':token', $rsvpToken);
 		$stmt->bindParam(':email', $email);
-		$stms->bindParam(":meetingID, $meetingID")
+		$stmt->bindParam(":meetingID, $meetingID");
 		$stmt->execute();
 
 		return $rsvpToken;
