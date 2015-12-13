@@ -1,0 +1,226 @@
+div{
+  font-family: 'Raleway', sans-serif;
+
+}
+
+#main-col-1 {
+  text-align: center;
+  border-right: 1px solid;
+}
+
+#main-col-2 {
+  text-align: center;
+  border-left: 1px solid;
+  border-right: 1px solid;
+}
+
+#main-col-3 {
+  text-align: center;
+  border-left: 1px solid;
+}
+
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+
+/*color of the new marquee*/
+h1 {
+  color:#008D88;
+}
+/*this is scheduled things*/
+#scheduledMeetings{
+  list-style-type:none;
+  text-align: center;
+  
+}
+
+.round-button {
+    display:block;
+    width:220px;
+    height:220px;
+    border: 2px solid #067500;
+    border-radius: 100%;
+    color:#f5f5f5;
+    text-align:center;
+    background: #09BC00;
+    box-shadow: 0 0 3px gray;
+    font-size:40px;
+    font-weight:bold;
+    margin:auto;
+}
+.round-button:hover {
+    background: #262626;
+}
+
+
+time.icon
+{
+  font-size: 1em; /* change icon size */
+  display: block;
+  position: relative;
+  width: 23em;
+  height: 23em;
+  background-color: #fff;
+  border-radius: 0.6em;
+  box-shadow: 0 1px 0 #bdbdbd, 0 2px 0 #fff, 0 3px 0 #bdbdbd, 0 4px 0 #fff, 0 5px 0 #bdbdbd, 0 0 0 1px #bdbdbd;
+  overflow: hidden;
+}
+
+time.icon:hover, time.icon:focus
+{
+  -webkit-animation: swing 0.6s ease-out;
+  animation: swing 0.6s ease-out;
+}
+
+@-webkit-keyframes swing {
+  0%   { -webkit-transform: rotate(0deg)  skewY(0deg); }
+  20%  { -webkit-transform: rotate(12deg) skewY(4deg); }
+  60%  { -webkit-transform: rotate(-9deg) skewY(-3deg); }
+  80%  { -webkit-transform: rotate(6deg)  skewY(-2deg); }
+  100% { -webkit-transform: rotate(0deg)  skewY(0deg); }
+}
+
+@keyframes swing {
+  0%   { transform: rotate(0deg)  skewY(0deg); }
+  20%  { transform: rotate(12deg) skewY(4deg); }
+  60%  { transform: rotate(-9deg) skewY(-3deg); }
+  80%  { transform: rotate(6deg)  skewY(-2deg); }
+  100% { transform: rotate(0deg)  skewY(0deg); }
+}
+
+time.icon *
+{
+  display: block;
+  width: 100%;
+  font-size: 1em;
+  font-weight: bold;
+  font-style: normal;
+  text-align: center;
+}
+
+time.icon strong
+{
+  position: absolute;
+  top: 0;
+  padding: 0.4em 0;
+  color: #fff;
+  background-color: #fd9f1b;
+  border-bottom: 1px dashed #f37302;
+  box-shadow: 0 2px 0 #fd9f1b;
+  font-size: 2em;
+}
+
+time.icon em
+{
+  position: absolute;
+  bottom:2em;
+  font-size: 3em;
+}
+
+time.icon span
+{
+  font-size:3em;
+  color: #fd9f1b;
+}
+
+body {
+  padding: 0;
+}
+
+/* Everything but the jumbotron gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  /*
+  padding-left: 15px;
+  padding-right: 15px;
+  */
+}
+
+/* Custom page header */
+.header {
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+/* Make the masthead heading the same height as the navigation */
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
+}
+
+/* Custom page footer 
+.footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
+
+.container-narrow > hr {
+  margin: 30px 0;
+}
+*/
+
+
+/* Supporting marketing content */
+.marketing {
+  /*
+  margin: 40px 0;
+  */
+}
+.marketing p + h4 {
+  /*
+  margin-top: 28px;
+  */
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  .container {
+    /*
+    max-width: 730px;
+    */
+  }
+
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    /*
+    margin-bottom: 30px;
+    */
+  }
+  /* Remove the bottom border on the jumbotron for visual effect */
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+.css-form {
+  /*
+    padding: 20px;
+    */
+ 
+}
+
+.css-form input:not([type="submit"]) {
+  /*
+  margin: 10px 10px 10px 10px;
+  */
+}
+
+.css-form input[type="submit"] {
+  /*
+  margin-top:10px;
+  */
+}

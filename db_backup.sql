@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.46, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: easync
 -- ------------------------------------------------------
--- Server version	5.5.44-0ubuntu0.14.04.1
+-- Server version	5.5.46-0ubuntu0.14.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -15,34 +15,29 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
 --
--- Table structure for table `User`
+-- Table structure for table `Auth_Token`
 --
 
-DROP TABLE IF EXISTS `User`;
+DROP TABLE IF EXISTS `Auth_Token`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `User` (
+CREATE TABLE `Auth_Token` (
+  `auth_token` varchar(255) NOT NULL DEFAULT '0',
   `userID` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `phoneNumber` varchar(255) DEFAULT NULL,
-  `avatar` varchar(255) DEFAULT NULL,
-  `authToken` varchar(255) DEFAULT NULL,
-  `passwordHash` varchar(255) DEFAULT NULL,
-  `passwordSalt` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`userID`)
+  PRIMARY KEY (`userID`,`auth_token`),
+  CONSTRAINT `Auth_Token_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `User`
+-- Dumping data for table `Auth_Token`
 --
 
-LOCK TABLES `User` WRITE;
-/*!40000 ALTER TABLE `User` DISABLE KEYS */;
-/*!40000 ALTER TABLE `User` ENABLE KEYS */;
+LOCK TABLES `Auth_Token` WRITE;
+/*!40000 ALTER TABLE `Auth_Token` DISABLE KEYS */;
+INSERT INTO `Auth_Token` VALUES ('1a6db91e35032eaed8c399d8c8061105bceaae87e3c3bc1694b531da90c8dbb2',29),('4e21c1c62ad72e9c89571dbd2931c980187eca4f50130f38befe7ad8678e5a61',29),('546af5707b70fcc651e573002775503e68d7b65ca4d9ca1b187d0462ad6e51f0',29),('c5de40c1b3ce3227a6578381aef4a796f1b6d5d5794bd3d208bb2d247326618e',29),('e6d19b706739b2012fd9faf37c9ce519f9af5e526aa50f415debe6fd4069c8f3',29),('5815409f74a5a4a0d5e005ba105928a56e0e25db4a6867fbd34219cd42c89641',31);
+/*!40000 ALTER TABLE `Auth_Token` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -55,12 +50,10 @@ DROP TABLE IF EXISTS `CalendarTokens`;
 CREATE TABLE `CalendarTokens` (
   `userID` int(11) NOT NULL DEFAULT '0',
   `platformID` varchar(255) NOT NULL DEFAULT '',
-  `calID` int(11) NOT NULL DEFAULT '0',
+  `calID` varchar(255) NOT NULL DEFAULT '',
   `token` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`userID`, `platformID`, `calID`),
-  FOREIGN KEY (`userID`) REFERENCES User(userID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
+  PRIMARY KEY (`userID`,`platformID`,`calID`),
+  CONSTRAINT `CalendarTokens_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -74,39 +67,65 @@ LOCK TABLES `CalendarTokens` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Event`
+-- Table structure for table `Contacts`
 --
 
-DROP TABLE IF EXISTS `Event`;
+DROP TABLE IF EXISTS `Contacts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Event` (
-  `eventID` int(11) NOT NULL DEFAULT '0',
+CREATE TABLE `Contacts` (
+  `contactEmail` varchar(255) NOT NULL DEFAULT '',
   `userID` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`eventID`,`userID`),
-  FOREIGN KEY (`userID`) REFERENCES User(userID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
+  PRIMARY KEY (`userID`,`contactEmail`),
+  CONSTRAINT `Contacts_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `User` (`userID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Event`
+-- Dumping data for table `Contacts`
 --
 
-LOCK TABLES `Event` WRITE;
-/*!40000 ALTER TABLE `Event` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Event` ENABLE KEYS */;
+LOCK TABLES `Contacts` WRITE;
+/*!40000 ALTER TABLE `Contacts` DISABLE KEYS */;
+INSERT INTO `Contacts` VALUES ('test1@gmail.com',29),('test2@gmail.com',29),('test3@gmail.com',29),('test45@gmail.com',29),('test4@gmail.com',29);
+/*!40000 ALTER TABLE `Contacts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `EventDetails`
+-- Table structure for table `Meeting`
+--
+DROP TABLE IF EXISTS `Event`;
+DROP TABLE IF EXISTS `Meeting`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Meeting` (
+  `meetingID` int(11) NOT NULL DEFAULT '0',
+  `email` varchar(255) DEFAULT NULL,
+  `rsvp` boolean NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (`meetingID`,`email`),
+  KEY `email` (`email`),
+  CONSTRAINT `Meeting_ibfk_1` FOREIGN KEY (`email`) REFERENCES `User` (`email`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Meeting`
+--
+
+LOCK TABLES `Meeting` WRITE;
+/*!40000 ALTER TABLE `Meeting` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Meeting` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MeetingDetails`
 --
 
 DROP TABLE IF EXISTS `EventDetails`;
+DROP TABLE IF EXISTS `MeetingDetails`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `EventDetails` (
+CREATE TABLE `MeetingDetails` (
   `location` varchar(255) DEFAULT NULL,
   `startTime` datetime DEFAULT NULL,
   `creationTime` datetime DEFAULT NULL,
@@ -118,126 +137,89 @@ CREATE TABLE `EventDetails` (
   `timeZone` varchar(255) DEFAULT NULL,
   `recurrence` varchar(255) DEFAULT NULL,
   `attachments` varchar(255) DEFAULT NULL,
-  `eventID` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`eventID`),
-  FOREIGN KEY (`eventID`) REFERENCES Event(eventID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
+  `meetingID` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`meetingID`),
+  CONSTRAINT `MeetingDetails_ibfk_1` FOREIGN KEY (`meetingID`) REFERENCES `Meeting` (`meetingID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `EventDetails`
+-- Dumping data for table `MeetingDetails`
 --
 
-LOCK TABLES `EventDetails` WRITE;
-/*!40000 ALTER TABLE `EventDetails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `EventDetails` ENABLE KEYS */;
+LOCK TABLES `MeetingDetails` WRITE;
+/*!40000 ALTER TABLE `MeetingDetails` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MeetingDetails` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `EventGroups`
---
+
+
 
 DROP TABLE IF EXISTS `EventGroups`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `EventGroups` (
-  `groupID` int(11) NOT NULL DEFAULT '0',
-  `eventID` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`groupID`,`eventID`),
-  FOREIGN KEY (`groupID`) REFERENCES GroupDetails(groupID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE,
-  FOREIGN KEY (`eventID`) REFERENCES Event(eventID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `EventGroups`
---
-
-LOCK TABLES `EventGroups` WRITE;
-/*!40000 ALTER TABLE `EventGroups` DISABLE KEYS */;
-/*!40000 ALTER TABLE `EventGroups` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Group`
---
-
 DROP TABLE IF EXISTS `Group`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Group` (
-  `groupID` int(11) NOT NULL DEFAULT '0',
-  `userID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`groupID`),
-  FOREIGN KEY (`groupID`) REFERENCES GroupDetails(groupID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE,
-  FOREIGN KEY (`userID`) REFERENCES User(userID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Group`
---
-
-LOCK TABLES `Group` WRITE;
-/*!40000 ALTER TABLE `Group` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Group` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `GroupDetails`
---
-
 DROP TABLE IF EXISTS `GroupDetails`;
+
+
+DROP TABLE IF EXISTS `NearbyToken`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `GroupDetails` (
-  `groupID` int(11) NOT NULL,
-  `creatorUserID` int(11) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `creationTime` datetime DEFAULT NULL,
-  `logo` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`groupID`)
+CREATE TABLE `NearbyToken` (
+  `creatorUserID` int(11) NOT NULL DEFAULT '0',
+  `token` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`creatorUserID`,`token`),
+  KEY `creatorUserID` (`creatorUserID`),
+  CONSTRAINT `NearbyToken_ibfk_1` FOREIGN KEY (`creatorUserID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `GroupDetails`
+-- Dumping data for table `NearbyToken`
 --
 
-LOCK TABLES `GroupDetails` WRITE;
-/*!40000 ALTER TABLE `GroupDetails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `GroupDetails` ENABLE KEYS */;
+LOCK TABLES `NearbyToken` WRITE;
+/*!40000 ALTER TABLE `NearbyToken` DISABLE KEYS */;
+/*!40000 ALTER TABLE `NearbyToken` ENABLE KEYS */;
 UNLOCK TABLES;
 
+CREATE INDEX `indexToken` ON `NearbyToken` (`token`);
+
+
+DROP TABLE IF EXISTS `NearbyAttendees`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `NearbyAttendees` (
+  `userID` int(11) NOT NULL DEFAULT '0',
+  `token` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`userID`,`token`),
+  CONSTRAINT `NearbyAttendees_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `NearbyAttendees_ibfk_2` FOREIGN KEY (`token`) REFERENCES `NearbyToken` (`token`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
--- Table structure for table `Permissions`
+-- Dumping data for table `NearbyAttendees`
 --
+
+LOCK TABLES `NearbyAttendees` WRITE;
+/*!40000 ALTER TABLE `NearbyAttendees` DISABLE KEYS */;
+/*!40000 ALTER TABLE `NearbyAttendees` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+
+
+
 
 DROP TABLE IF EXISTS `Permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Permissions` (
-  `groupID` int(11) NOT NULL DEFAULT '0',
   `userID` int(11) NOT NULL DEFAULT '0',
   `abilities` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`groupID`,`userID`),
-  FOREIGN KEY (`groupID`) REFERENCES `Group`(groupID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE,
-  FOREIGN KEY (`userID`) REFERENCES `Group`(userID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
+  PRIMARY KEY (`userID`),
+  KEY `userID` (`userID`),
+  CONSTRAINT `Permissions_ibfk_2` FOREIGN KEY (`userID`) REFERENCES `Group` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -251,29 +233,58 @@ LOCK TABLES `Permissions` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Tokens`
+-- Table structure for table `Settings`
 --
 
-DROP TABLE IF EXISTS `Tokens`;
+DROP TABLE IF EXISTS `Settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Tokens` (
-  `auth_token` int(11) DEFAULT NULL,
-  `userID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`userID`,`auth_token`),
-  FOREIGN KEY (`userID`) REFERENCES User(userID)
-  ON UPDATE CASCADE
-  ON DELETE CASCADE
+CREATE TABLE `Settings` (
+  `userID` int(11) NOT NULL,
+  `data` blob NOT NULL,
+  PRIMARY KEY (`userID`),
+  CONSTRAINT `Settings_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `User` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Tokens`
+-- Dumping data for table `Settings`
 --
 
-LOCK TABLES `Tokens` WRITE;
-/*!40000 ALTER TABLE `Tokens` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Tokens` ENABLE KEYS */;
+LOCK TABLES `Settings` WRITE;
+/*!40000 ALTER TABLE `Settings` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `User`
+--
+
+DROP TABLE IF EXISTS `User`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `User` (
+  `userID` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phoneNumber` varchar(255) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `authToken` varchar(255) DEFAULT NULL,
+  `passwordHash` varchar(255) DEFAULT NULL,
+  `passwordSalt` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`userID`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `User`
+--
+
+LOCK TABLES `User` WRITE;
+/*!40000 ALTER TABLE `User` DISABLE KEYS */;
+INSERT INTO `User` VALUES (17,'John Doe','test2@gmail.com',NULL,NULL,NULL,'$2y$10$nd7.ryve7H0LxZRmmj7NJ.dAsdEKDlH2xC3gWR04mERRRDFBT9da6','Þþ¯+Þì}Å”fš>Í\'ì§sŒf'),(21,'Jice Rapper','testit@gmail.com',NULL,NULL,NULL,'$2y$10$471BlcYhtIDd28MUHjT6E..6v7tLTjxhYcZrW2fdvj9KadZ973iMG','ã½A•Æ!´€ÝÛÃ4úå¢¹Äo'),(23,'Jayce Miller','jayce@gmail.com',NULL,NULL,NULL,'$2y$10$winBtqmggYyOv10nVER4q.OkyPM0GR.b6Gphs11U4dawUzMH4h3lm','Â)Á¶© ŒŽ¿]\'TDx¨Zúö\"MG'),(24,'Bob Smith','testytest@gmail.com',NULL,NULL,NULL,'$2y$10$mqSzDagfFFzxmqk24FJxjukEome.8blJ/1Q6wl48ADEqfVaCtl0ZK','š¤³\r¨\\ñš©6àRq\'“ª¤Aë'),(29,'Bob Smith','newtest@gmail.com',NULL,NULL,NULL,'$2y$10$HRjRbcZzt0.EnRwFDtUGHuuJl3INut1UtwzW3ile0U90DuZBuw3cm','ÑmÆs·O„ÕneÙ$Øý'),(30,'bobby doe','newtest2@gmail.com',NULL,NULL,NULL,'$2y$10$aD10NOO0YK7HSog550goMO1Hn2WajBnYsdE9gO69OwH2Jkp5ZHnbW','h=t4ã´`®ÇJˆ9çH(1\nø-¹ž4'),(31,'Jayce Miller','jaycem@gmail.com',NULL,NULL,NULL,'$2y$10$7WpP3b1Qy743VRmVEXVuhegHdD0rzu3ukhyVOY7roI3HPLiE9yRci','íjOÝ½PË¾7U•un†bêøï');
+/*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -285,4 +296,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-11-08  0:32:47
+-- Dump completed on 2015-12-02 21:53:57
