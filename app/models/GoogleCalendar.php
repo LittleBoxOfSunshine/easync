@@ -7,7 +7,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 class GoogleCalendar extends Model{
 	const CLIENT_ID = '66468154963-kjvu0u6hohvv59l03d0gr8kcomi4pggd.apps.googleusercontent.com';
 	const CLIENT_SECRET = 'oNwvkqFISBzSjxNeWtZcnrAo';
-	const REDIRECT_URI = 'http://easync.com/api/v1.0/User/addGoogleCal';
+	const REDIRECT_URI = 'http://easync.jorgev.me/api/v1.0/User/addGoogleCal';
 	const PLATFORM_ID = 'Google';
 
 	protected $userID;
