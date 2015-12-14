@@ -49,6 +49,7 @@ Vagrant.configure(2) do |config|
       ln -fs /vagrant/public/styles /var/www/styles
       ln -fs /vagrant/public/scripts /var/www/scripts
       ln -fs /vagrant/public/fonts /var/www/fonts
+      ln -fs /vagrant/public/images /var/www/images
     fi
     
     # Install PHP + dependencies
