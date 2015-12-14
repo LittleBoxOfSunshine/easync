@@ -118,8 +118,8 @@ angular
       
   }).factory('GlobalIPService', function() {
     return {
-      ip: "http://52.27.123.122/"
-      //ip: "http://easync.com/"
+      //ip: "http://52.27.123.122/"
+      ip: "http://easync.jorgev.me/"
     };
 
   }).config(function ($httpProvider) {
