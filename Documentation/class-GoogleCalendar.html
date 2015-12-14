@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title>Class GoogleCalendar</title>
+
+	<link rel="stylesheet" href="resources/style.css?e99947befd7bf673c6b43ff75e9e0f170c88a60e">
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Binding.html">Binding</a></li>
+				<li><a href="class-CalIntervalDiff.html">CalIntervalDiff</a></li>
+				<li><a href="class-Database.html">Database</a></li>
+				<li><a href="class-Event.html">Event</a></li>
+				<li class="active"><a href="class-GoogleCalendar.html">GoogleCalendar</a></li>
+				<li><a href="class-Group.html">Group</a></li>
+				<li><a href="class-IntervalObject.html">IntervalObject</a></li>
+				<li><a href="class-Model.html">Model</a></li>
+				<li><a href="class-Permission.html">Permission</a></li>
+				<li><a href="class-User.html">User</a></li>
+			</ul>
+
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-CRUD.html">CRUD</a></li>
+			</ul>
+
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-rglob.html">rglob</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="">
+		<input type="hidden" name="ie" value="UTF-8">
+		<input type="text" name="q" class="text" placeholder="Search">
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class GoogleCalendar</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Model.html"><span>Model</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by">
+<b><span>GoogleCalendar</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+			<b>Located at</b> <a href="source-class-GoogleCalendar.html#5-263" title="Go to source code">models/GoogleCalendar.php</a>
+		<br>
+	</div>
+
+
+
+	<table class="summary methods" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-GoogleCalendar.html#17-53" title="Go to source code">__construct</a>( <span>array <var>$args</var> = <span class="php-keyword1">array</span>()</span> )</code>
+
+		<div class="description short">
+			<p>This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
+of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
+some of the functionally that would normally be achieved by overloading the constructor.</p>
+		</div>
+
+		<div class="description detailed hidden">
+			<p>This generic constructor enforces behaviours that improve code readability and reduce the likelyhood
+of errors caused by dynamic typing mistmatches. It enforces a "c" style constructor that provides
+some of the functionally that would normally be achieved by overloading the constructor.</p>
+
+<p>The $args parameter contains an array of key => value pairs where the keys correspond to NULL properties
+of the child class and the values to initialize them to. Should a key be given that doesn't have a
+corresponding property to store it in, code execution is halted. This prevents errorneous extra data from
+being added to an instance.</p>
+
+<p>If the $required parameter is provided, it is an array of strings that correspond to instance properities
+that MUST be initialized for the constructor to run correctly. If any of the required inputs are not found
+in $args code execution is halted. By default/if no $required parameter is provided, the constructor will
+require that ALL instance variables be instantiated. Multiple valid required patterns may be provided (this
+allows the CRUD interface load function to be defined more flexibly)</p>
+
+<p>The $fromUserInput parameter is an optional flag that signals the data contained in args comes from some
+form of user input, rather than class definitions. Consequently, it is possible and expected that the data
+may be malformed, but the calling code is equipped to handle that exception. So, the constructor returns
+false as an error message instead of halting code execution</p>
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Model.html#___construct">Model::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="requestAccess" id="_requestAccess">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_requestAccess">#</a>
+		<code><a href="source-class-GoogleCalendar.html#94-97" title="Go to source code">requestAccess</a>( <span> <var>$app</var></span>, <span> <var>$USER_ID</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="acceptAccess" id="_acceptAccess">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_acceptAccess">#</a>
+		<code><a href="source-class-GoogleCalendar.html#99-116" title="Go to source code">acceptAccess</a>( <span> <var>$userID</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getEvents" id="_getEvents">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getEvents">#</a>
+		<code><a href="source-class-GoogleCalendar.html#119-177" title="Go to source code">getEvents</a>( <span> <var>$startTime</var></span>, <span> <var>$endTime</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="invertEvents" id="_invertEvents">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_invertEvents">#</a>
+		<code><a href="source-class-GoogleCalendar.html#179-191" title="Go to source code">invertEvents</a>( <span> <var>$merged</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="convertToMinutes" id="_convertToMinutes">
+
+		<td class="attributes"><code>
+			 public 
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_convertToMinutes">#</a>
+		<code><a href="source-class-GoogleCalendar.html#193-218" title="Go to source code">convertToMinutes</a>( <span> <var>$events</var></span>, <span> <var>$startTime</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="intcmp" id="_intcmp">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_intcmp">#</a>
+		<code><a href="source-class-GoogleCalendar.html#220-224" title="Go to source code">intcmp</a>( <span> <var>$a</var></span>, <span> <var>$b</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="compare" id="_compare">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_compare">#</a>
+		<code><a href="source-class-GoogleCalendar.html#226-231" title="Go to source code">compare</a>( <span> <var>$a</var></span>, <span> <var>$b</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="merge_ranges" id="_merge_ranges">
+
+		<td class="attributes"><code>
+			 public static
+
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_merge_ranges">#</a>
+		<code><a href="source-class-GoogleCalendar.html#233-261" title="Go to source code">merge_ranges</a>( <span> <var>$meetings</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Model.html#methods">Model</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Model.html#_getBinding">getBinding()</a>, 
+			<a href="class-Model.html#_initBinding">initBinding()</a>, 
+			<a href="class-Model.html#_loadAllInto">loadAllInto()</a>, 
+			<a href="class-Model.html#_loadInto">loadInto()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+	<table class="summary constants" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="CLIENT_ID" id="CLIENT_ID">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-GoogleCalendar.html#6" title="Go to source code"><b>CLIENT_ID</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#CLIENT_ID" class="anchor">#</a>
+				<code><span class="php-quote">'66468154963-kjvu0u6hohvv59l03d0gr8kcomi4pggd.apps.googleusercontent.com'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="CLIENT_SECRET" id="CLIENT_SECRET">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-GoogleCalendar.html#7" title="Go to source code"><b>CLIENT_SECRET</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#CLIENT_SECRET" class="anchor">#</a>
+				<code><span class="php-quote">'oNwvkqFISBzSjxNeWtZcnrAo'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="REDIRECT_URI" id="REDIRECT_URI">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-GoogleCalendar.html#8" title="Go to source code"><b>REDIRECT_URI</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#REDIRECT_URI" class="anchor">#</a>
+				<code><span class="php-quote">'http://easync.com/api/v1.0/User/addGoogleCal'</span></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="PLATFORM_ID" id="PLATFORM_ID">
+
+		<td class="attributes"><code>string</code></td>
+		<td class="name">
+			<code>
+				<a href="source-class-GoogleCalendar.html#9" title="Go to source code"><b>PLATFORM_ID</b></a>
+			</code>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#PLATFORM_ID" class="anchor">#</a>
+				<code><span class="php-quote">'Google'</span></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+	<table class="summary properties" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="userID" id="$userID">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GoogleCalendar.html#11" title="Go to source code"><var>$userID</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$userID" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="calID" id="$calID">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GoogleCalendar.html#12" title="Go to source code"><var>$calID</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$calID" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="token" id="$token">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GoogleCalendar.html#13" title="Go to source code"><var>$token</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$token" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="client" id="$client">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GoogleCalendar.html#14" title="Go to source code"><var>$client</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$client" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	<tr data-order="calendarList" id="$calendarList">
+		<td class="attributes"><code>
+			protected  
+			
+		</code></td>
+
+		<td class="name">
+				<a href="source-class-GoogleCalendar.html#15" title="Go to source code"><var>$calendarList</var></a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</td>
+		<td class="value">
+			<div>
+				<a href="#$calendarList" class="anchor">#</a>
+				<code></code>
+			</div>
+		</td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		 API documentation generated by <a href="http://apigen.org">ApiGen</a>
+	</div>
+</div>
+</div>
+<script src="resources/combined.js"></script>
+<script src="elementlist.js"></script>
+</body>
+</html>
